@@ -2,6 +2,12 @@
 
 **From intent to validated parametric solids.**
 
+<p align="center">
+  <img src="docs/screenshots/solidintent_overview.png" alt="SolidIntent viewer showing the assembled Raspberry Pi 4 enclosure and its editable parameter inspector" width="100%">
+</p>
+
+<p align="center"><sub>Interactive project viewer backed by persistent parametric intent and MCP validation evidence.</sub></p>
+
 SolidIntent is an AI-first, headless CAD workspace. The primary interface is a
 conversation with an AI agent: the agent creates and edits parametric models,
 while a transparent project format preserves parameters, references,
@@ -114,6 +120,23 @@ Open `http://127.0.0.1:4173`. Saving an allowed parameter updates
 `parameters.json` atomically and marks the project as requiring an AI/MCP
 rebuild. The viewer never regenerates, measures, validates, or exports geometry
 itself.
+
+### Viewer gallery
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/screenshots/solidintent_exploded.png" alt="Exploded enclosure view with schema-driven parameter controls">
+    </td>
+    <td width="50%">
+      <img src="docs/screenshots/solidintent_validation.png" alt="Assembled enclosure view with exact geometry validation evidence">
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Exploded body inspection and schema-driven parameters</sub></td>
+    <td align="center"><sub>Accepted geometric evidence from build123d-mcp</sub></td>
+  </tr>
+</table>
 
 ## Credits and provenance
 
