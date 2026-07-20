@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "packages": [
+    {
+      "id": "raspberry_pi_4_model_b_snapshot_3",
+      "path": "raspberry-pi-4-model-b-1.snapshot.3",
+      "device": "Raspberry Pi 4 Model B",
+      "source_class": "third_party_cad_package",
+      "author": "Hasanain Shuja",
+      "source_title": "Raspberry Pi 4 Model B",
+      "source_url": "https://grabcad.com/library/raspberry-pi-4-model-b-1",
+      "license_status": "unknown_no_license_file_in_package",
+      "redistribution": "excluded_from_repository",
+      "date_context": "2019",
+      "files": {
+        "dimension_drawing": "Raspberry Pi 4 Model B Dimensions.pdf",
+        "neutral_cad": "Raspberry Pi 4 Model B.STEP",
+        "parasolid": "Raspberry Pi 4 Model B.x_b",
+        "native_assembly": "Raspberry Pi 4 Model B.SLDASM",
+        "native_part_count": 19,
+        "reference_image_count": 5
+      },
+      "step_inventory": {
+        "size_bytes": 32741411,
+        "solids": 108,
+        "faces": 10487,
+        "edges": 29395,
+        "vertices": 19174,
+        "product_records": 38,
+        "volume_mm3": 18782.1512,
+        "source_bbox_mm": [88.99, 19.9, 58.4],
+        "board_plane": "XZ",
+        "height_axis": "Y"
+      },
+      "recommended_use": [
+        "pi4_connector_keepout_reference",
+        "pi4_final_collision_review",
+        "reference_package_workflow_example"
+      ],
+      "prohibited_use": [
+        "raspberry_pi_5_connector_geometry",
+        "production_without_physical_verification"
+      ]
+    }
+  ]
+}

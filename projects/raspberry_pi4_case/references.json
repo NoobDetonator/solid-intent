@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "project_id": "raspberry_pi4_case",
+  "references": [
+    {
+      "id": "rpi4_dimension_drawing",
+      "path": "../../references/raspberry-pi-4-model-b-1.snapshot.3/Raspberry Pi 4 Model B Dimensions.pdf",
+      "kind": "dimension_drawing",
+      "trust_class": "third_party_reference_drawing",
+      "author": "Hasanain Shuja",
+      "source_url": "https://grabcad.com/library/raspberry-pi-4-model-b-1",
+      "license_status": "unknown",
+      "redistributed": false,
+      "controls": [
+        "pcb_length",
+        "pcb_width",
+        "pcb_corner_radius",
+        "mount_pitch_x",
+        "mount_pitch_y",
+        "mount_edge_offset",
+        "mount_hole_diameter"
+      ]
+    },
+    {
+      "id": "rpi4_detailed_step",
+      "path": "../../references/raspberry-pi-4-model-b-1.snapshot.3/Raspberry Pi 4 Model B.STEP",
+      "kind": "reference_assembly",
+      "trust_class": "third_party_cad_assembly",
+      "author": "Hasanain Shuja",
+      "source_url": "https://grabcad.com/library/raspberry-pi-4-model-b-1",
+      "license_status": "unknown",
+      "redistributed": false,
+      "use": [
+        "connector envelope cross-check",
+        "final collision review"
+      ],
+      "limitations": [
+        "32.7 MB and 108 solids",
+        "too heavy for the normal iteration loop",
+        "source orientation uses XZ as the board plane"
+      ]
+    },
+    {
+      "id": "rpi4_orthographic_images",
+      "paths": [
+        "../../references/raspberry-pi-4-model-b-1.snapshot.3/TopView, RPi4ModelB.PNG",
+        "../../references/raspberry-pi-4-model-b-1.snapshot.3/BottomView, RPi4ModelB.jpg"
+      ],
+      "kind": "reference_images",
+      "trust_class": "semantic_visual_reference",
+      "author": "Hasanain Shuja",
+      "source_url": "https://grabcad.com/library/raspberry-pi-4-model-b-1",
+      "license_status": "unknown",
+      "redistributed": false,
+      "use": [
+        "connector identification",
+        "human visual review"
+      ],
+      "prohibited_use": [
+        "production dimension extraction"
+      ]
+    }
+  ]
+}

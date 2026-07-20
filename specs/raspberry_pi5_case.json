@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "project": "raspberry_pi5_case",
+  "units": "mm",
+  "status": "prototype",
+  "reference_policy": {
+    "primary": "Official Raspberry Pi 5 mechanical drawing",
+    "required_for_production": [
+      "Current official Raspberry Pi 5 STEP",
+      "Physical Raspberry Pi 5 board verification"
+    ],
+    "excluded": [
+      "Raspberry Pi 4 connector positions",
+      "Photo-derived dimensions"
+    ]
+  },
+  "pcb_interface": {
+    "length": 85.0,
+    "width": 56.0,
+    "mount_pitch_x": 58.0,
+    "mount_pitch_y": 49.0,
+    "mount_hole_diameter": 2.8
+  },
+  "base": {
+    "envelope": [92.2, 63.2, 22.0],
+    "wall_thickness": 2.4,
+    "floor_thickness": 2.4,
+    "standoff_height": 4.0,
+    "standoff_diameter": 6.4,
+    "vent_slot_count": 6,
+    "connector_window_strategy": "oversized_prototype_windows"
+  },
+  "lid": {
+    "envelope": [92.2, 63.2, 5.4],
+    "top_thickness": 2.4,
+    "skirt_depth": 3.0,
+    "nominal_fit_clearance_per_side": 0.3,
+    "vent_slot_count": 7
+  },
+  "acceptance": {
+    "base_single_solid": true,
+    "lid_single_solid": true,
+    "base_validate_pass": true,
+    "lid_validate_pass": true,
+    "mounting_hole_count": 4,
+    "mounting_hole_diameter": 2.8,
+    "pcb_support_status": "touching_without_intersection",
+    "lid_fit_status": "touching_without_intersection",
+    "base_support_required": false,
+    "lid_print_orientation_findings": 0
+  },
+  "open_questions": [
+    "Exact connector cutout geometry",
+    "Active Cooler and fan clearance",
+    "GPIO cable access strategy",
+    "Physical lid retention force",
+    "Printer-specific dimensional compensation"
+  ]
+}
+

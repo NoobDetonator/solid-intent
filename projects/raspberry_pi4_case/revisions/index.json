@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "project_id": "raspberry_pi4_case",
+  "current_revision": 1,
+  "revisions": [
+    {
+      "revision": 1,
+      "record": "0001_initial_parameterized_project.json",
+      "status": "accepted"
+    }
+  ]
+}

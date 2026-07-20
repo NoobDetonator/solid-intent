@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "format": "ai_cad_project",
+  "project_id": "raspberry_pi4_case",
+  "title": "Raspberry Pi 4 Model B Enclosure",
+  "description": "AI-generated two-piece FDM enclosure with a persistent parameter contract.",
+  "units": "mm",
+  "status": "prototype",
+  "revision": 1,
+  "model": {
+    "source": "../../scripts/raspberry_pi4_case.py",
+    "entrypoint": "build_model",
+    "parameter_argument": "parameters"
+  },
+  "parameter_values": "parameters.json",
+  "parameter_schema": "parameter_schema.json",
+  "references": "references.json",
+  "validation": "validation.json",
+  "revision_index": "revisions/index.json",
+  "named_geometry": {
+    "bodies": [
+      "base",
+      "lid",
+      "lid_print"
+    ],
+    "interfaces": [
+      "pcb_proxy"
+    ]
+  },
+  "artifacts": {
+    "base_step": "../../exports/raspberry_pi4_case_base.step",
+    "base_stl": "../../exports/raspberry_pi4_case_base.stl",
+    "lid_step": "../../exports/raspberry_pi4_case_lid.step",
+    "lid_stl": "../../exports/raspberry_pi4_case_lid.stl",
+    "assembled_preview": "../../renders/raspberry_pi4_case_assembled.svg",
+    "exploded_preview": "../../renders/raspberry_pi4_case_exploded.svg",
+    "dimensioned_drawing": "../../drawings/raspberry_pi4_case_dimensioned.svg"
+  },
+  "rebuild_policy": {
+    "geometry_executor": "build123d-mcp",
+    "validate_parameter_schema": true,
+    "compare_with_previous_revision": true,
+    "validate_all_exported_solids": true,
+    "analyze_fdm_orientations": true,
+    "require_human_review_for_locked_parameter_changes": true
+  }
+}

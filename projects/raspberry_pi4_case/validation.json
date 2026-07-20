@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "project_id": "raspberry_pi4_case",
+  "accepted_revision": 1,
+  "validated_at": "2026-07-20",
+  "executor": "build123d-mcp",
+  "runtime": {
+    "build123d_mcp": "0.3.79",
+    "build123d": "0.11.1",
+    "build123d_drafting_helpers": "0.14.0",
+    "augura": "0.1.7",
+    "python": "3.12.13"
+  },
+  "source_hashes_sha256": {
+    "model": "C925599EBD5A3623F085E9C647DEFABB00A350FAAE2E66A4506356AC5F6509DF",
+    "parameters": "A168C96A05B23FC2293EBDB89691E88CEC92DA2B6F54B990C5BD3CA17B2A10C3",
+    "parameter_schema": "1E6DDB2EC1235E19EA1BFF4A26DC73AE66E3513EC463937B712987F415450DDF"
+  },
+  "parameter_contract": {
+    "json_schema": "PASS",
+    "required_parameter_count": 42,
+    "model_contract": "PASS"
+  },
+  "geometry": {
+    "base": {
+      "validate": "PASS",
+      "single_solid": true,
+      "watertight_manifold": true,
+      "brep_valid": true,
+      "volume_mm3": 25570.501,
+      "bbox_mm": [92.2, 63.2, 24.0],
+      "topology": {"faces": 95, "edges": 240, "vertices": 160}
+    },
+    "lid": {
+      "validate": "PASS",
+      "single_solid": true,
+      "watertight_manifold": true,
+      "brep_valid": true,
+      "volume_mm3": 15166.7654,
+      "bbox_mm": [96.1, 67.1, 5.6],
+      "topology": {"faces": 55, "edges": 156, "vertices": 104}
+    }
+  },
+  "interfaces": {
+    "base_to_pcb_proxy": {
+      "status": "touching",
+      "clearance_mm": 0.0,
+      "intersection_volume_mm3": 0.0
+    },
+    "base_to_assembled_lid": {
+      "status": "touching",
+      "clearance_mm": 0.0,
+      "intersection_volume_mm3": 0.0
+    }
+  },
+  "printability": {
+    "base": {
+      "status": "PASS_WITH_WARNINGS",
+      "recommended_max_layer_height_mm": 0.2,
+      "residual_warning": "One local 0.20 mm microfeature requires physical review."
+    },
+    "lid_print": {
+      "status": "PASS",
+      "warnings": 0,
+      "informational_bridges": 4
+    }
+  },
+  "parameter_edit_probe": {
+    "accepted": false,
+    "purpose": "Verify that a manual parameter edit rebuilds without mutating the accepted revision.",
+    "change": {
+      "parameter": "wall_thickness",
+      "from_mm": 2.4,
+      "to_mm": 3.0
+    },
+    "base_delta": {
+      "volume_mm3": 4150.98,
+      "bbox_mm": [1.2, 1.2, 0.0],
+      "topology_delta": {"faces": 0, "edges": 0, "vertices": 0},
+      "validate": "PASS"
+    },
+    "lid_delta": {
+      "volume_mm3": 501.12,
+      "bbox_mm": [1.2, 1.2, 0.0],
+      "topology_delta": {"faces": 0, "edges": 0, "vertices": 0},
+      "validate": "PASS"
+    },
+    "surface_comparison": "TIME_BUDGET_EXCEEDED",
+    "evidence_used": [
+      "exact volume delta",
+      "exact bounding-box delta",
+      "topology delta",
+      "exact validity gate"
+    ]
+  },
+  "residual_risks": [
+    "Connector openings require verification against the exact physical board and installed plugs.",
+    "The third-party reference package has unknown licensing and provenance.",
+    "The 0.15 mm lid clearance must be calibrated for the target printer and material.",
+    "The detailed 108-solid STEP remains too heavy for the normal Windows iteration loop."
+  ]
+}

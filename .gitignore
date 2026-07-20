@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+.venv/
+
+# Generated CAD artifacts
+exports/*
+!exports/.gitkeep
+renders/*
+!renders/.gitkeep
+smoke-output/*
+!smoke-output/.gitkeep
+
+# Local/editor state
+.DS_Store
+Thumbs.db
+.cursor/
+.codex/config.toml
+tmp/
+
+# Third-party reference packages without confirmed redistribution terms
+references/raspberry-pi-4-model-b-1.snapshot.3/
