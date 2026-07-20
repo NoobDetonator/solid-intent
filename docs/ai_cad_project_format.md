@@ -121,17 +121,17 @@ the AI must perform the MCP rebuild and acceptance workflow.
 
 ## Viewer boundary
 
-A web viewer may read the manifest, parameter catalog, validation report, and a
-lightweight tessellated artifact. It may edit approved parameter values and
-request rebuilds. It must never become the authority for dimensions,
+The web viewer in `viewer/` reads the manifest, parameter catalog, validation
+report, and lightweight tessellated artifacts. It edits approved parameter
+values and prepares AI rebuild requests. It must never become the authority for dimensions,
 interference, mass, or validity. Those results come from build123d-mcp and are
 stored in the accepted validation report.
 
-The first viewer milestone should provide:
+The implemented first viewer milestone provides:
 
 - Project and revision selector.
 - Interactive model visibility and exploded state.
 - Grouped parameter controls generated from the schema.
 - Clean/dirty/validating/accepted status.
 - Validation findings and artifact downloads.
-- A natural-language request box for semantic changes.
+- A copyable AI rebuild request after dimensional changes.

@@ -25,6 +25,7 @@ build123d geometry.
 - `prompts/` - reusable MCP-driven modeling and smoke-test prompts
 - `environment/` - exact tool and package versions
 - `smoke-output/` - artifacts from the initial environment validation
+- `viewer/` - local React/Three.js project viewer and parameter editor
 
 ## Server command
 
@@ -95,6 +96,24 @@ catalog, and atomically persist approved manual parameter edits. It never builds
 or measures CAD; changed projects are rebuilt and accepted through the existing
 build123d-mcp gates. See `docs/ai_cad_project_format.md` for the lifecycle and
 future web-viewer boundary.
+
+## Web viewer
+
+The first SolidIntent viewer is implemented in `viewer/`. It opens the
+persistent project manifest, loads generated STL bodies into an interactive 3D
+canvas, presents editable and reference-controlled parameters separately, and
+surfaces validation, provenance, revision, and dirty-state evidence.
+
+```text
+cd viewer
+npm install
+npm run dev
+```
+
+Open `http://127.0.0.1:4173`. Saving an allowed parameter updates
+`parameters.json` atomically and marks the project as requiring an AI/MCP
+rebuild. The viewer never regenerates, measures, validates, or exports geometry
+itself.
 
 ## Credits and provenance
 

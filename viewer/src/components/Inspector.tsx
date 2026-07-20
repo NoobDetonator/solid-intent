@@ -1,0 +1,430 @@
+import { useMemo, useState } from "react";
+import {
+  AlertTriangle,
+  Check,
+  CheckCircle2,
+  ChevronDown,
+  Copy,
+  ExternalLink,
+  FileWarning,
+  LockKeyhole,
+  RotateCcw,
+  Save,
+  Search,
+} from "lucide-react";
+
+import type {
+  EvidenceView,
+  ParameterDefinition,
+  ParameterFilter,
+  ProjectData,
+} from "../types";
+
+interface InspectorProps {
+  project: ProjectData;
+  selectedView: EvidenceView;
+  draftValues: Record<string, number>;
+  saving: boolean;
+  onDraftChange: (name: string, value: number) => void;
+  onDiscard: () => void;
+  onSave: () => void;
+  onCopyRebuildPrompt: () => void;
+}
+
+interface InspectorHeaderProps {
+  title: string;
+  description: string;
+}
+
+function InspectorHeader({ title, description }: InspectorHeaderProps) {
+  return (
+    <div className="inspector-heading">
+      <div>
+        <h1>{title}</h1>
+        <p>{description}</p>
+      </div>
+    </div>
+  );
+}
+
+function ParameterRow({
+  definition,
+  project,
+  draftValue,
+  onChange,
+}: {
+  definition: ParameterDefinition;
+  project: ProjectData;
+  draftValue: number | undefined;
+  onChange: (name: string, value: number) => void;
+}) {
+  const currentValue = draftValue ?? definition.value;
+  const acceptedValue = project.acceptedParameters[definition.name];
+  const differsFromAccepted = currentValue !== acceptedValue;
+  const inputId = `parameter-${definition.name}`;
+
+  return (
+    <div className={`parameter-row ${draftValue !== undefined ? "parameter-row--changed" : ""}`}>
+      <div className="parameter-label-block">
+        <label htmlFor={inputId}>{definition.label}</label>
+        <span className="parameter-name">{definition.name}</span>
+        {definition.warning ? <span className="parameter-warning">{definition.warning}</span> : null}
+      </div>
+
+      <div className="parameter-control-block">
+        <div className="number-control">
+          <input
+            id={inputId}
+            type="number"
+            value={currentValue}
+            min={definition.minimum ?? undefined}
+            max={definition.maximum ?? undefined}
+            step={definition.step ?? "any"}
+            disabled={!definition.userEditable}
+            aria-describedby={`${inputId}-meta`}
+            onChange={(event) => {
+              const value = event.currentTarget.valueAsNumber;
+              if (Number.isFinite(value)) onChange(definition.name, value);
+            }}
+          />
+          <span>{definition.unit}</span>
+        </div>
+        <div className="parameter-meta" id={`${inputId}-meta`}>
+          {!definition.userEditable ? (
+            <span className="locked-note">
+              <LockKeyhole aria-hidden="true" />
+              {definition.lockReason}
+            </span>
+          ) : differsFromAccepted ? (
+            <span className="accepted-note">
+              Accepted <span>{acceptedValue.toFixed(2)} {definition.unit}</span>
+            </span>
+          ) : definition.advanced ? (
+            <span>Advanced control</span>
+          ) : (
+            <span>Accepted value</span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ParametersView({
+  project,
+  draftValues,
+  saving,
+  onDraftChange,
+  onDiscard,
+  onSave,
+  onCopyRebuildPrompt,
+}: Omit<InspectorProps, "selectedView">) {
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<ParameterFilter>("editable");
+  const [openGroups, setOpenGroups] = useState<Set<string>>(new Set(["Base", "Lid"]));
+  const unsavedCount = Object.keys(draftValues).length;
+
+  const groups = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    const filtered = project.parameterCatalog.filter((definition) => {
+      if (filter === "editable" && !definition.userEditable) return false;
+      if (filter === "locked" && definition.userEditable) return false;
+      if (!normalizedQuery) return true;
+      return (
+        definition.label.toLowerCase().includes(normalizedQuery) ||
+        definition.name.toLowerCase().includes(normalizedQuery) ||
+        definition.group.toLowerCase().includes(normalizedQuery)
+      );
+    });
+
+    return filtered.reduce<Record<string, ParameterDefinition[]>>((result, definition) => {
+      (result[definition.group] ??= []).push(definition);
+      return result;
+    }, {});
+  }, [filter, project.parameterCatalog, query]);
+
+  function toggleGroup(group: string) {
+    setOpenGroups((current) => {
+      const next = new Set(current);
+      if (next.has(group)) next.delete(group);
+      else next.add(group);
+      return next;
+    });
+  }
+
+  return (
+    <>
+      <div className="inspector-sticky-top">
+        <InspectorHeader
+          title="Parameters"
+          description={`${project.parameterCounts.total} named dimensions · ${project.parameterCounts.editable} user editable`}
+        />
+        <label className="search-field">
+          <Search aria-hidden="true" />
+          <span className="sr-only">Search parameters</span>
+          <input
+            type="search"
+            value={query}
+            placeholder="Search parameters"
+            onChange={(event) => setQuery(event.currentTarget.value)}
+          />
+        </label>
+        <div className="segmented-control" aria-label="Parameter access filter">
+          <button
+            type="button"
+            className={filter === "editable" ? "is-selected" : ""}
+            aria-pressed={filter === "editable"}
+            onClick={() => setFilter("editable")}
+          >
+            Editable <span>{project.parameterCounts.editable}</span>
+          </button>
+          <button
+            type="button"
+            className={filter === "locked" ? "is-selected" : ""}
+            aria-pressed={filter === "locked"}
+            onClick={() => setFilter("locked")}
+          >
+            Locked <span>{project.parameterCounts.locked}</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="parameter-groups">
+        {Object.entries(groups).length ? (
+          Object.entries(groups).map(([group, definitions]) => {
+            const expanded = query.length > 0 || openGroups.has(group);
+            return (
+              <section className="parameter-group" key={group}>
+                <button
+                  className="parameter-group-toggle"
+                  type="button"
+                  aria-expanded={expanded}
+                  onClick={() => toggleGroup(group)}
+                >
+                  <span>{group}</span>
+                  <span>{definitions.length}</span>
+                  <ChevronDown aria-hidden="true" />
+                </button>
+                {expanded ? (
+                  <div className="parameter-list">
+                    {definitions.map((definition) => (
+                      <ParameterRow
+                        key={definition.name}
+                        definition={definition}
+                        project={project}
+                        draftValue={draftValues[definition.name]}
+                        onChange={onDraftChange}
+                      />
+                    ))}
+                  </div>
+                ) : null}
+              </section>
+            );
+          })
+        ) : (
+          <div className="inspector-empty">
+            <Search aria-hidden="true" />
+            <strong>No matching parameters</strong>
+            <span>Try a parameter name, group, or change the access filter.</span>
+          </div>
+        )}
+      </div>
+
+      <div className="inspector-actions">
+        {unsavedCount > 0 ? (
+          <div className="change-state change-state--unsaved" role="status">
+            <FileWarning aria-hidden="true" />
+            <div>
+              <strong>{unsavedCount} unsaved {unsavedCount === 1 ? "change" : "changes"}</strong>
+              <span>Save the parameter set before asking the AI to rebuild.</span>
+            </div>
+          </div>
+        ) : project.status.dirty ? (
+          <div className="change-state change-state--dirty" role="status">
+            <AlertTriangle aria-hidden="true" />
+            <div>
+              <strong>Rebuild required</strong>
+              <span>Saved parameters no longer match the accepted geometry.</span>
+            </div>
+          </div>
+        ) : (
+          <div className="change-state change-state--clean" role="status">
+            <CheckCircle2 aria-hidden="true" />
+            <div>
+              <strong>Project is validated</strong>
+              <span>Parameters and generated geometry match revision {project.manifest.revision}.</span>
+            </div>
+          </div>
+        )}
+
+        <div className="action-row">
+          {project.status.dirty && unsavedCount === 0 ? (
+            <button className="button button--secondary" type="button" onClick={onCopyRebuildPrompt}>
+              <Copy aria-hidden="true" />
+              Copy AI prompt
+            </button>
+          ) : (
+            <button
+              className="button button--secondary"
+              type="button"
+              disabled={unsavedCount === 0 || saving}
+              onClick={onDiscard}
+            >
+              <RotateCcw aria-hidden="true" />
+              Discard
+            </button>
+          )}
+          <button
+            className="button button--primary"
+            type="button"
+            disabled={unsavedCount === 0 || saving}
+            aria-busy={saving}
+            onClick={onSave}
+          >
+            {saving ? <span className="button-progress" aria-hidden="true" /> : <Save aria-hidden="true" />}
+            {saving ? "Saving" : "Save parameters"}
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function ValidationView({ project }: { project: ProjectData }) {
+  const validation = project.validation;
+  return (
+    <>
+      <InspectorHeader
+        title="Validation"
+        description={`Accepted revision ${validation.accepted_revision} · ${validation.executor}`}
+      />
+      <div className="evidence-content">
+        <div className="evidence-summary evidence-summary--pass">
+          <CheckCircle2 aria-hidden="true" />
+          <div>
+            <strong>Exact geometry gates passed</strong>
+            <span>Validated {validation.validated_at}; visual preview is not used as proof.</span>
+          </div>
+        </div>
+
+        {Object.entries(validation.geometry).map(([name, geometry]) => (
+          <section className="evidence-section" key={name}>
+            <div className="evidence-section-heading">
+              <h2>{name}</h2>
+              <span className="mini-status mini-status--pass">
+                <Check aria-hidden="true" /> {geometry.validate}
+              </span>
+            </div>
+            <dl className="metric-list">
+              <div><dt>Envelope</dt><dd>{geometry.bbox_mm.join(" × ")} mm</dd></div>
+              <div><dt>Volume</dt><dd>{geometry.volume_mm3.toLocaleString(undefined, { maximumFractionDigits: 3 })} mm³</dd></div>
+              <div><dt>Topology</dt><dd>{geometry.topology.faces} F · {geometry.topology.edges} E · {geometry.topology.vertices} V</dd></div>
+              <div><dt>Solid</dt><dd>{geometry.single_solid ? "Single" : "Multiple"}</dd></div>
+              <div><dt>Watertight</dt><dd>{geometry.watertight_manifold ? "Yes" : "No"}</dd></div>
+            </dl>
+          </section>
+        ))}
+
+        <section className="evidence-section">
+          <div className="evidence-section-heading"><h2>Interfaces</h2></div>
+          <dl className="metric-list">
+            {Object.entries(validation.interfaces).map(([name, fit]) => (
+              <div key={name}>
+                <dt>{name.replaceAll("_", " ")}</dt>
+                <dd>{fit.status} · {fit.intersection_volume_mm3} mm³ overlap</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        <section className="evidence-section evidence-section--risks">
+          <div className="evidence-section-heading">
+            <h2>Physical verification</h2>
+            <span className="mini-status mini-status--warning"><AlertTriangle aria-hidden="true" /> Required</span>
+          </div>
+          <ul>
+            {validation.residual_risks.map((risk) => <li key={risk}>{risk}</li>)}
+          </ul>
+        </section>
+      </div>
+    </>
+  );
+}
+
+function ReferencesView({ project }: { project: ProjectData }) {
+  return (
+    <>
+      <InspectorHeader
+        title="References"
+        description="Evidence is ranked by provenance and never silently transferred between board generations."
+      />
+      <div className="evidence-content">
+        {project.references.references.map((reference) => (
+          <article className="reference-item" key={reference.id}>
+            <div className="reference-heading">
+              <div>
+                <h2>{reference.id.replaceAll("_", " ")}</h2>
+                <span>{reference.kind.replaceAll("_", " ")}</span>
+              </div>
+              <span className="reference-license">{reference.license_status}</span>
+            </div>
+            <dl className="metric-list">
+              <div><dt>Trust class</dt><dd>{reference.trust_class.replaceAll("_", " ")}</dd></div>
+              <div><dt>Author</dt><dd>{reference.author ?? "Not recorded"}</dd></div>
+              <div><dt>Redistributed</dt><dd>{reference.redistributed ? "Yes" : "No"}</dd></div>
+            </dl>
+            {reference.source_url ? (
+              <a className="source-link" href={reference.source_url} target="_blank" rel="noreferrer">
+                Open source record <ExternalLink aria-hidden="true" />
+              </a>
+            ) : null}
+          </article>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function RevisionsView({ project }: { project: ProjectData }) {
+  return (
+    <>
+      <InspectorHeader
+        title="Revisions"
+        description="Accepted project states retain parameters, source hashes, and validation evidence."
+      />
+      <div className="evidence-content">
+        {project.revisions
+          .slice()
+          .sort((a, b) => b.revision - a.revision)
+          .map((revision) => (
+            <article className="revision-item" key={revision.revision}>
+              <div className="revision-marker" aria-hidden="true">{revision.revision}</div>
+              <div>
+                <div className="revision-heading">
+                  <h2>Revision {revision.revision}</h2>
+                  <span className="mini-status mini-status--pass">{revision.status}</span>
+                </div>
+                <p>{revision.summary}</p>
+                <span className="revision-meta">{revision.created_at} · {revision.authoring_agent}</span>
+                <details>
+                  <summary>View change record</summary>
+                  <ul>{revision.changes.map((change) => <li key={change}>{change}</li>)}</ul>
+                </details>
+              </div>
+            </article>
+          ))}
+      </div>
+    </>
+  );
+}
+
+export function Inspector(props: InspectorProps) {
+  return (
+    <aside className="inspector" aria-label={`${props.selectedView} inspector`}>
+      {props.selectedView === "parameters" ? <ParametersView {...props} /> : null}
+      {props.selectedView === "validation" ? <ValidationView project={props.project} /> : null}
+      {props.selectedView === "references" ? <ReferencesView project={props.project} /> : null}
+      {props.selectedView === "revisions" ? <RevisionsView project={props.project} /> : null}
+    </aside>
+  );
+}
