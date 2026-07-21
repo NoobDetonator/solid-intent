@@ -2,10 +2,11 @@ import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { AlertTriangle, Box, RefreshCw } from "lucide-react";
 
 import { listProjects, loadProject, saveParameters } from "./api";
+import { renderableBodies } from "./bodies";
 import { ContextRail, type BodyVisibility } from "./components/ContextRail";
 import { Inspector } from "./components/Inspector";
 import { ProjectHeader } from "./components/ProjectHeader";
-import type { EvidenceView, ProjectData } from "./types";
+import type { EvidenceView, ProjectData, ProjectSummary } from "./types";
 
 const ModelViewer = lazy(() =>
   import("./components/ModelViewer").then((module) => ({ default: module.ModelViewer })),
@@ -53,9 +54,10 @@ function ModelLoadingStage() {
 }
 
 export default function App() {
+  const [projects, setProjects] = useState<ProjectSummary[]>([]);
   const [project, setProject] = useState<ProjectData | null>(null);
   const [selectedView, setSelectedView] = useState<EvidenceView>("parameters");
-  const [bodyVisibility, setBodyVisibility] = useState<BodyVisibility>({ base: true, lid: true });
+  const [bodyVisibility, setBodyVisibility] = useState<BodyVisibility>({});
   const [draftValues, setDraftValues] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -68,9 +70,24 @@ export default function App() {
     setLoading(true);
     setError(null);
     try {
-      const projects = await listProjects();
-      if (!projects.length) throw new Error("No project manifest was found in the workspace.");
-      setProject(await loadProject(projects[0].id));
+      const available = await listProjects();
+      if (!available.length) throw new Error("No project manifest was found in the workspace.");
+      setProjects(available);
+      setProject(await loadProject(available[0].id));
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Unexpected project loading error.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function selectProject(projectId: string) {
+    if (projectId === project?.manifest.project_id) return;
+    setLoading(true);
+    setError(null);
+    try {
+      setDraftValues({});
+      setProject(await loadProject(projectId));
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Unexpected project loading error.");
     } finally {
@@ -81,6 +98,15 @@ export default function App() {
   useEffect(() => {
     void openFirstProject();
   }, []);
+
+  const activeProjectId = project?.manifest.project_id;
+  useEffect(() => {
+    if (!project) return;
+    const bodies = renderableBodies(project);
+    setBodyVisibility(Object.fromEntries(bodies.map((body) => [body, true])));
+    // Reset body visibility only when the active project changes, not on every save.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeProjectId]);
 
   useEffect(() => {
     if (!toast) return;
@@ -147,7 +173,9 @@ export default function App() {
     <div className="app-shell">
       <ProjectHeader
         project={project}
+        projects={projects}
         unsavedCount={unsavedCount}
+        onSelectProject={(id) => void selectProject(id)}
         onCopyRebuildPrompt={() => void copyRebuildPrompt()}
       />
       <main className="workspace" id="main-content">
@@ -157,7 +185,7 @@ export default function App() {
           bodyVisibility={bodyVisibility}
           onSelectView={setSelectedView}
           onToggleBody={(body) =>
-            setBodyVisibility((current) => ({ ...current, [body]: !current[body] }))
+            setBodyVisibility((current) => ({ ...current, [body]: current[body] === false }))
           }
         />
         <Suspense fallback={<ModelLoadingStage />}>

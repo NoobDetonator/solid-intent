@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" role="img" aria-label="SolidIntent">
+  <title>SolidIntent</title>
+  <rect x="0" y="0" width="420" height="120" rx="20" fill="#121514"/>
+  <g transform="translate(40 34) scale(1.3)">
+    <polygon points="18,3 33,11.5 18,20 3,11.5" fill="#6f9bff"/>
+    <polygon points="3,11.5 18,20 18,33 3,24.5" fill="#3f6ae0"/>
+    <polygon points="18,20 33,11.5 33,24.5 18,33" fill="#2f4fb0"/>
+  </g>
+  <text x="108" y="68" font-family="'Segoe UI',system-ui,-apple-system,Arial,sans-serif" font-size="38" letter-spacing="-1">
+    <tspan font-weight="700" fill="#f2f5f4">Solid</tspan><tspan font-weight="400" fill="#96a19b">Intent</tspan>
+  </text>
+  <text x="109" y="94" font-family="'Segoe UI',system-ui,-apple-system,Arial,sans-serif" font-size="13" letter-spacing="0.5" fill="#6c7772">From intent to validated parametric solids</text>
+</svg>
