@@ -734,6 +734,13 @@ input:disabled {
   line-height: 1.35;
 }
 
+.parameter-slider {
+  width: 100%;
+  margin: 0 0 0.5rem;
+  accent-color: var(--action);
+  cursor: pointer;
+}
+
 .number-control {
   min-height: 2.25rem;
   display: grid;
@@ -795,9 +802,62 @@ input:disabled {
   margin-top: 0.0625rem;
 }
 
-.accepted-note span {
+.accepted-note > span {
   color: var(--warning);
   font-family: "Geist Mono Variable", monospace;
+}
+
+.param-reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-left: 0.125rem;
+  padding: 0;
+  color: var(--ink-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.param-reset:hover {
+  color: var(--ink-primary);
+  background: var(--graphite-800);
+}
+
+.param-reset svg {
+  width: 0.8125rem;
+  height: 0.8125rem;
+}
+
+.advanced-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 1rem 1rem;
+  color: var(--ink-secondary);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.advanced-toggle input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--action);
+  cursor: pointer;
+}
+
+.advanced-toggle-count {
+  min-width: 1.25rem;
+  padding: 0.0625rem 0.25rem;
+  color: var(--ink-muted);
+  font-family: "Geist Mono Variable", monospace;
+  font-size: 0.6875rem;
+  text-align: center;
+  background: var(--graphite-700);
+  border-radius: 0.25rem;
 }
 
 .inspector-actions {

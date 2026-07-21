@@ -62,6 +62,15 @@ function ParameterRow({
   const acceptedValue = project.acceptedParameters[definition.name];
   const differsFromAccepted = currentValue !== acceptedValue;
   const inputId = `parameter-${definition.name}`;
+  const useSlider =
+    definition.userEditable &&
+    definition.control === "slider" &&
+    definition.minimum !== null &&
+    definition.maximum !== null;
+
+  function handleValue(value: number) {
+    if (Number.isFinite(value)) onChange(definition.name, value);
+  }
 
   return (
     <div className={`parameter-row ${draftValue !== undefined ? "parameter-row--changed" : ""}`}>
@@ -72,6 +81,18 @@ function ParameterRow({
       </div>
 
       <div className="parameter-control-block">
+        {useSlider ? (
+          <input
+            className="parameter-slider"
+            type="range"
+            value={currentValue}
+            min={definition.minimum ?? undefined}
+            max={definition.maximum ?? undefined}
+            step={definition.step ?? "any"}
+            aria-label={`${definition.label} slider`}
+            onChange={(event) => handleValue(event.currentTarget.valueAsNumber)}
+          />
+        ) : null}
         <div className="number-control">
           <input
             id={inputId}
@@ -82,10 +103,7 @@ function ParameterRow({
             step={definition.step ?? "any"}
             disabled={!definition.userEditable}
             aria-describedby={`${inputId}-meta`}
-            onChange={(event) => {
-              const value = event.currentTarget.valueAsNumber;
-              if (Number.isFinite(value)) onChange(definition.name, value);
-            }}
+            onChange={(event) => handleValue(event.currentTarget.valueAsNumber)}
           />
           <span>{definition.unit}</span>
         </div>
@@ -98,6 +116,15 @@ function ParameterRow({
           ) : differsFromAccepted ? (
             <span className="accepted-note">
               Accepted <span>{acceptedValue.toFixed(2)} {definition.unit}</span>
+              <button
+                type="button"
+                className="param-reset"
+                title={`Reset ${definition.label} to the accepted value`}
+                aria-label={`Reset ${definition.label} to the accepted value`}
+                onClick={() => handleValue(acceptedValue)}
+              >
+                <RotateCcw aria-hidden="true" />
+              </button>
             </span>
           ) : definition.advanced ? (
             <span>Advanced control</span>
@@ -121,14 +148,25 @@ function ParametersView({
 }: Omit<InspectorProps, "selectedView">) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<ParameterFilter>("editable");
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [openGroups, setOpenGroups] = useState<Set<string>>(new Set(["Base", "Lid"]));
   const unsavedCount = Object.keys(draftValues).length;
+
+  const advancedCount = useMemo(
+    () => project.parameterCatalog.filter((item) => item.userEditable && item.advanced).length,
+    [project.parameterCatalog],
+  );
 
   const groups = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     const filtered = project.parameterCatalog.filter((definition) => {
       if (filter === "editable" && !definition.userEditable) return false;
       if (filter === "locked" && definition.userEditable) return false;
+      // Advanced editable controls stay hidden until explicitly revealed,
+      // unless a search query is active (search always spans everything).
+      if (filter === "editable" && definition.advanced && !showAdvanced && !normalizedQuery) {
+        return false;
+      }
       if (!normalizedQuery) return true;
       return (
         definition.label.toLowerCase().includes(normalizedQuery) ||
@@ -141,7 +179,7 @@ function ParametersView({
       (result[definition.group] ??= []).push(definition);
       return result;
     }, {});
-  }, [filter, project.parameterCatalog, query]);
+  }, [filter, project.parameterCatalog, query, showAdvanced]);
 
   function toggleGroup(group: string) {
     setOpenGroups((current) => {
@@ -187,6 +225,17 @@ function ParametersView({
             Locked <span>{project.parameterCounts.locked}</span>
           </button>
         </div>
+        {filter === "editable" && advancedCount > 0 ? (
+          <label className="advanced-toggle">
+            <input
+              type="checkbox"
+              checked={showAdvanced}
+              onChange={(event) => setShowAdvanced(event.currentTarget.checked)}
+            />
+            <span>Show advanced controls</span>
+            <span className="advanced-toggle-count">{advancedCount}</span>
+          </label>
+        ) : null}
       </div>
 
       <div className="parameter-groups">
