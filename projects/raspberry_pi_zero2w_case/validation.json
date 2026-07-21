@@ -1,22 +1,168 @@
 {
   "schema_version": 1,
   "project_id": "raspberry_pi_zero2w_case",
-  "accepted_revision": 0,
+  "accepted_revision": 1,
   "validated_at": "2026-07-21",
-  "executor": "unvalidated",
-  "runtime": {},
-  "source_hashes_sha256": {},
+  "executor": "build123d-mcp",
+  "runtime": {
+    "build123d": "0.11.1",
+    "python": "3.12",
+    "mcp_validator": "scripts/mcp_validate_project.py"
+  },
+  "source_hashes_sha256": {
+    "model": "AE720E159DB76B2F70FC44DF67C2BC9B9E5090EAED8F2A2ADFADD0D4452D4DFC",
+    "parameters": "FED99D5446E65B66E5B67C12662C170416DE4C52727760D95E83054EB578E015",
+    "parameter_schema": "17F6FED534840D4DF60E56959B61054405F301D0B9F4E9A55D803AFCCA934D31"
+  },
   "parameter_contract": {
     "json_schema": "PASS",
-    "required_parameter_count": 47,
+    "required_parameter_count": 46,
     "model_contract": "PASS"
   },
-  "geometry": {},
-  "interfaces": {},
-  "printability": {},
+  "geometry": {
+    "base": {
+      "validate": "PASS",
+      "single_solid": true,
+      "watertight_manifold": true,
+      "brep_valid": true,
+      "volume_mm3": 7997.2141,
+      "bbox_mm": [
+        72.0,
+        37.0,
+        11.5
+      ],
+      "topology": {
+        "faces": 91,
+        "edges": 276,
+        "vertices": 184
+      },
+      "mcp_validate": {
+        "status": "PASS",
+        "detail": {
+          "passes_gate": true,
+          "n_solids": 1,
+          "volume": 7997.2141,
+          "watertight_manifold": true,
+          "open_edges": 0,
+          "nonmanifold_edges": 0,
+          "mesh_nonmanifold_edges": 0,
+          "mesh_nonmanifold_vertices": 0,
+          "mesh_open_edges": 0,
+          "mesh_vertex_deflection_defects": 0,
+          "untriangulated_faces": 0,
+          "refined_untriangulated_faces": 0,
+          "refined_untriangulated_faces_verified": true,
+          "mesh_check": "exact",
+          "brep_valid": true,
+          "warnings": [],
+          "reasons": []
+        }
+      }
+    },
+    "lid": {
+      "validate": "PASS",
+      "single_solid": true,
+      "watertight_manifold": true,
+      "brep_valid": true,
+      "volume_mm3": 7268.8202,
+      "bbox_mm": [
+        76.0,
+        41.0,
+        6.5
+      ],
+      "topology": {
+        "faces": 48,
+        "edges": 123,
+        "vertices": 82
+      },
+      "mcp_validate": {
+        "status": "PASS",
+        "detail": {
+          "passes_gate": true,
+          "n_solids": 1,
+          "volume": 7268.8202,
+          "watertight_manifold": true,
+          "open_edges": 0,
+          "nonmanifold_edges": 0,
+          "mesh_nonmanifold_edges": 0,
+          "mesh_nonmanifold_vertices": 0,
+          "mesh_open_edges": 0,
+          "mesh_vertex_deflection_defects": 0,
+          "untriangulated_faces": 0,
+          "refined_untriangulated_faces": 0,
+          "refined_untriangulated_faces_verified": true,
+          "mesh_check": "exact",
+          "brep_valid": true,
+          "warnings": [],
+          "reasons": []
+        }
+      }
+    }
+  },
+  "interfaces": {
+    "base_to_pcb_proxy": {
+      "status": "touching",
+      "clearance_mm": 0.0,
+      "intersection_volume_mm3": 0.0
+    },
+    "base_to_assembled_lid": {
+      "status": "clearance_fit",
+      "clearance_mm": 0.2,
+      "intersection_volume_mm3": 0.0
+    }
+  },
+  "printability": {
+    "base": {
+      "status": "PASS_WITH_WARNINGS",
+      "findings_count": 9,
+      "residual_warning": "Flat 390.5 mm2 ceiling at 0.0 deg, 35.6 mm span needs support",
+      "informational_bridges": 5
+    },
+    "lid_print": {
+      "status": "PASS_WITH_WARNINGS",
+      "findings_count": 9,
+      "residual_warning": "Flat 24.6 mm2 ceiling at 0.0 deg, 0.8 mm span needs support",
+      "informational_bridges": 4
+    }
+  },
   "residual_risks": [
-    "Initial scaffolding only — run rebuild_project --export --mcp --accept before use.",
     "Snap-fit ridge/bead clearances must be calibrated for the target printer and filament.",
-    "Connector openings are drawing-derived; verify against physical plugs."
-  ]
+    "Connector openings are drawing-derived; verify against physical plugs.",
+    "Canonical validate/printability gates were confirmed through build123d-mcp on exported STEP solids."
+  ],
+  "comparison_with_previous": {
+    "geometry_deltas": {
+      "base": {
+        "volume_mm3": 0.0,
+        "bbox_mm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "topology_delta": {
+          "faces": 0,
+          "edges": 0,
+          "vertices": 0
+        },
+        "validate": "PASS"
+      },
+      "lid": {
+        "volume_mm3": 0.0,
+        "bbox_mm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "topology_delta": {
+          "faces": 0,
+          "edges": 0,
+          "vertices": 0
+        },
+        "validate": "PASS"
+      }
+    },
+    "failed_bodies": [],
+    "interfering_interfaces": [],
+    "ok": true
+  }
 }

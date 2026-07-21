@@ -6,7 +6,7 @@
   "description": "Compact two-piece FDM enclosure with ridge-and-bead snap fit, port openings, GPIO access, and SoC ventilation.",
   "units": "mm",
   "status": "prototype",
-  "revision": 0,
+  "revision": 1,
   "model": {
     "source": "../../scripts/raspberry_pi_zero2w_case.py",
     "entrypoint": "build_model",
@@ -18,8 +18,14 @@
   "validation": "validation.json",
   "revision_index": "revisions/index.json",
   "named_geometry": {
-    "bodies": ["base", "lid", "lid_print"],
-    "interfaces": ["pcb_proxy"]
+    "bodies": [
+      "base",
+      "lid",
+      "lid_print"
+    ],
+    "interfaces": [
+      "pcb_proxy"
+    ]
   },
   "artifacts": {
     "base_step": "../../exports/raspberry_pi_zero2w_case_base.step",
