@@ -144,15 +144,20 @@ def _export_svg_previews(
 def _export_dimensioned_drawing(project_id: str, project_dir: Path, manifest: dict[str, Any]) -> list[Path]:
     if "dimensioned_drawing" not in manifest.get("artifacts", {}):
         return []
-    if project_id != "raspberry_pi4_case":
+
+    drawing_modules = {
+        "raspberry_pi4_case": "raspberry_pi4_case_drawing",
+        "raspberry_pi5_case": "raspberry_pi5_case_drawing",
+    }
+    module_name = drawing_modules.get(project_id)
+    if module_name is None:
         return []
 
     scripts_dir = str(REPO_ROOT / "scripts")
     if scripts_dir not in sys.path:
         sys.path.insert(0, scripts_dir)
-    from raspberry_pi4_case_drawing import generate_drawing
-
-    svg_path, dxf_path, _issues = generate_drawing()
+    module = __import__(module_name)
+    svg_path, dxf_path, _issues = module.generate_drawing()
     written = [Path(svg_path), Path(dxf_path)]
     dims_path = Path(svg_path).with_suffix(".dims.json")
     if dims_path.exists():

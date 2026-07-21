@@ -25,6 +25,11 @@ from build123d import (
 )
 
 
+# Floor and lid vent patterns (shared with the dimensioned drawing callouts).
+BASE_VENT_Y_POSITIONS = (-15.0, -9.0, -3.0, 3.0, 9.0, 15.0)
+BASE_VENT_X = -7.0
+LID_VENT_Y_POSITIONS = (-18.0, -12.0, -6.0, 0.0, 6.0, 12.0, 18.0)
+
 REQUIRED_PARAMETERS = (
     "pcb_length",
     "pcb_width",
@@ -184,10 +189,9 @@ def build_base(parameters):
                 mode=Mode.SUBTRACT,
             )
 
-    vent_y_positions = (-15.0, -9.0, -3.0, 3.0, 9.0, 15.0)
     with BuildPart() as base_builder:
         add(window_builder.part)
-        with Locations(*((-7.0, y, -1.0) for y in vent_y_positions)):
+        with Locations(*((BASE_VENT_X, y, -1.0) for y in BASE_VENT_Y_POSITIONS)):
             Box(
                 parameters["base_vent_length"],
                 parameters["base_vent_width"],
@@ -241,11 +245,10 @@ def build_lid(parameters):
             mode=Mode.SUBTRACT,
         )
 
-    lid_vent_positions = (-18.0, -12.0, -6.0, 0.0, 6.0, 12.0, 18.0)
     with BuildPart() as lid_vent_builder:
         add(lid_builder.part)
         with Locations(
-            *((0.0, y, parameters["lid_skirt_depth"] - 0.5) for y in lid_vent_positions)
+            *((0.0, y, parameters["lid_skirt_depth"] - 0.5) for y in LID_VENT_Y_POSITIONS)
         ):
             Box(
                 parameters["lid_vent_length"],
