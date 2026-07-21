@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "format": "ai_cad_project",
+  "project_id": "raspberry_pi_zero2w_case",
+  "title": "Raspberry Pi Zero 2 W Snap-Fit Case",
+  "description": "Compact two-piece FDM enclosure with ridge-and-bead snap fit, port openings, GPIO access, and SoC ventilation.",
+  "units": "mm",
+  "status": "prototype",
+  "revision": 0,
+  "model": {
+    "source": "../../scripts/raspberry_pi_zero2w_case.py",
+    "entrypoint": "build_model",
+    "parameter_argument": "parameters"
+  },
+  "parameter_values": "parameters.json",
+  "parameter_schema": "parameter_schema.json",
+  "references": "references.json",
+  "validation": "validation.json",
+  "revision_index": "revisions/index.json",
+  "named_geometry": {
+    "bodies": ["base", "lid", "lid_print"],
+    "interfaces": ["pcb_proxy"]
+  },
+  "artifacts": {
+    "base_step": "../../exports/raspberry_pi_zero2w_case_base.step",
+    "base_stl": "../../exports/raspberry_pi_zero2w_case_base.stl",
+    "lid_step": "../../exports/raspberry_pi_zero2w_case_lid.step",
+    "lid_stl": "../../exports/raspberry_pi_zero2w_case_lid.stl",
+    "lid_print_step": "../../exports/raspberry_pi_zero2w_case_lid_print.step",
+    "lid_print_stl": "../../exports/raspberry_pi_zero2w_case_lid_print.stl",
+    "assembled_preview": "../../renders/raspberry_pi_zero2w_case_assembled.svg",
+    "exploded_preview": "../../renders/raspberry_pi_zero2w_case_exploded.svg",
+    "assembled_preview_png": "../../renders/raspberry_pi_zero2w_case_assembled.png",
+    "exploded_preview_png": "../../renders/raspberry_pi_zero2w_case_exploded.png"
+  },
+  "rebuild_policy": {
+    "geometry_executor": "build123d-mcp",
+    "validate_parameter_schema": true,
+    "compare_with_previous_revision": true,
+    "validate_all_exported_solids": true,
+    "analyze_fdm_orientations": true,
+    "require_human_review_for_locked_parameter_changes": true
+  }
+}

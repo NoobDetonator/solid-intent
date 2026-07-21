@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "project_id": "raspberry_pi_zero2w_case",
+  "accepted_revision": 0,
+  "validated_at": "2026-07-21",
+  "executor": "unvalidated",
+  "runtime": {},
+  "source_hashes_sha256": {},
+  "parameter_contract": {
+    "json_schema": "PASS",
+    "required_parameter_count": 47,
+    "model_contract": "PASS"
+  },
+  "geometry": {},
+  "interfaces": {},
+  "printability": {},
+  "residual_risks": [
+    "Initial scaffolding only — run rebuild_project --export --mcp --accept before use.",
+    "Snap-fit ridge/bead clearances must be calibrated for the target printer and filament.",
+    "Connector openings are drawing-derived; verify against physical plugs."
+  ]
+}

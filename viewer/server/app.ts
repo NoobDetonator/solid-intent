@@ -366,7 +366,12 @@ export function registerApiRoutes(
           revision: Number(manifest.revision),
         });
       }
-      const preferred = ["raspberry_pi4_case", "raspberry_pi5_case", "mounting_plate"];
+      const preferred = [
+        "raspberry_pi4_case",
+        "raspberry_pi5_case",
+        "raspberry_pi_zero2w_case",
+        "mounting_plate",
+      ];
       projects.sort((a, b) => {
         const ai = preferred.indexOf(a.id);
         const bi = preferred.indexOf(b.id);
