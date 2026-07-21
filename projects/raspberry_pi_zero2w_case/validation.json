@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "raspberry_pi_zero2w_case",
-  "accepted_revision": 1,
+  "accepted_revision": 4,
   "validated_at": "2026-07-21",
   "executor": "build123d-mcp",
   "runtime": {
@@ -133,11 +133,11 @@
   "comparison_with_previous": {
     "geometry_deltas": {
       "base": {
-        "volume_mm3": 0.0,
+        "volume_mm3": -4016.8966,
         "bbox_mm": [
-          0.0,
-          0.0,
-          0.0
+          -2.4,
+          -2.4,
+          -2.5
         ],
         "topology_delta": {
           "faces": 0,
@@ -147,10 +147,10 @@
         "validate": "PASS"
       },
       "lid": {
-        "volume_mm3": 0.0,
+        "volume_mm3": -688.4915,
         "bbox_mm": [
-          0.0,
-          0.0,
+          -2.6,
+          -2.6,
           0.0
         ],
         "topology_delta": {

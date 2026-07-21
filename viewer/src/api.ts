@@ -2,9 +2,23 @@ import type { ProjectData, ProjectSummary } from "./types";
 
 async function requestJson<T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> {
   const response = await fetch(input, init);
-  const payload = await response.json();
+  const raw = await response.text();
+  let payload: unknown = null;
+  if (raw) {
+    try {
+      payload = JSON.parse(raw);
+    } catch {
+      throw new Error(
+        `Server returned non-JSON (HTTP ${response.status}). Is the viewer API running?`,
+      );
+    }
+  }
   if (!response.ok) {
-    throw new Error(payload.error ?? `Request failed with status ${response.status}.`);
+    const error =
+      payload && typeof payload === "object" && "error" in payload
+        ? String((payload as { error: unknown }).error)
+        : `Request failed with status ${response.status}.`;
+    throw new Error(error);
   }
   return payload as T;
 }
