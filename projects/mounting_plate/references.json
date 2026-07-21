@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "project_id": "mounting_plate",
+  "references": [
+    {
+      "id": "smoke_test_prompt",
+      "kind": "internal_acceptance_prompt",
+      "trust_class": "workspace_acceptance_target",
+      "path": "../../prompts/smoke-test.md",
+      "license_status": "project_internal",
+      "redistributed": true,
+      "use": [
+        "acceptance exercise dimensions"
+      ]
+    }
+  ]
+}

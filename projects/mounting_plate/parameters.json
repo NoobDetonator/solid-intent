@@ -1,0 +1,11 @@
+{
+  "plate_length": 60.0,
+  "plate_width": 40.0,
+  "plate_thickness": 6.0,
+  "corner_radius": 4.0,
+  "slot_length": 12.0,
+  "slot_width": 5.0,
+  "slot_pitch_x": 40.0,
+  "edge_offset_x": 10.0,
+  "edge_offset_y": 20.0
+}

@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "format": "ai_cad_project",
+  "project_id": "mounting_plate",
+  "title": "Slotted Mounting Plate",
+  "description": "Small parametric fixture plate used to validate the project contract outside enclosure cases.",
+  "units": "mm",
+  "status": "prototype",
+  "revision": 2,
+  "model": {
+    "source": "../../scripts/mounting_plate.py",
+    "entrypoint": "build_model",
+    "parameter_argument": "parameters"
+  },
+  "parameter_values": "parameters.json",
+  "parameter_schema": "parameter_schema.json",
+  "references": "references.json",
+  "validation": "validation.json",
+  "revision_index": "revisions/index.json",
+  "named_geometry": {
+    "bodies": [
+      "plate"
+    ],
+    "interfaces": []
+  },
+  "artifacts": {
+    "plate_step": "../../exports/mounting_plate.step",
+    "plate_stl": "../../exports/mounting_plate.stl",
+    "assembled_preview": "../../renders/mounting_plate_assembled.svg"
+  },
+  "rebuild_policy": {
+    "geometry_executor": "build123d-mcp",
+    "validate_parameter_schema": true,
+    "compare_with_previous_revision": true,
+    "validate_all_exported_solids": true,
+    "analyze_fdm_orientations": true,
+    "require_human_review_for_locked_parameter_changes": true
+  }
+}

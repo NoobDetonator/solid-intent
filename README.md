@@ -113,8 +113,9 @@ still require verification on the exact physical board, printer, and material.
   </tr>
 </table>
 
-Both cases are prototypes on the persistent project contract. Production use
-requires current official hardware evidence and physical fit verification.
+Both Pi cases plus a small slotted mounting plate exercise the persistent project
+contract. Production use requires current official hardware evidence and
+physical fit verification.
 
 ## How it works
 

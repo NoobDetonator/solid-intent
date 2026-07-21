@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "plate_length",
+    "plate_width",
+    "plate_thickness",
+    "corner_radius",
+    "slot_length",
+    "slot_width",
+    "slot_pitch_x",
+    "edge_offset_x",
+    "edge_offset_y"
+  ],
+  "properties": {
+    "plate_length": {
+      "$ref": "#/$defs/editable_dimension",
+      "title": "Plate length",
+      "minimum": 40,
+      "maximum": 120,
+      "x-step": 1,
+      "x-ui": {
+        "group": "Plate",
+        "order": 10,
+        "control": "slider",
+        "advanced": false
+      }
+    },
+    "plate_width": {
+      "$ref": "#/$defs/editable_dimension",
+      "title": "Plate width",
+      "minimum": 20,
+      "maximum": 80,
+      "x-step": 1,
+      "x-ui": {
+        "group": "Plate",
+        "order": 20,
+        "control": "slider",
+        "advanced": false
+      }
+    },
+    "plate_thickness": {
+      "$ref": "#/$defs/editable_dimension",
+      "title": "Plate thickness",
+      "minimum": 3,
+      "maximum": 12,
+      "x-step": 0.5,
+      "x-ui": {
+        "group": "Plate",
+        "order": 30,
+        "control": "slider",
+        "advanced": false
+      }
+    },
+    "corner_radius": {
+      "$ref": "#/$defs/editable_dimension",
+      "title": "Corner radius",
+      "minimum": 1,
+      "maximum": 8,
+      "x-step": 0.5,
+      "x-ui": {
+        "group": "Plate",
+        "order": 40,
+        "control": "slider",
+        "advanced": true
+      }
+    },
+    "slot_length": {
+      "$ref": "#/$defs/editable_dimension",
+      "title": "Slot length",
+      "minimum": 8,
+      "maximum": 20,
+      "x-step": 0.5,
+      "x-ui": {
+        "group": "Slots",
+        "order": 10,
+        "control": "slider",
+        "advanced": false
+      }
+    },
+    "slot_width": {
+      "$ref": "#/$defs/editable_dimension",
+      "title": "Slot width",
+      "minimum": 3,
+      "maximum": 8,
+      "x-step": 0.5,
+      "x-ui": {
+        "group": "Slots",
+        "order": 20,
+        "control": "slider",
+        "advanced": false
+      }
+    },
+    "slot_pitch_x": {
+      "$ref": "#/$defs/locked_dimension",
+      "title": "Slot pitch X",
+      "minimum": 30,
+      "maximum": 50,
+      "x-step": 0.5,
+      "x-ui": {
+        "group": "Pattern",
+        "order": 10,
+        "control": "slider",
+        "advanced": false
+      }
+    },
+    "edge_offset_x": {
+      "$ref": "#/$defs/locked_dimension",
+      "title": "Edge offset X",
+      "minimum": 5,
+      "maximum": 20,
+      "x-step": 0.5,
+      "x-ui": {
+        "group": "Pattern",
+        "order": 20,
+        "control": "slider",
+        "advanced": false
+      }
+    },
+    "edge_offset_y": {
+      "$ref": "#/$defs/locked_dimension",
+      "title": "Edge offset Y",
+      "minimum": 5,
+      "maximum": 30,
+      "x-step": 0.5,
+      "x-ui": {
+        "group": "Pattern",
+        "order": 30,
+        "control": "slider",
+        "advanced": false
+      }
+    }
+  },
+  "$defs": {
+    "editable_dimension": {
+      "type": "number",
+      "x-unit": "mm",
+      "x-user-editable": true,
+      "x-semantic-change": false
+    },
+    "locked_dimension": {
+      "type": "number",
+      "x-unit": "mm",
+      "x-user-editable": false,
+      "x-semantic-change": true,
+      "x-lock-reason": "Defines the nominal mounting pattern for this fixture family."
+    }
+  }
+}

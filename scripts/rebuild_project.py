@@ -70,12 +70,12 @@ def intersection_volume_mm3(a: Any, b: Any) -> float:
 def measure_interfaces(parameters: dict[str, Any], shapes: dict[str, Any]) -> dict[str, Any]:
     from build123d import Location
 
-    base = shapes["base"]
-    lid = shapes["lid"]
-    pcb = shapes.get("pcb_proxy")
     results: dict[str, Any] = {}
+    base = shapes.get("base")
+    lid = shapes.get("lid")
+    pcb = shapes.get("pcb_proxy")
 
-    if pcb is not None:
+    if base is not None and pcb is not None:
         overlap = intersection_volume_mm3(base, pcb)
         results["base_to_pcb_proxy"] = {
             "status": "touching" if overlap <= 1e-3 else "interfering",
@@ -83,21 +83,21 @@ def measure_interfaces(parameters: dict[str, Any], shapes: dict[str, Any]) -> di
             "intersection_volume_mm3": overlap,
         }
 
-    # Seat the lid on the top of the base walls (shared convention for both cases).
-    lid_assembled = lid.moved(Location((0, 0, parameters["base_height"])))
-    lid_overlap = intersection_volume_mm3(base, lid_assembled)
-    clearance = float(parameters.get("lid_fit_clearance", 0.0))
-    if lid_overlap > 1e-3:
-        status = "interfering"
-    elif clearance > 0:
-        status = "clearance_fit"
-    else:
-        status = "touching"
-    results["base_to_assembled_lid"] = {
-        "status": status,
-        "clearance_mm": clearance,
-        "intersection_volume_mm3": lid_overlap,
-    }
+    if base is not None and lid is not None:
+        lid_assembled = lid.moved(Location((0, 0, parameters["base_height"])))
+        lid_overlap = intersection_volume_mm3(base, lid_assembled)
+        clearance = float(parameters.get("lid_fit_clearance", 0.0))
+        if lid_overlap > 1e-3:
+            status = "interfering"
+        elif clearance > 0:
+            status = "clearance_fit"
+        else:
+            status = "touching"
+        results["base_to_assembled_lid"] = {
+            "status": status,
+            "clearance_mm": clearance,
+            "intersection_volume_mm3": lid_overlap,
+        }
     return results
 
 

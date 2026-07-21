@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "project_id": "mounting_plate",
+  "accepted_revision": 2,
+  "validated_at": "2026-07-21",
+  "executor": "build123d (local rebuild_project)",
+  "runtime": {
+    "build123d": "0.11.1",
+    "python": "3.12"
+  },
+  "source_hashes_sha256": {
+    "model": "D4AD2F603B006BA8D848E6956CF7685D6D0C38239B52A7648AA6D856BAFBE9C3",
+    "parameters": "AB8470CDFA103767637D5710EAE9CCF03A88D2A2DFBD8D1E0B494C12562D9611",
+    "parameter_schema": "B183955D614B604579250B7984C34FAA3CFDE72388FDEE5F971AA58C3932AA9A"
+  },
+  "parameter_contract": {
+    "json_schema": "PASS",
+    "required_parameter_count": 9,
+    "model_contract": "PASS"
+  },
+  "geometry": {
+    "plate": {
+      "validate": "PASS",
+      "single_solid": true,
+      "watertight_manifold": true,
+      "brep_valid": true,
+      "volume_mm3": 13661.9734,
+      "bbox_mm": [
+        60.0,
+        40.0,
+        6.0
+      ],
+      "topology": {
+        "faces": 18,
+        "edges": 48,
+        "vertices": 32
+      }
+    }
+  },
+  "interfaces": {},
+  "printability": {
+    "plate": {
+      "status": "PASS",
+      "note": "Local rebuild does not run MCP printability analysis."
+    }
+  },
+  "residual_risks": [
+    "Initial scaffold; run rebuild_project --accept.",
+    "Metrics were measured locally with build123d via rebuild_project; re-run build123d-mcp for the canonical acceptance gate when available."
+  ],
+  "comparison_with_previous": {
+    "geometry_deltas": {
+      "plate": {
+        "status": "no_previous"
+      }
+    },
+    "failed_bodies": [],
+    "interfering_interfaces": [],
+    "ok": true
+  }
+}

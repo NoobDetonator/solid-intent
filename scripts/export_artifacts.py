@@ -102,14 +102,17 @@ def _export_svg_previews(
 
     written: list[Path] = []
     artifacts = manifest.get("artifacts", {})
-    base = shapes.get("base")
-    lid = shapes.get("lid")
-    pcb = shapes.get("pcb_proxy")
-    if base is None or lid is None:
+    body_names = [
+        name
+        for name in manifest.get("named_geometry", {}).get("bodies", [])
+        if name in shapes and name != "lid_print"
+    ]
+    if not body_names:
         return written
 
+    primary = shapes[body_names[0]]
     try:
-        bb = base.bounding_box()
+        bb = primary.bounding_box()
         look_z = (bb.max.Z + bb.min.Z) / 2
     except Exception:
         look_z = 12.0
@@ -118,22 +121,19 @@ def _export_svg_previews(
     assembled_key = "assembled_preview"
     if assembled_key in artifacts:
         target = (project_dir / artifacts[assembled_key]).resolve()
-        _write_technical_svg(
-            target,
-            [("base", base), ("lid", lid)]
-            + ([("pcb_proxy", pcb)] if pcb is not None else []),
-            look_at=look_at,
-        )
+        parts = [(name, shapes[name]) for name in body_names]
+        # Prefer familiar layer colors when present; otherwise dark stroke.
+        _write_technical_svg(target, parts, look_at=look_at)
         written.append(target)
         print(f"  wrote {target.relative_to(REPO_ROOT)} ({target.stat().st_size} bytes)")
 
     exploded_key = "exploded_preview"
-    if exploded_key in artifacts:
+    if exploded_key in artifacts and "lid" in shapes and "base" in shapes:
         target = (project_dir / artifacts[exploded_key]).resolve()
-        lid_up = lid.moved(Location((0, 0, EXPLODED_LID_Z)))
-        parts = [("base", base), ("lid", lid_up)]
-        if pcb is not None:
-            parts.insert(1, ("pcb_proxy", pcb))
+        lid_up = shapes["lid"].moved(Location((0, 0, EXPLODED_LID_Z)))
+        parts = [("base", shapes["base"]), ("lid", lid_up)]
+        if "pcb_proxy" in shapes:
+            parts.insert(1, ("pcb_proxy", shapes["pcb_proxy"]))
         _write_technical_svg(target, parts, look_at=(0.0, 0.0, look_z + EXPLODED_LID_Z / 2))
         written.append(target)
         print(f"  wrote {target.relative_to(REPO_ROOT)} ({target.stat().st_size} bytes)")
