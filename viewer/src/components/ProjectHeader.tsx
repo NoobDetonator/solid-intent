@@ -1,7 +1,7 @@
 import { Bot, CheckCircle2, ChevronDown, Copy, TriangleAlert } from "lucide-react";
 
 import type { ProjectData, ProjectSummary } from "../types";
-import logoUrl from "../assets/solidintent_logo.svg";
+import logoUrl from "../assets/solidintent_logo.png";
 
 interface ProjectHeaderProps {
   project: ProjectData;
