@@ -139,11 +139,11 @@ export default function App() {
   const rebuildPrompt = useMemo(() => {
     if (!project) return "";
     const changed = project.status.changedSources.join(", ") || "parameters";
+    const projectPath = `projects/${project.manifest.project_id}`;
     return [
-      `Open the SolidIntent project '${project.manifest.project_id}'.`,
-      `The saved ${changed} differ from accepted revision ${project.manifest.revision}.`,
-      "Rebuild through build123d-mcp, compare against the accepted revision, validate every solid,",
-      "run fit and FDM printability checks, regenerate STEP/STL and previews, then record a new revision.",
+      `Project '${project.manifest.project_id}' is dirty (${changed} ≠ accepted revision ${project.manifest.revision}).`,
+      `Run: uv run --python 3.12 --with build123d --with jsonschema python scripts/rebuild_project.py ${projectPath} --export --accept`,
+      "Prefer build123d-mcp when available for printability and canonical gates; local rebuild_project covers measure/compare/accept.",
     ].join(" ");
   }, [project]);
 

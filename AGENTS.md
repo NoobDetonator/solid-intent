@@ -103,6 +103,9 @@ for the canonical commands; notes below cover only non-obvious caveats.
   the Drawings evidence panel once present.
 - Local bootstrap:
   `uv run --python 3.12 --with build123d --with build123d-drafting-helpers python scripts/export_artifacts.py --all`
+- Dirty → measured candidate → accept:
+  `uv run --python 3.12 --with build123d --with jsonschema python scripts/rebuild_project.py projects/<id> --export --accept`
+  Prefer build123d-mcp when available; `rebuild_project` is the local measure/compare/accept gate.
 
 ### build123d-mcp CAD server (Python)
 

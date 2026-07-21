@@ -12,7 +12,7 @@
     "python": "3.12.13"
   },
   "source_hashes_sha256": {
-    "model": "C925599EBD5A3623F085E9C647DEFABB00A350FAAE2E66A4506356AC5F6509DF",
+    "model": "849D064B9296FF82DF91C2C974EB783CF775D755646E7534BEF9A1DB35B1B540",
     "parameters": "A168C96A05B23FC2293EBDB89691E88CEC92DA2B6F54B990C5BD3CA17B2A10C3",
     "parameter_schema": "1E6DDB2EC1235E19EA1BFF4A26DC73AE66E3513EC463937B712987F415450DDF"
   },
@@ -28,8 +28,16 @@
       "watertight_manifold": true,
       "brep_valid": true,
       "volume_mm3": 25570.501,
-      "bbox_mm": [92.2, 63.2, 24.0],
-      "topology": {"faces": 95, "edges": 240, "vertices": 160}
+      "bbox_mm": [
+        92.2,
+        63.2,
+        24.0
+      ],
+      "topology": {
+        "faces": 95,
+        "edges": 240,
+        "vertices": 160
+      }
     },
     "lid": {
       "validate": "PASS",
@@ -37,8 +45,16 @@
       "watertight_manifold": true,
       "brep_valid": true,
       "volume_mm3": 15166.7654,
-      "bbox_mm": [96.1, 67.1, 5.6],
-      "topology": {"faces": 55, "edges": 156, "vertices": 104}
+      "bbox_mm": [
+        96.1,
+        67.1,
+        5.6
+      ],
+      "topology": {
+        "faces": 55,
+        "edges": 156,
+        "vertices": 104
+      }
     }
   },
   "interfaces": {
@@ -75,14 +91,30 @@
     },
     "base_delta": {
       "volume_mm3": 4150.98,
-      "bbox_mm": [1.2, 1.2, 0.0],
-      "topology_delta": {"faces": 0, "edges": 0, "vertices": 0},
+      "bbox_mm": [
+        1.2,
+        1.2,
+        0.0
+      ],
+      "topology_delta": {
+        "faces": 0,
+        "edges": 0,
+        "vertices": 0
+      },
       "validate": "PASS"
     },
     "lid_delta": {
       "volume_mm3": 501.12,
-      "bbox_mm": [1.2, 1.2, 0.0],
-      "topology_delta": {"faces": 0, "edges": 0, "vertices": 0},
+      "bbox_mm": [
+        1.2,
+        1.2,
+        0.0
+      ],
+      "topology_delta": {
+        "faces": 0,
+        "edges": 0,
+        "vertices": 0
+      },
       "validate": "PASS"
     },
     "surface_comparison": "TIME_BUDGET_EXCEEDED",
@@ -97,6 +129,7 @@
     "Connector openings require verification against the exact physical board and installed plugs.",
     "The third-party reference package has unknown licensing and provenance.",
     "The 0.15 mm lid clearance must be calibrated for the target printer and material.",
-    "The detailed 108-solid STEP remains too heavy for the normal Windows iteration loop."
+    "The detailed 108-solid STEP remains too heavy for the normal Windows iteration loop.",
+    "Source hashes refreshed after extracting shared vent constants; local rebuild_project confirmed zero volume/bbox/topology delta versus accepted metrics."
   ]
 }

@@ -42,6 +42,14 @@ export interface GeometryValidation {
   topology: { faces: number; edges: number; vertices: number };
 }
 
+export interface GeometryDelta {
+  volume_mm3?: number;
+  bbox_mm?: [number, number, number];
+  topology_delta?: { faces: number; edges: number; vertices: number };
+  validate?: string;
+  status?: string;
+}
+
 export interface ValidationRecord {
   accepted_revision: number;
   validated_at: string;
@@ -55,6 +63,12 @@ export interface ValidationRecord {
   >;
   printability: Record<string, Record<string, string | number>>;
   residual_risks: string[];
+  comparison_with_previous?: {
+    ok: boolean;
+    failed_bodies: string[];
+    interfering_interfaces: string[];
+    geometry_deltas: Record<string, GeometryDelta>;
+  };
 }
 
 export interface ReferenceRecord {

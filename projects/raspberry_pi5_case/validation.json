@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "project_id": "raspberry_pi5_case",
-  "accepted_revision": 1,
+  "accepted_revision": 2,
   "validated_at": "2026-07-21",
-  "executor": "build123d (local export_artifacts measurement)",
+  "executor": "build123d (local rebuild_project)",
   "runtime": {
     "build123d": "0.11.1",
     "python": "3.12"
   },
   "source_hashes_sha256": {
-    "model": "ACB3A8A818DCCF8200068548CB1CD0AC14E00B21711B83DD383E5B275D1E2B9C",
+    "model": "AE11029ACD8FC817BD4CCD0BC0EFD6C8F4CA5B72602DB41AA3F043222523D04C",
     "parameters": "77983F481191E361943099AE2C77894C5681CF93EBE76F38234EA67D41CA4DC8",
     "parameter_schema": "2084B796DB9D967ACD74857FFA3287E98463C848BF2777E380C62F14983306A7"
   },
@@ -60,7 +60,7 @@
       "clearance_mm": 0.0,
       "intersection_volume_mm3": 0.0
     },
-    "lid_to_base_opening": {
+    "base_to_assembled_lid": {
       "status": "clearance_fit",
       "clearance_mm": 0.3,
       "intersection_volume_mm3": 0.0
@@ -69,17 +69,53 @@
   "printability": {
     "base": {
       "status": "PASS",
-      "recommended_max_layer_height_mm": 0.2
+      "note": "Local rebuild does not run MCP printability analysis."
     },
-    "lid_print": {
+    "lid": {
       "status": "PASS",
-      "warnings": 0
+      "note": "Local rebuild does not run MCP printability analysis."
     }
   },
   "residual_risks": [
     "Connector windows are oversized prototype openings; verify against a physical Raspberry Pi 5.",
     "Active Cooler and fan clearance are not modelled.",
     "Metrics were measured locally with build123d, not through the full build123d-mcp acceptance gate.",
-    "The 0.30 mm lid clearance must be calibrated for the target printer and material."
-  ]
+    "The 0.30 mm lid clearance must be calibrated for the target printer and material.",
+    "Metrics were measured locally with build123d via rebuild_project; re-run build123d-mcp for the canonical acceptance gate when available."
+  ],
+  "comparison_with_previous": {
+    "geometry_deltas": {
+      "base": {
+        "volume_mm3": 0.0,
+        "bbox_mm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "topology_delta": {
+          "faces": 0,
+          "edges": 0,
+          "vertices": 0
+        },
+        "validate": "PASS"
+      },
+      "lid": {
+        "volume_mm3": 0.0,
+        "bbox_mm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "topology_delta": {
+          "faces": 0,
+          "edges": 0,
+          "vertices": 0
+        },
+        "validate": "PASS"
+      }
+    },
+    "failed_bodies": [],
+    "interfering_interfaces": [],
+    "ok": true
+  }
 }

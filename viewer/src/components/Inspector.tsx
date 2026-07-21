@@ -447,6 +447,37 @@ function ValidationView({ project }: { project: ProjectData }) {
           </section>
         ))}
 
+        {validation.comparison_with_previous ? (
+          <section className="evidence-section">
+            <div className="evidence-section-heading">
+              <h2>Compare with previous</h2>
+              <span
+                className={`mini-status ${
+                  validation.comparison_with_previous.ok
+                    ? "mini-status--pass"
+                    : "mini-status--warning"
+                }`}
+              >
+                {validation.comparison_with_previous.ok ? "OK" : "Check"}
+              </span>
+            </div>
+            <dl className="metric-list">
+              {Object.entries(validation.comparison_with_previous.geometry_deltas).map(
+                ([name, delta]) => (
+                  <div key={name}>
+                    <dt>{name}</dt>
+                    <dd>
+                      {delta.status === "no_previous"
+                        ? "No previous metrics"
+                        : `ΔV ${delta.volume_mm3} mm³ · Δbbox [${(delta.bbox_mm ?? []).join(", ")}]`}
+                    </dd>
+                  </div>
+                ),
+              )}
+            </dl>
+          </section>
+        ) : null}
+
         <section className="evidence-section">
           <div className="evidence-section-heading"><h2>Interfaces</h2></div>
           <dl className="metric-list">

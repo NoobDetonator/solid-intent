@@ -13,6 +13,9 @@ renders/*
 smoke-output/*
 !smoke-output/.gitkeep
 
+# Local rebuild candidate reports (derived)
+projects/*/rebuild_report.json
+
 # Local/editor state
 .DS_Store
 Thumbs.db
