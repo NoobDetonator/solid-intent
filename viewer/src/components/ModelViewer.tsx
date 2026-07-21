@@ -1,8 +1,8 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useLoader, useThree } from "@react-three/fiber";
-import { ContactShadows, Edges, GizmoHelper, GizmoViewport, Html, OrbitControls } from "@react-three/drei";
-import { Box, Focus, Layers3, Ruler, ScanLine } from "lucide-react";
-import { BoxGeometry, Vector3, type BufferGeometry } from "three";
+import { Edges, GizmoHelper, GizmoViewport, Html, OrbitControls } from "@react-three/drei";
+import { Box, Focus, Layers3, ScanLine } from "lucide-react";
+import { Vector3, type BufferGeometry } from "three";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 
@@ -22,7 +22,6 @@ interface PlacedBody {
   name: string;
   geometry: BufferGeometry;
   positionY: number;
-  size: Vector3;
 }
 
 interface BodiesGroupProps {
@@ -31,17 +30,9 @@ interface BodiesGroupProps {
   bodyVisibility: BodyVisibility;
   exploded: boolean;
   transparent: boolean;
-  showDimensions: boolean;
 }
 
-function BodiesGroup({
-  urls,
-  names,
-  bodyVisibility,
-  exploded,
-  transparent,
-  showDimensions,
-}: BodiesGroupProps) {
+function BodiesGroup({ urls, names, bodyVisibility, exploded, transparent }: BodiesGroupProps) {
   const geometries = useLoader(STLLoader, urls);
 
   const placed = useMemo<PlacedBody[]>(() => {
@@ -52,9 +43,8 @@ function BodiesGroup({
       geometry.computeBoundingBox();
       const size = new Vector3();
       geometry.boundingBox?.getSize(size);
-      // The model is rotated -90° about X, so the model Z extent is the world
-      // vertical height of the body.
-      return { name, geometry, height: size.z, size };
+      // Rotated -90° about X, so model Z is world vertical height.
+      return { name, geometry, height: size.z };
     });
 
     const totalHeight =
@@ -69,7 +59,6 @@ function BodiesGroup({
       return {
         name: item.name,
         geometry: item.geometry,
-        size: item.size,
         positionY: centerY - totalHeight / 2,
       };
     });
@@ -85,8 +74,6 @@ function BodiesGroup({
               geometry={body.geometry}
               rotation={[-Math.PI / 2, 0, 0]}
               position={[0, body.positionY, 0]}
-              castShadow
-              receiveShadow
             >
               <meshStandardMaterial
                 key={transparent ? "transparent" : "opaque"}
@@ -99,25 +86,9 @@ function BodiesGroup({
               />
               <Edges threshold={24} color="#adb8b3" />
             </mesh>
-            {showDimensions ? (
-              <>
-                <lineSegments rotation={[-Math.PI / 2, 0, 0]} position={[0, body.positionY, 0]}>
-                  <edgesGeometry
-                    args={[new BoxGeometry(body.size.x, body.size.y, body.size.z)]}
-                  />
-                  <lineBasicMaterial color="#2f77ff" />
-                </lineSegments>
-                <Html position={[0, body.positionY + body.size.z / 2 + 5, 0]} center>
-                  <div className="dim-label">
-                    {body.size.x.toFixed(1)} × {body.size.y.toFixed(1)} × {body.size.z.toFixed(1)} mm
-                  </div>
-                </Html>
-              </>
-            ) : null}
           </group>
         );
       })}
-      <ContactShadows position={[0, -26, 0]} opacity={0.45} scale={190} blur={2.2} far={90} />
     </>
   );
 }
@@ -161,7 +132,6 @@ function CameraRig({ fitNonce }: { fitNonce: number }) {
 export function ModelViewer({ project, bodyVisibility }: ModelViewerProps) {
   const [exploded, setExploded] = useLocalStorage("solidintent.view.exploded", true);
   const [transparent, setTransparent] = useLocalStorage("solidintent.view.transparent", false);
-  const [showDimensions, setShowDimensions] = useLocalStorage("solidintent.view.dimensions", false);
   const [fitNonce, setFitNonce] = useState(0);
 
   const bodyNames = useMemo(() => renderableBodies(project), [project]);
@@ -196,13 +166,12 @@ export function ModelViewer({ project, bodyVisibility }: ModelViewerProps) {
           className="model-canvas"
           camera={{ position: [126, 94, 126], fov: 34, near: 0.1, far: 1000 }}
           dpr={[1, 1.75]}
-          shadows
           gl={{ antialias: true, alpha: false }}
           fallback={<div className="canvas-error">WebGL is not available in this browser.</div>}
         >
           <color attach="background" args={["#171a19"]} />
           <ambientLight intensity={1.4} />
-          <directionalLight position={[80, 130, 70]} intensity={2.6} castShadow />
+          <directionalLight position={[80, 130, 70]} intensity={2.6} />
           <directionalLight position={[-90, 45, -70]} intensity={0.9} />
           <Suspense fallback={<CanvasLoading />}>
             <BodiesGroup
@@ -211,7 +180,6 @@ export function ModelViewer({ project, bodyVisibility }: ModelViewerProps) {
               bodyVisibility={bodyVisibility}
               exploded={exploded}
               transparent={transparent}
-              showDimensions={showDimensions}
             />
           </Suspense>
           <CameraRig fitNonce={fitNonce} />
@@ -255,15 +223,6 @@ export function ModelViewer({ project, bodyVisibility }: ModelViewerProps) {
         >
           <ScanLine aria-hidden="true" />
           Transparency
-        </button>
-        <button
-          className={showDimensions ? "is-active" : ""}
-          type="button"
-          aria-pressed={showDimensions}
-          onClick={() => setShowDimensions((value) => !value)}
-        >
-          <Ruler aria-hidden="true" />
-          Dimensions
         </button>
       </div>
     </section>

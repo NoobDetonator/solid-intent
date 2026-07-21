@@ -16,6 +16,8 @@ smoke-output/*
 .DS_Store
 Thumbs.db
 .cursor/
+.agents/
+skills-lock.json
 .codex/config.toml
 tmp/
 

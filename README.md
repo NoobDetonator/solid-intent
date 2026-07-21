@@ -199,9 +199,8 @@ smoke test.
 
 | Path | Contents |
 | --- | --- |
-| `projects/` | Persistent AI-editable project manifests and parameter state. |
+| `projects/` | Persistent AI-editable projects: parameters, schema, validation. |
 | `scripts/` | Canonical parametric regeneration sources. |
-| `specs/` | Machine-readable design intent and acceptance targets. |
 | `viewer/` | Local React and Three.js project viewer. |
 | `exports/` | Generated STEP, STL, DXF, and SVG files. |
 | `renders/` | Generated review views. |

@@ -306,14 +306,3 @@ def build_model(parameters):
             "pcb_proxy": pcb_proxy,
         },
     }
-
-
-def build_case(parameters):
-    """Compatibility tuple for drawing and export scripts."""
-    model = build_model(parameters)
-    return (
-        model["bodies"]["base"],
-        model["bodies"]["lid"],
-        model["bodies"]["lid_print"],
-        model["interfaces"]["pcb_proxy"],
-    )

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, Box, RefreshCw } from "lucide-react";
 
 import { listProjects, loadProject, saveParameters } from "./api";
@@ -6,13 +6,10 @@ import { renderableBodies } from "./bodies";
 import { ContextRail, type BodyVisibility } from "./components/ContextRail";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Inspector } from "./components/Inspector";
+import { ModelViewer } from "./components/ModelViewer";
 import { ProjectHeader } from "./components/ProjectHeader";
 import { useLocalStorage } from "./useLocalStorage";
 import type { EvidenceView, ProjectData, ProjectSummary } from "./types";
-
-const ModelViewer = lazy(() =>
-  import("./components/ModelViewer").then((module) => ({ default: module.ModelViewer })),
-);
 
 type ToastState = { kind: "success" | "error"; message: string } | null;
 
@@ -41,17 +38,6 @@ function ErrorShell({ message, onRetry }: { message: string; onRetry: () => void
         Retry
       </button>
     </main>
-  );
-}
-
-function ModelLoadingStage() {
-  return (
-    <section className="model-stage model-stage--module-loading" aria-label="Loading 3D viewer">
-      <div className="canvas-loading" role="status">
-        <span />
-        Loading interactive viewer
-      </div>
-    </section>
   );
 }
 
@@ -207,9 +193,7 @@ export default function App() {
             </section>
           }
         >
-          <Suspense fallback={<ModelLoadingStage />}>
-            <ModelViewer project={project} bodyVisibility={bodyVisibility} />
-          </Suspense>
+          <ModelViewer project={project} bodyVisibility={bodyVisibility} />
         </ErrorBoundary>
         <Inspector
           project={project}

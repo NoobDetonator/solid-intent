@@ -36,7 +36,7 @@ generations. Record assumptions and unresolved dimensions in the project spec.
 ## Artifact conventions
 
 - Parametric regeneration sources: `scripts/`
-- Machine-readable design intent: `specs/`
+- Machine-readable design intent: `projects/<id>/` (parameters, schema, validation)
 - Generated neutral CAD and meshes: `exports/`
 - Generated previews: `renders/`
 - External source material: `references/`
