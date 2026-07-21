@@ -73,3 +73,40 @@ A delivered model must include:
 6. STEP for interchange and STL for printable parts.
 7. At least one preview, with SVG accepted when PNG rendering is unavailable.
 8. Assumptions, reference provenance, and physical-verification needs.
+
+## Cursor Cloud specific instructions
+
+Two runnable components. See `README.md` (Quick start) and `viewer/README.md`
+for the canonical commands; notes below cover only non-obvious caveats.
+
+### Web viewer (primary app)
+
+- Run it with `npm run dev` from `viewer/` (dependencies live in `viewer/`, not
+ the repo root). It serves at `http://127.0.0.1:4173`, binding `127.0.0.1`
+ only; set `PORT` to change the port.
+- `npm run dev` is a custom Express server (`viewer/server/index.ts` via `tsx`)
+ that mounts Vite in middleware mode and exposes the `/api/...` project
+ endpoints. It is not a plain `vite dev` server.
+- There is no separate lint script. The closest gate is `npm run build`, which
+ runs `tsc --noEmit` for both tsconfigs and then `vite build`.
+
+### Generated CAD artifacts are not in the repo
+
+- `exports/` (STEP/STL), `renders/` (SVG), and `smoke-output/` are gitignored
+ and ship empty. The viewer still runs without them, but 3D bodies show as
+ unavailable until STL files exist at the paths in each project's
+ `project.json` `artifacts` map.
+- To populate them, regenerate geometry through `build123d-mcp` (canonical) or,
+ for a quick local demo, by calling `build_model(parameters)` from the project
+ script (e.g. `scripts/raspberry_pi4_case.py`) with build123d's `export_stl`.
+
+### build123d-mcp CAD server (Python)
+
+- Installed and run via `uv` (already on `PATH` at `~/.local/bin`):
+ `uv tool run --python 3.12 build123d-mcp@latest`. It is an external MCP CAD
+ server, not vendored here.
+- The first `import build123d` in a fresh process is slow (~40s cold) because
+ of the OpenCASCADE kernel; subsequent operations are fast.
+- The data layer CLI `scripts/ai_cad_project.py` (`inspect`/`parameters`/`set`)
+ needs `jsonschema`; run it inside the build123d env, e.g.
+ `uv run --python 3.12 --with build123d python scripts/ai_cad_project.py ...`.
