@@ -1,8 +1,7 @@
 """Generate the dimensioned Raspberry Pi 4 enclosure drawing.
 
-Run from the project root. The script writes an A3 SVG and DXF to `drawings/`.
-Dimension metadata for MCP inspection is stored separately by the
-`save_drawing_annotations` MCP tool after generation.
+Run from the project root (or via ``scripts/export_artifacts.py``). Writes an
+A3 SVG, DXF, and ``.dims.json`` annotation sidecar under ``drawings/``.
 """
 
 from json import load
@@ -29,7 +28,12 @@ from build123d_drafting import (
     set_page,
 )
 
-from raspberry_pi4_case import build_case
+from raspberry_pi4_case import (
+    BASE_VENT_LENGTH,
+    BASE_VENT_WIDTH,
+    BASE_VENT_X_POSITIONS,
+    build_case,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +45,44 @@ PAGE_HEIGHT = 297.0
 DRAWING_SCALE = 1.0
 SVG_PATH = str(PROJECT_ROOT / "drawings" / "raspberry_pi4_case_dimensioned.svg")
 DXF_PATH = str(PROJECT_ROOT / "drawings" / "raspberry_pi4_case_dimensioned.dxf")
+DIMS_PATH = str(PROJECT_ROOT / "drawings" / "raspberry_pi4_case_dimensioned.dims.json")
+
+
+def _jsonable(value):
+    """Convert drafting metadata into plain JSON values."""
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, (list, tuple)):
+        return [_jsonable(item) for item in value]
+    if hasattr(value, "X") and hasattr(value, "Y"):
+        return [float(value.X), float(value.Y)]
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def _annotation_record(name: str, item) -> dict:
+    record = {"type": type(item).__name__}
+    label = getattr(item, "label", None)
+    if label is not None:
+        record["label_str"] = str(label)
+    measured = getattr(item, "measured_length", None)
+    if measured is not None:
+        record["measured_length"] = float(measured)
+    for field in ("label_bbox", "dim_level_y", "segments"):
+        if hasattr(item, field):
+            record[field] = _jsonable(getattr(item, field))
+    return record
+
+
+def _write_dims_sidecar(named_annotations: list[tuple[str, object]]) -> None:
+    from json import dump
+
+    payload = {name: _annotation_record(name, item) for name, item in named_annotations}
+    with open(DIMS_PATH, "w", encoding="utf-8") as handle:
+        dump(payload, handle, indent=2)
+        handle.write("\n")
 
 
 def load_project_parameters():
@@ -163,9 +205,11 @@ def generate_drawing(parameters=None):
     ]
 
     annotations = []
+    named_annotations: list[tuple[str, object]] = []
 
     def add_annotation(item, name):
         annotations.append(item)
+        named_annotations.append((name, item))
         annotate(item, name)
 
     add_annotation(
@@ -236,7 +280,10 @@ def generate_drawing(parameters=None):
         Leader(
             (70.0, 205.0, 0),
             (121.0, 215.0, 0),
-            "7x 3.0 x 28.0 VENT SLOTS",
+            (
+                f"{len(BASE_VENT_X_POSITIONS)}x "
+                f"{BASE_VENT_WIDTH:.1f} x {BASE_VENT_LENGTH:.1f} VENT SLOTS"
+            ),
             draft,
         ),
         "base_vent_callout",
@@ -472,6 +519,7 @@ def generate_drawing(parameters=None):
     for annotation in annotations:
         dxf.add_shape(annotation, layer="dimensions")
     dxf.write(DXF_PATH)
+    _write_dims_sidecar(named_annotations)
 
     return SVG_PATH, DXF_PATH, issues
 

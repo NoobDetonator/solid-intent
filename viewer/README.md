@@ -35,8 +35,9 @@ port.
 - Discover local `project.json` manifests.
 - Load base and lid STL artifacts in an interactive Three.js canvas.
 - Toggle bodies, exploded placement, transparency, and camera fit.
+- Inspect SVG technical previews and the dimensioned drawing sheet.
 - Group and search the schema-defined parameter catalog.
-- Separate 26 editable parameters from 16 reference-controlled values.
+- Separate editable parameters from reference-controlled values.
 - Enforce locked status and numeric ranges in the local API.
 - Atomically persist approved parameter changes.
 - Derive clean/dirty state from accepted SHA-256 source hashes.

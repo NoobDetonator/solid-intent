@@ -1,4 +1,9 @@
-export type EvidenceView = "parameters" | "validation" | "references" | "revisions";
+export type EvidenceView =
+  | "parameters"
+  | "drawings"
+  | "validation"
+  | "references"
+  | "revisions";
 export type ParameterFilter = "editable" | "locked";
 
 export interface ProjectSummary {

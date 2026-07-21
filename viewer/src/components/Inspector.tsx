@@ -340,6 +340,78 @@ function ParametersView({
   );
 }
 
+function DrawingsView({ project }: { project: ProjectData }) {
+  const previewKeys = ["assembled_preview", "exploded_preview", "dimensioned_drawing"] as const;
+  const sheets = previewKeys
+    .filter((key) => project.manifest.artifacts[key] && project.artifactAvailability[key])
+    .map((key) => ({
+      key,
+      label: key.replaceAll("_", " "),
+      href: `/api/projects/${project.manifest.project_id}/artifacts/${key}`,
+    }));
+  const downloads = Object.entries(project.manifest.artifacts ?? {})
+    .filter(([key]) => project.artifactAvailability[key])
+    .filter(([key]) => /\.(svg|dxf|png)$/i.test(project.manifest.artifacts[key]))
+    .map(([key, relativePath]) => ({
+      key,
+      label: key.replaceAll("_", " "),
+      extension: (relativePath.split(".").pop() ?? "").toUpperCase(),
+      href: `/api/projects/${project.manifest.project_id}/artifacts/${key}`,
+    }));
+
+  return (
+    <>
+      <InspectorHeader
+        title="Drawings"
+        description="Technical SVG previews and the dimensioned sheet. Visuals are review aids, not geometric proof."
+      />
+      <div className="evidence-content">
+        {sheets.length ? (
+          sheets.map((sheet) => (
+            <section className="evidence-section drawing-sheet" key={sheet.key}>
+              <div className="evidence-section-heading">
+                <h2>{sheet.label}</h2>
+                <a className="source-link" href={sheet.href} target="_blank" rel="noreferrer">
+                  Open <ExternalLink aria-hidden="true" />
+                </a>
+              </div>
+              <div className="drawing-frame">
+                <img src={sheet.href} alt={sheet.label} loading="lazy" />
+              </div>
+            </section>
+          ))
+        ) : (
+          <div className="inspector-empty">
+            <FileWarning aria-hidden="true" />
+            <strong>No local drawing artifacts</strong>
+            <span>
+              Run <code>scripts/export_artifacts.py {project.manifest.project_id}</code> to
+              regenerate SVG previews and drawings.
+            </span>
+          </div>
+        )}
+
+        {downloads.length ? (
+          <section className="evidence-section evidence-section--exports">
+            <div className="evidence-section-heading"><h2>Drawing files</h2></div>
+            <ul className="download-list">
+              {downloads.map((download) => (
+                <li key={download.key}>
+                  <a href={download.href} download>
+                    <Download aria-hidden="true" />
+                    <span className="download-label">{download.label}</span>
+                    <span className="download-ext">{download.extension}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+      </div>
+    </>
+  );
+}
+
 function ValidationView({ project }: { project: ProjectData }) {
   const validation = project.validation;
   return (
@@ -431,7 +503,7 @@ function ExportsSection({ project }: { project: ProjectData }) {
       ) : (
         <p className="exports-empty">
           No neutral CAD artifacts are available locally. Regenerate them with
-          build123d-mcp or <code>scripts/export_artifacts.py</code>.
+          <code>scripts/export_artifacts.py</code> or build123d-mcp.
         </p>
       )}
     </section>
@@ -579,6 +651,7 @@ export function Inspector(props: InspectorProps) {
   return (
     <aside className="inspector" aria-label={`${props.selectedView} inspector`}>
       {props.selectedView === "parameters" ? <ParametersView {...props} /> : null}
+      {props.selectedView === "drawings" ? <DrawingsView project={props.project} /> : null}
       {props.selectedView === "validation" ? <ValidationView project={props.project} /> : null}
       {props.selectedView === "references" ? <ReferencesView project={props.project} /> : null}
       {props.selectedView === "revisions" ? <RevisionsView project={props.project} /> : null}

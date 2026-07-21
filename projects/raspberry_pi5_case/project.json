@@ -31,7 +31,9 @@
     "base_step": "../../exports/raspberry_pi5_case_base.step",
     "base_stl": "../../exports/raspberry_pi5_case_base.stl",
     "lid_step": "../../exports/raspberry_pi5_case_lid.step",
-    "lid_stl": "../../exports/raspberry_pi5_case_lid.stl"
+    "lid_stl": "../../exports/raspberry_pi5_case_lid.stl",
+    "assembled_preview": "../../renders/raspberry_pi5_case_assembled.svg",
+    "exploded_preview": "../../renders/raspberry_pi5_case_exploded.svg"
   },
   "rebuild_policy": {
     "geometry_executor": "build123d-mcp",

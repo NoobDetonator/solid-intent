@@ -1179,6 +1179,36 @@ input:disabled {
   font-size: 0.75rem;
 }
 
+.drawing-sheet .evidence-section-heading {
+  align-items: center;
+}
+
+.drawing-sheet .source-link {
+  margin-top: 0;
+}
+
+.drawing-frame {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: oklch(0.97 0.004 160);
+  border: 1px solid var(--border-quiet);
+  border-radius: 0.5rem;
+  overflow: auto;
+  max-height: 28rem;
+}
+
+.drawing-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+}
+
+.inspector-empty code {
+  font-family: "Geist Mono Variable", monospace;
+  font-size: 0.75rem;
+}
+
 .evidence-section--risks ul,
 .revision-item ul {
   padding-left: 1.125rem;

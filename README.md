@@ -202,9 +202,10 @@ smoke test.
 | `projects/` | Persistent AI-editable projects: parameters, schema, validation. |
 | `scripts/` | Canonical parametric regeneration sources. |
 | `viewer/` | Local React and Three.js project viewer. |
-| `exports/` | Generated STEP, STL, DXF, and SVG files. |
-| `renders/` | Generated review views. |
-| `drawings/` | Dimensioned drawings and MCP annotation metadata. |
+| `exports/` | Generated STEP and STL (gitignored). |
+| `renders/` | Technical SVG assembled/exploded previews. |
+| `drawings/` | Dimensioned A3 SVG/DXF and annotation sidecar. |
+| `docs/showcase/` | README review copies synced from renders/drawings. |
 | `references/` | Drawings and imported comparison geometry. |
 | `docs/` | Architecture, studies, screenshots, and curated showcase assets. |
 | `notes/` | Test logs and design decisions. |

@@ -272,14 +272,6 @@
   "base_hole_callout": {
     "type": "Leader",
     "label_str": "4x DIA 2.9 THRU",
-    "tip": [
-      89.0,
-      229.5
-    ],
-    "elbow": [
-      121.0,
-      246.0
-    ],
     "label_bbox": [
       123.0,
       245.114990134375,
@@ -307,20 +299,11 @@
           246.0
         ]
       ]
-    ],
-    "dim_level_y": 246.885009865625
+    ]
   },
   "base_vent_callout": {
     "type": "Leader",
     "label_str": "7x 3.0 x 28.0 VENT SLOTS",
-    "tip": [
-      70.0,
-      205.0
-    ],
-    "elbow": [
-      121.0,
-      215.0
-    ],
     "label_bbox": [
       123.0,
       214.114990134375,
@@ -348,8 +331,7 @@
           215.0
         ]
       ]
-    ],
-    "dim_level_y": 215.885009865625
+    ]
   },
   "lid_dim_length": {
     "type": "Dimension",
@@ -732,14 +714,6 @@
   "lid_fan_callout": {
     "type": "Leader",
     "label_str": "4x DIA 3.2 - 30 mm FAN",
-    "tip": [
-      273.0,
-      93.0
-    ],
-    "elbow": [
-      350.0,
-      145.0
-    ],
     "label_bbox": [
       352.0,
       144.114990134375,
@@ -767,20 +741,11 @@
           145.0
         ]
       ]
-    ],
-    "dim_level_y": 145.885009865625
+    ]
   },
   "lid_gpio_callout": {
     "type": "Leader",
     "label_str": "GPIO SLOT 54.0 x 8.5",
-    "tip": [
-      279.5,
-      128.7
-    ],
-    "elbow": [
-      245.0,
-      145.0
-    ],
     "label_bbox": [
       218.125732221875,
       144.114990134375,
@@ -808,8 +773,7 @@
           145.0
         ]
       ]
-    ],
-    "dim_level_y": 145.885009865625
+    ]
   },
   "base_plan_label": {
     "type": "Note",
@@ -820,8 +784,7 @@
       62.5067139671875,
       252.885009865625
     ],
-    "segments": [],
-    "dim_level_y": 252.885009865625
+    "segments": []
   },
   "base_front_label": {
     "type": "Note",
@@ -832,8 +795,7 @@
       58.619384815625,
       124.885009865625
     ],
-    "segments": [],
-    "dim_level_y": 124.885009865625
+    "segments": []
   },
   "base_side_label": {
     "type": "Note",
@@ -844,8 +806,7 @@
       172.2070313,
       124.885009865625
     ],
-    "segments": [],
-    "dim_level_y": 124.885009865625
+    "segments": []
   },
   "base_iso_label": {
     "type": "Note",
@@ -856,8 +817,7 @@
       291.240234475,
       274.885009865625
     ],
-    "segments": [],
-    "dim_level_y": 274.885009865625
+    "segments": []
   },
   "lid_plan_label": {
     "type": "Note",
@@ -868,8 +828,7 @@
       281.11694340937504,
       151.8599854515625
     ],
-    "segments": [],
-    "dim_level_y": 151.8599854515625
+    "segments": []
   },
   "lid_front_label": {
     "type": "Note",
@@ -880,8 +839,7 @@
       282.2296142578125,
       60.885009865625
     ],
-    "segments": [],
-    "dim_level_y": 60.885009865625
+    "segments": []
   },
   "general_note_1": {
     "type": "Note",
@@ -892,8 +850,7 @@
       119.384765725,
       30.885009865625
     ],
-    "segments": [],
-    "dim_level_y": 30.885009865625
+    "segments": []
   },
   "general_note_2": {
     "type": "Note",
@@ -904,8 +861,7 @@
       146.3720704125,
       24.885009865625
     ],
-    "segments": [],
-    "dim_level_y": 24.885009865625
+    "segments": []
   },
   "general_note_3": {
     "type": "Note",
@@ -916,12 +872,12 @@
       143.94897465937498,
       19.170654296875
     ],
-    "segments": [],
-    "dim_level_y": 19.170654296875
+    "segments": []
   },
   "case_title_block": {
     "type": "TitleBlock",
     "label_str": "RPI4 CASE - BASE AND LID",
+    "label_bbox": null,
     "segments": [
       [
         [
@@ -1033,7 +989,6 @@
           18.0
         ]
       ]
-    ],
-    "dim_level_y": 34.075
+    ]
   }
 }

@@ -9,6 +9,7 @@ exports/*
 !exports/.gitkeep
 renders/*
 !renders/.gitkeep
+!renders/*.svg
 smoke-output/*
 !smoke-output/.gitkeep
 

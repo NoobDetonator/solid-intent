@@ -38,7 +38,9 @@ generations. Record assumptions and unresolved dimensions in the project spec.
 - Parametric regeneration sources: `scripts/`
 - Machine-readable design intent: `projects/<id>/` (parameters, schema, validation)
 - Generated neutral CAD and meshes: `exports/`
-- Generated previews: `renders/`
+- Generated previews: `renders/` (committed SVG technical views)
+- Dimensioned drawings: `drawings/` (SVG + DXF + `.dims.json`)
+- README review copies: `docs/showcase/` (synced by `export_artifacts.py`)
 - External source material: `references/`
 - Architecture and studies: `docs/`
 - Test notes: `notes/`
@@ -90,15 +92,17 @@ for the canonical commands; notes below cover only non-obvious caveats.
 - There is no separate lint script. The closest gate is `npm run build`, which
  runs `tsc --noEmit` for both tsconfigs and then `vite build`.
 
-### Generated CAD artifacts are not in the repo
+### Generated CAD artifacts
 
-- `exports/` (STEP/STL), `renders/` (SVG), and `smoke-output/` are gitignored
- and ship empty. The viewer still runs without them, but 3D bodies show as
- unavailable until STL files exist at the paths in each project's
- `project.json` `artifacts` map.
-- To populate them, regenerate geometry through `build123d-mcp` (canonical) or,
- for a quick local demo, by calling `build_model(parameters)` from the project
- script (e.g. `scripts/raspberry_pi4_case.py`) with build123d's `export_stl`.
+- `exports/` (STEP/STL) and `smoke-output/` are gitignored and ship empty.
+- `renders/*.svg` technical previews are generated and committed; regenerate
+  with `scripts/export_artifacts.py`.
+- `drawings/` holds the dimensioned A3 sheet (SVG/DXF/`.dims.json`).
+- `docs/showcase/` stores README copies synced by the export script.
+- The viewer 3D canvas needs STL files under `exports/`; SVG sheets appear in
+  the Drawings evidence panel once present.
+- Local bootstrap:
+  `uv run --python 3.12 --with build123d --with build123d-drafting-helpers python scripts/export_artifacts.py --all`
 
 ### build123d-mcp CAD server (Python)
 

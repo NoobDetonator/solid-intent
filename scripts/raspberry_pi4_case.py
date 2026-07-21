@@ -21,6 +21,11 @@ from build123d import (
 )
 
 
+# Floor vent slots (shared with the dimensioned drawing callout).
+BASE_VENT_X_POSITIONS = (-20.0, -14.0, -8.0, -2.0, 4.0, 10.0, 16.0)
+BASE_VENT_WIDTH = 3.0
+BASE_VENT_LENGTH = 28.0
+
 REQUIRED_PARAMETERS = (
     "pcb_length",
     "pcb_width",
@@ -284,13 +289,12 @@ def build_base(parameters):
                 mode=Mode.SUBTRACT,
             )
 
-    vent_x_positions = (-20.0, -14.0, -8.0, -2.0, 4.0, 10.0, 16.0)
     with BuildPart() as base_builder:
         add(microsd_cut_builder.part)
-        with Locations(*((x, 0, -0.5) for x in vent_x_positions)):
+        with Locations(*((x, 0, -0.5) for x in BASE_VENT_X_POSITIONS)):
             Box(
-                3.0,
-                28.0,
+                BASE_VENT_WIDTH,
+                BASE_VENT_LENGTH,
                 parameters["floor_thickness"] + 1.0,
                 align=(Align.CENTER, Align.CENTER, Align.MIN),
                 mode=Mode.SUBTRACT,

@@ -9,6 +9,7 @@ import {
   LockKeyhole,
   ShieldCheck,
   SlidersHorizontal,
+  SquarePen,
 } from "lucide-react";
 
 import type { EvidenceView, ProjectData } from "../types";
@@ -30,6 +31,7 @@ const evidenceItems: Array<{
   icon: typeof SlidersHorizontal;
 }> = [
   { id: "parameters", label: "Parameters", icon: SlidersHorizontal },
+  { id: "drawings", label: "Drawings", icon: SquarePen },
   { id: "validation", label: "Validation", icon: ShieldCheck },
   { id: "references", label: "References", icon: Link2 },
   { id: "revisions", label: "Revisions", icon: History },
