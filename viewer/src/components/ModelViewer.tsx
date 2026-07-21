@@ -8,6 +8,7 @@ import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 
 import type { ProjectData } from "../types";
 import { bodyColor, bodyLabel, renderableBodies, validatedSolidCount } from "../bodies";
+import { useLocalStorage } from "../useLocalStorage";
 import type { BodyVisibility } from "./ContextRail";
 
 interface ModelViewerProps {
@@ -126,8 +127,8 @@ function CameraRig({ fitNonce }: { fitNonce: number }) {
 }
 
 export function ModelViewer({ project, bodyVisibility }: ModelViewerProps) {
-  const [exploded, setExploded] = useState(true);
-  const [transparent, setTransparent] = useState(false);
+  const [exploded, setExploded] = useLocalStorage("solidintent.view.exploded", true);
+  const [transparent, setTransparent] = useLocalStorage("solidintent.view.transparent", false);
   const [fitNonce, setFitNonce] = useState(0);
 
   const bodyNames = useMemo(() => renderableBodies(project), [project]);

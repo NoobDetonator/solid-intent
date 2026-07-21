@@ -4,8 +4,10 @@ import { AlertTriangle, Box, RefreshCw } from "lucide-react";
 import { listProjects, loadProject, saveParameters } from "./api";
 import { renderableBodies } from "./bodies";
 import { ContextRail, type BodyVisibility } from "./components/ContextRail";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Inspector } from "./components/Inspector";
 import { ProjectHeader } from "./components/ProjectHeader";
+import { useLocalStorage } from "./useLocalStorage";
 import type { EvidenceView, ProjectData, ProjectSummary } from "./types";
 
 const ModelViewer = lazy(() =>
@@ -56,7 +58,10 @@ function ModelLoadingStage() {
 export default function App() {
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
   const [project, setProject] = useState<ProjectData | null>(null);
-  const [selectedView, setSelectedView] = useState<EvidenceView>("parameters");
+  const [selectedView, setSelectedView] = useLocalStorage<EvidenceView>(
+    "solidintent.view.evidence",
+    "parameters",
+  );
   const [bodyVisibility, setBodyVisibility] = useState<BodyVisibility>({});
   const [draftValues, setDraftValues] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
@@ -188,9 +193,24 @@ export default function App() {
             setBodyVisibility((current) => ({ ...current, [body]: current[body] === false }))
           }
         />
-        <Suspense fallback={<ModelLoadingStage />}>
-          <ModelViewer project={project} bodyVisibility={bodyVisibility} />
-        </Suspense>
+        <ErrorBoundary
+          fallback={
+            <section className="model-stage" aria-label="Generated model viewer">
+              <div className="canvas-empty">
+                <AlertTriangle aria-hidden="true" />
+                <h2>The 3D viewer failed to load</h2>
+                <p>
+                  The interactive model could not be rendered. Parameters and evidence remain
+                  available on the right.
+                </p>
+              </div>
+            </section>
+          }
+        >
+          <Suspense fallback={<ModelLoadingStage />}>
+            <ModelViewer project={project} bodyVisibility={bodyVisibility} />
+          </Suspense>
+        </ErrorBoundary>
         <Inspector
           project={project}
           selectedView={selectedView}
