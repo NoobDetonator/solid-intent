@@ -73,11 +73,13 @@ function BodiesGroup({ urls, names, bodyVisibility, exploded, transparent }: Bod
           receiveShadow
         >
           <meshStandardMaterial
+            key={transparent ? "transparent" : "opaque"}
             color={bodyColor(index)}
             roughness={0.64}
             metalness={0.08}
             transparent={transparent}
             opacity={transparent ? 0.42 : 1}
+            depthWrite={!transparent}
           />
           <Edges threshold={24} color="#adb8b3" />
         </mesh>
