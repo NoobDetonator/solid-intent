@@ -8,6 +8,16 @@ import { createServer as createViteServer } from "vite";
 
 type JsonObject = Record<string, unknown>;
 
+class HttpError extends Error {
+  constructor(
+    readonly status: number,
+    message: string,
+  ) {
+    super(message);
+    this.name = "HttpError";
+  }
+}
+
 const serverDirectory = path.dirname(fileURLToPath(import.meta.url));
 const viewerRoot = path.resolve(serverDirectory, "..");
 const repositoryRoot = path.resolve(viewerRoot, "..");
@@ -21,14 +31,14 @@ async function readJson<T>(filename: string): Promise<T> {
 
 function assertProjectId(projectId: string): void {
   if (!/^[a-z0-9_]+$/.test(projectId)) {
-    throw new Error("Invalid project identifier.");
+    throw new HttpError(400, "Invalid project identifier.");
   }
 }
 
 function resolveInside(root: string, candidate: string): string {
   const resolved = path.resolve(root, candidate);
   if (resolved !== root && !resolved.startsWith(`${root}${path.sep}`)) {
-    throw new Error("Resolved path escapes the allowed project workspace.");
+    throw new HttpError(400, "Resolved path escapes the allowed project workspace.");
   }
   return resolved;
 }
@@ -39,7 +49,7 @@ function resolveWorkspaceReference(baseDirectory: string, candidate: string): st
     resolved !== repositoryRoot &&
     !resolved.startsWith(`${repositoryRoot}${path.sep}`)
   ) {
-    throw new Error("Resolved path escapes the allowed project workspace.");
+    throw new HttpError(400, "Resolved path escapes the allowed project workspace.");
   }
   return resolved;
 }
@@ -109,11 +119,18 @@ function buildParameterCatalog(schema: JsonObject, parameters: Record<string, nu
     .sort((a, b) => a.order - b.order);
 }
 
+function formatParameterValue(value: number): string {
+  if (Number.isInteger(value)) return value.toFixed(1);
+  // Round to a sane millimetre precision so float noise never leaks into the
+  // persisted file, then keep at least one decimal for consistency.
+  const rounded = Number(value.toFixed(4));
+  return Number.isInteger(rounded) ? rounded.toFixed(1) : String(rounded);
+}
+
 function serializeParameters(parameters: Record<string, number>): string {
-  const lines = Object.entries(parameters).map(([name, value]) => {
-    const serializedValue = Number.isInteger(value) ? value.toFixed(1) : String(value);
-    return `  ${JSON.stringify(name)}: ${serializedValue}`;
-  });
+  const lines = Object.entries(parameters).map(
+    ([name, value]) => `  ${JSON.stringify(name)}: ${formatParameterValue(value)}`,
+  );
   return `{\n${lines.join(",\n")}\n}\n`;
 }
 
@@ -121,6 +138,9 @@ async function loadProject(projectId: string) {
   assertProjectId(projectId);
   const projectDirectory = resolveInside(projectsRoot, projectId);
   const manifestPath = path.join(projectDirectory, "project.json");
+  if (!(await fileExists(manifestPath))) {
+    throw new HttpError(404, `Unknown project: ${projectId}`);
+  }
   const manifest = await readJson<JsonObject>(manifestPath);
 
   const parameterPath = resolveInside(projectDirectory, String(manifest.parameter_values));
@@ -207,19 +227,22 @@ async function updateParameters(projectId: string, changes: Record<string, unkno
   const schema = await readJson<JsonObject>(schemaPath);
 
   for (const [name, rawValue] of Object.entries(changes)) {
-    if (!(name in parameters)) throw new Error(`Unknown parameter: ${name}`);
+    if (!(name in parameters)) throw new HttpError(400, `Unknown parameter: ${name}`);
     const definition = resolveParameterDefinition(schema, name);
     if (definition["x-user-editable"] !== true) {
-      throw new Error(`${name} is controlled by reference hardware and cannot be edited here.`);
+      throw new HttpError(
+        400,
+        `${name} is controlled by reference hardware and cannot be edited here.`,
+      );
     }
     if (typeof rawValue !== "number" || !Number.isFinite(rawValue)) {
-      throw new Error(`${name} must be a finite number.`);
+      throw new HttpError(400, `${name} must be a finite number.`);
     }
     if (typeof definition.minimum === "number" && rawValue < definition.minimum) {
-      throw new Error(`${name} must be at least ${definition.minimum}.`);
+      throw new HttpError(400, `${name} must be at least ${definition.minimum}.`);
     }
     if (typeof definition.maximum === "number" && rawValue > definition.maximum) {
-      throw new Error(`${name} must be at most ${definition.maximum}.`);
+      throw new HttpError(400, `${name} must be at most ${definition.maximum}.`);
     }
     parameters[name] = rawValue;
   }
@@ -313,9 +336,13 @@ if (production) {
 }
 
 app.use((error: unknown, _request: Request, response: Response, _next: NextFunction) => {
-  const message = error instanceof Error ? error.message : "Unexpected server error.";
   console.error(error);
-  response.status(400).json({ error: message });
+  if (error instanceof HttpError) {
+    response.status(error.status).json({ error: error.message });
+    return;
+  }
+  // Unexpected failures must not leak internal details to the client.
+  response.status(500).json({ error: "Unexpected server error." });
 });
 
 app.listen(port, "127.0.0.1", () => {

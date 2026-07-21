@@ -409,7 +409,12 @@ def build_lid(parameters):
 
 
 def build_board_proxy(parameters):
-    """Build the lightweight PCB fit-check interface body."""
+    """Build the lightweight PCB fit-check interface body.
+
+    ``mount_hole_diameter`` is the nominal PCB hole and is only consumed here,
+    by the fit-check proxy. The enclosure's own screw passages instead use
+    ``screw_clearance_diameter`` (see :func:`build_base`).
+    """
     board_z = parameters["floor_thickness"] + parameters["standoff_height"]
     with BuildPart() as pcb_builder:
         with Locations((0, 0, board_z)):

@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/brand/solidintent_logo.svg" alt="SolidIntent" width="360">
+</p>
+
 # SolidIntent
 
 **From intent to validated parametric solids.**
@@ -100,15 +104,18 @@ still require verification on the exact physical board, printer, and material.
       access, external cap lid, GPIO access, and a 30 mm fan pattern.
     </td>
     <td valign="top">
-      <strong>Raspberry Pi 5 prototype enclosure</strong><br>
-      Parametric two-piece FDM case with STEP/STL exports, SVG previews, fit
-      checks, validation gates, and documented reference limitations.
+      <strong>Raspberry Pi 5 enclosure study</strong><br>
+      A standalone parametric two-piece FDM script (<code>scripts/raspberry_pi5_case.py</code>)
+      with a machine-readable design spec. It predates the persistent project
+      contract and has not yet been migrated into <code>projects/</code>, so it has
+      no manifest, schema-validated parameters, or accepted validation revision.
     </td>
   </tr>
 </table>
 
-Both models are prototypes. Production use requires current official hardware
-evidence and physical fit verification.
+The Pi 4 case is the first project on the persistent contract; the Pi 5 case is
+an earlier parametric study. Both are prototypes: production use requires current
+official hardware evidence and physical fit verification.
 
 ## How it works
 

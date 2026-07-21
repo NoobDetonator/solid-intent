@@ -12,18 +12,16 @@ import {
 } from "lucide-react";
 
 import type { EvidenceView, ProjectData } from "../types";
+import { bodyLabel, renderableBodies, unavailableBodies } from "../bodies";
 
-export interface BodyVisibility {
-  base: boolean;
-  lid: boolean;
-}
+export type BodyVisibility = Record<string, boolean>;
 
 interface ContextRailProps {
   project: ProjectData;
   selectedView: EvidenceView;
   bodyVisibility: BodyVisibility;
   onSelectView: (view: EvidenceView) => void;
-  onToggleBody: (body: keyof BodyVisibility) => void;
+  onToggleBody: (body: string) => void;
 }
 
 const evidenceItems: Array<{
@@ -44,6 +42,9 @@ export function ContextRail({
   onSelectView,
   onToggleBody,
 }: ContextRailProps) {
+  const bodies = renderableBodies(project);
+  const missingBodies = unavailableBodies(project);
+
   return (
     <nav className="context-rail" aria-label="Project workspace">
       <div className="rail-project">
@@ -57,39 +58,37 @@ export function ContextRail({
 
       <div className="rail-section">
         <span className="rail-heading">Bodies</span>
-        <button
-          className={`rail-row ${bodyVisibility.base ? "rail-row--selected" : ""}`}
-          type="button"
-          aria-label={`${bodyVisibility.base ? "Hide" : "Show"} base body`}
-          aria-pressed={bodyVisibility.base}
-          onClick={() => onToggleBody("base")}
-        >
-          <Box aria-hidden="true" />
-          <span>Base</span>
-          {bodyVisibility.base ? <Eye aria-hidden="true" /> : <EyeOff aria-hidden="true" />}
-        </button>
-        <button
-          className={`rail-row ${bodyVisibility.lid ? "rail-row--selected" : ""}`}
-          type="button"
-          aria-label={`${bodyVisibility.lid ? "Hide" : "Show"} lid body`}
-          aria-pressed={bodyVisibility.lid}
-          onClick={() => onToggleBody("lid")}
-        >
-          <Box aria-hidden="true" />
-          <span>Lid</span>
-          {bodyVisibility.lid ? <Eye aria-hidden="true" /> : <EyeOff aria-hidden="true" />}
-        </button>
-        <button
-          className="rail-row"
-          type="button"
-          aria-label="PCB proxy unavailable"
-          disabled
-          title="No PCB proxy mesh has been exported"
-        >
-          <LockKeyhole aria-hidden="true" />
-          <span>PCB proxy</span>
-          <span className="rail-unavailable">Unavailable</span>
-        </button>
+        {bodies.map((body) => {
+          const visible = bodyVisibility[body] !== false;
+          return (
+            <button
+              className={`rail-row ${visible ? "rail-row--selected" : ""}`}
+              type="button"
+              key={body}
+              aria-label={`${visible ? "Hide" : "Show"} ${bodyLabel(body)} body`}
+              aria-pressed={visible}
+              onClick={() => onToggleBody(body)}
+            >
+              <Box aria-hidden="true" />
+              <span>{bodyLabel(body)}</span>
+              {visible ? <Eye aria-hidden="true" /> : <EyeOff aria-hidden="true" />}
+            </button>
+          );
+        })}
+        {missingBodies.map((body) => (
+          <button
+            className="rail-row"
+            type="button"
+            key={body}
+            aria-label={`${bodyLabel(body)} body unavailable`}
+            disabled
+            title="No local mesh has been exported for this body"
+          >
+            <LockKeyhole aria-hidden="true" />
+            <span>{bodyLabel(body)}</span>
+            <span className="rail-unavailable">Unavailable</span>
+          </button>
+        ))}
       </div>
 
       <div className="rail-section rail-section--evidence">

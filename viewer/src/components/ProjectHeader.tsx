@@ -1,34 +1,52 @@
-import { Bot, CheckCircle2, Copy, TriangleAlert } from "lucide-react";
+import { Bot, CheckCircle2, ChevronDown, Copy, TriangleAlert } from "lucide-react";
 
-import type { ProjectData } from "../types";
+import type { ProjectData, ProjectSummary } from "../types";
+import logoUrl from "../assets/solidintent_logo.svg";
 
 interface ProjectHeaderProps {
   project: ProjectData;
+  projects: ProjectSummary[];
   unsavedCount: number;
+  onSelectProject: (projectId: string) => void;
   onCopyRebuildPrompt: () => void;
 }
 
 export function ProjectHeader({
   project,
+  projects,
   unsavedCount,
+  onSelectProject,
   onCopyRebuildPrompt,
 }: ProjectHeaderProps) {
   const dirty = project.status.dirty;
   const state = unsavedCount > 0 ? "unsaved" : dirty ? "dirty" : "validated";
+  const multipleProjects = projects.length > 1;
 
   return (
     <header className="project-header">
       <div className="brand-lockup" aria-label="SolidIntent home">
-        <span className="brand-mark" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </span>
-        <span className="brand-name">SolidIntent</span>
+        <img className="brand-logo" src={logoUrl} alt="SolidIntent" height={22} />
       </div>
 
       <div className="project-identity">
-        <span className="project-title">{project.manifest.title}</span>
+        {multipleProjects ? (
+          <div className="project-select">
+            <select
+              aria-label="Active project"
+              value={project.manifest.project_id}
+              onChange={(event) => onSelectProject(event.currentTarget.value)}
+            >
+              {projects.map((summary) => (
+                <option key={summary.id} value={summary.id}>
+                  {summary.title}
+                </option>
+              ))}
+            </select>
+            <ChevronDown aria-hidden="true" />
+          </div>
+        ) : (
+          <span className="project-title">{project.manifest.title}</span>
+        )}
         <span className="header-separator" aria-hidden="true">/</span>
         <span className="revision-label">Revision {project.manifest.revision}</span>
       </div>
