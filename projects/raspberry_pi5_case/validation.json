@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "raspberry_pi5_case",
-  "accepted_revision": 2,
+  "accepted_revision": 3,
   "validated_at": "2026-07-21",
   "executor": "build123d (local rebuild_project)",
   "runtime": {
@@ -9,7 +9,7 @@
     "python": "3.12"
   },
   "source_hashes_sha256": {
-    "model": "AE11029ACD8FC817BD4CCD0BC0EFD6C8F4CA5B72602DB41AA3F043222523D04C",
+    "model": "1EB8FFB0A24357CF3057344CE85D2498F6DCF4F143C27A5AC1600C8F4E83E484",
     "parameters": "77983F481191E361943099AE2C77894C5681CF93EBE76F38234EA67D41CA4DC8",
     "parameter_schema": "2084B796DB9D967ACD74857FFA3287E98463C848BF2777E380C62F14983306A7"
   },
@@ -78,6 +78,7 @@
   },
   "residual_risks": [
     "Connector windows are oversized prototype openings; verify against a physical Raspberry Pi 5.",
+    "PCB proxy connector keep-outs are window-derived envelopes, not official manufacturer connector solids.",
     "Active Cooler and fan clearance are not modelled.",
     "Metrics were measured locally with build123d, not through the full build123d-mcp acceptance gate.",
     "The 0.30 mm lid clearance must be calibrated for the target printer and material.",

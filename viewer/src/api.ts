@@ -28,3 +28,20 @@ export function saveParameters(
     body: JSON.stringify({ changes }),
   });
 }
+
+export function rebuildProject(
+  projectId: string,
+  options: { accept?: boolean; export?: boolean } = {},
+): Promise<{ ok: boolean; project: ProjectData; log?: string }> {
+  return requestJson<{ ok: boolean; project: ProjectData; log?: string }>(
+    `/api/projects/${projectId}/rebuild`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        accept: options.accept ?? true,
+        export: options.export ?? true,
+      }),
+    },
+  );
+}

@@ -9,6 +9,7 @@ import {
   ExternalLink,
   FileWarning,
   LockKeyhole,
+  RefreshCw,
   RotateCcw,
   Save,
   Search,
@@ -26,10 +27,12 @@ interface InspectorProps {
   selectedView: EvidenceView;
   draftValues: Record<string, number>;
   saving: boolean;
+  rebuilding: boolean;
   onDraftChange: (name: string, value: number) => void;
   onDiscard: () => void;
   onSave: () => void;
   onCopyRebuildPrompt: () => void;
+  onRebuild: () => void;
 }
 
 interface InspectorHeaderProps {
@@ -142,10 +145,12 @@ function ParametersView({
   project,
   draftValues,
   saving,
+  rebuilding,
   onDraftChange,
   onDiscard,
   onSave,
   onCopyRebuildPrompt,
+  onRebuild,
 }: Omit<InspectorProps, "selectedView">) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<ParameterFilter>("editable");
@@ -307,33 +312,62 @@ function ParametersView({
           </div>
         )}
 
-        <div className="action-row">
+        <div
+          className={
+            project.status.dirty && unsavedCount === 0
+              ? "action-row action-row--rebuild"
+              : "action-row"
+          }
+        >
           {project.status.dirty && unsavedCount === 0 ? (
-            <button className="button button--secondary" type="button" onClick={onCopyRebuildPrompt}>
-              <Copy aria-hidden="true" />
-              Copy AI prompt
-            </button>
+            <>
+              <button
+                className="button button--secondary"
+                type="button"
+                disabled={rebuilding}
+                onClick={onCopyRebuildPrompt}
+              >
+                <Copy aria-hidden="true" />
+                Copy AI prompt
+              </button>
+              <button
+                className="button button--primary"
+                type="button"
+                disabled={rebuilding}
+                aria-busy={rebuilding}
+                onClick={onRebuild}
+              >
+                {rebuilding ? (
+                  <span className="button-progress" aria-hidden="true" />
+                ) : (
+                  <RefreshCw aria-hidden="true" />
+                )}
+                {rebuilding ? "Rebuilding…" : "Rebuild & accept"}
+              </button>
+            </>
           ) : (
-            <button
-              className="button button--secondary"
-              type="button"
-              disabled={unsavedCount === 0 || saving}
-              onClick={onDiscard}
-            >
-              <RotateCcw aria-hidden="true" />
-              Discard
-            </button>
+            <>
+              <button
+                className="button button--secondary"
+                type="button"
+                disabled={unsavedCount === 0 || saving || rebuilding}
+                onClick={onDiscard}
+              >
+                <RotateCcw aria-hidden="true" />
+                Discard
+              </button>
+              <button
+                className="button button--primary"
+                type="button"
+                disabled={unsavedCount === 0 || saving || rebuilding}
+                aria-busy={saving}
+                onClick={onSave}
+              >
+                {saving ? <span className="button-progress" aria-hidden="true" /> : <Save aria-hidden="true" />}
+                {saving ? "Saving" : "Save parameters"}
+              </button>
+            </>
           )}
-          <button
-            className="button button--primary"
-            type="button"
-            disabled={unsavedCount === 0 || saving}
-            aria-busy={saving}
-            onClick={onSave}
-          >
-            {saving ? <span className="button-progress" aria-hidden="true" /> : <Save aria-hidden="true" />}
-            {saving ? "Saving" : "Save parameters"}
-          </button>
         </div>
       </div>
     </>

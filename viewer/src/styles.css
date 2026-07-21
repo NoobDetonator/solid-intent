@@ -921,6 +921,21 @@ input:disabled {
   gap: var(--space-sm);
 }
 
+.action-row--rebuild {
+  grid-template-columns: 1fr 1.25fr;
+}
+
+.header-button--primary {
+  color: white;
+  background: var(--action);
+  border-color: var(--action);
+}
+
+.header-button--primary:hover:not(:disabled) {
+  background: var(--action-hover);
+  border-color: var(--action-hover);
+}
+
 .button {
   min-height: 2.75rem;
   display: inline-flex;

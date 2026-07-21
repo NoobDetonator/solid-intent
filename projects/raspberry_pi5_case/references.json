@@ -15,7 +15,8 @@
         "Mounting hole pattern and pitch"
       ],
       "limitations": [
-        "Connector cutout geometry not transferred",
+        "Connector cutout geometry not transferred from manufacturer STEP",
+        "PCB proxy keep-outs are window-derived envelopes, not official connector solids",
         "Active Cooler and fan clearance not modelled"
       ]
     }

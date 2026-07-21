@@ -1,4 +1,4 @@
-import { Bot, CheckCircle2, ChevronDown, Copy, TriangleAlert } from "lucide-react";
+import { Bot, CheckCircle2, ChevronDown, Copy, RefreshCw, TriangleAlert } from "lucide-react";
 
 import type { ProjectData, ProjectSummary } from "../types";
 import logoUrl from "../assets/solidintent_logo.png";
@@ -7,16 +7,20 @@ interface ProjectHeaderProps {
   project: ProjectData;
   projects: ProjectSummary[];
   unsavedCount: number;
+  rebuilding: boolean;
   onSelectProject: (projectId: string) => void;
   onCopyRebuildPrompt: () => void;
+  onRebuild: () => void;
 }
 
 export function ProjectHeader({
   project,
   projects,
   unsavedCount,
+  rebuilding,
   onSelectProject,
   onCopyRebuildPrompt,
+  onRebuild,
 }: ProjectHeaderProps) {
   const dirty = project.status.dirty;
   const state = unsavedCount > 0 ? "unsaved" : dirty ? "dirty" : "validated";
@@ -61,10 +65,31 @@ export function ProjectHeader({
               : "Validated"}
         </span>
         {dirty && unsavedCount === 0 ? (
-          <button className="header-button" type="button" onClick={onCopyRebuildPrompt}>
-            <Copy aria-hidden="true" />
-            Copy rebuild prompt
-          </button>
+          <>
+            <button
+              className="header-button"
+              type="button"
+              disabled={rebuilding}
+              onClick={onCopyRebuildPrompt}
+            >
+              <Copy aria-hidden="true" />
+              Copy rebuild prompt
+            </button>
+            <button
+              className="header-button header-button--primary"
+              type="button"
+              disabled={rebuilding}
+              aria-busy={rebuilding}
+              onClick={onRebuild}
+            >
+              {rebuilding ? (
+                <span className="button-progress" aria-hidden="true" />
+              ) : (
+                <RefreshCw aria-hidden="true" />
+              )}
+              {rebuilding ? "Rebuilding…" : "Rebuild & accept"}
+            </button>
+          </>
         ) : (
           <span className="agent-indicator" title="CAD operations are performed by the AI through MCP">
             <Bot aria-hidden="true" />

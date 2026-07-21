@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, Box, RefreshCw } from "lucide-react";
 
-import { listProjects, loadProject, saveParameters } from "./api";
+import { listProjects, loadProject, rebuildProject, saveParameters } from "./api";
 import { renderableBodies } from "./bodies";
 import { ContextRail, type BodyVisibility } from "./components/ContextRail";
 import { ErrorBoundary } from "./components/ErrorBoundary";
@@ -52,6 +52,7 @@ export default function App() {
   const [draftValues, setDraftValues] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [rebuilding, setRebuilding] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastState>(null);
 
@@ -142,7 +143,7 @@ export default function App() {
     const projectPath = `projects/${project.manifest.project_id}`;
     return [
       `Project '${project.manifest.project_id}' is dirty (${changed} ≠ accepted revision ${project.manifest.revision}).`,
-      `Run: uv run --python 3.12 --with build123d --with jsonschema python scripts/rebuild_project.py ${projectPath} --export --accept`,
+      `Run: uv run --python 3.12 --with build123d --with build123d-drafting-helpers --with jsonschema python scripts/rebuild_project.py ${projectPath} --export --accept`,
       "Prefer build123d-mcp when available for printability and canonical gates; local rebuild_project covers measure/compare/accept.",
     ].join(" ");
   }, [project]);
@@ -156,6 +157,31 @@ export default function App() {
     }
   }
 
+  async function runRebuildAccept() {
+    if (!project || unsavedCount > 0 || rebuilding) return;
+    setRebuilding(true);
+    try {
+      const result = await rebuildProject(project.manifest.project_id, {
+        accept: true,
+        export: true,
+      });
+      setProject(result.project);
+      setToast({
+        kind: "success",
+        message: result.project.status.dirty
+          ? "Rebuild finished, but the project is still dirty."
+          : `Rebuild accepted at revision ${result.project.manifest.revision}.`,
+      });
+    } catch (caught) {
+      setToast({
+        kind: "error",
+        message: caught instanceof Error ? caught.message : "Rebuild failed.",
+      });
+    } finally {
+      setRebuilding(false);
+    }
+  }
+
   if (loading) return <LoadingShell />;
   if (error) return <ErrorShell message={error} onRetry={() => void openFirstProject()} />;
   if (!project) return null;
@@ -166,8 +192,10 @@ export default function App() {
         project={project}
         projects={projects}
         unsavedCount={unsavedCount}
+        rebuilding={rebuilding}
         onSelectProject={(id) => void selectProject(id)}
         onCopyRebuildPrompt={() => void copyRebuildPrompt()}
+        onRebuild={() => void runRebuildAccept()}
       />
       <main className="workspace" id="main-content">
         <ContextRail
@@ -200,10 +228,12 @@ export default function App() {
           selectedView={selectedView}
           draftValues={draftValues}
           saving={saving}
+          rebuilding={rebuilding}
           onDraftChange={updateDraft}
           onDiscard={() => setDraftValues({})}
           onSave={() => void persistDraft()}
           onCopyRebuildPrompt={() => void copyRebuildPrompt()}
+          onRebuild={() => void runRebuildAccept()}
         />
       </main>
       {toast ? (

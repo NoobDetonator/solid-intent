@@ -6,7 +6,7 @@
   "description": "AI-generated two-piece FDM enclosure with a persistent parameter contract.",
   "units": "mm",
   "status": "prototype",
-  "revision": 2,
+  "revision": 3,
   "model": {
     "source": "../../scripts/raspberry_pi5_case.py",
     "entrypoint": "build_model",

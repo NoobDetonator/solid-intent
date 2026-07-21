@@ -6,7 +6,9 @@ no independent dimensional defaults. All dimensions are millimetres.
 
 The PCB envelope and mounting pattern come from the official Raspberry Pi 5
 mechanical drawing. Connector windows are deliberately oversized for prototype
-access; verify them against a physical board before production use.
+access; the PCB proxy keep-outs mirror those window parameters for fit checks
+and are not manufacturer connector solids. Verify against a physical board
+before production use.
 """
 
 from build123d import (
@@ -266,8 +268,16 @@ def build_board_proxy(parameters):
 
     ``mount_hole_diameter`` is the nominal PCB hole and is only consumed here,
     by the fit-check proxy.
+
+    Connector keep-outs are window-derived envelopes (not manufacturer STEP
+    solids). They protrude through the clearance/wall so
+    ``base ∩ pcb_proxy`` fails when a prototype window is too small.
     """
     board_z = parameters["floor_thickness"] + parameters["standoff_height"]
+    half_length = parameters["pcb_length"] / 2
+    half_width = parameters["pcb_width"] / 2
+    protrusion = parameters["pcb_clearance"] + parameters["wall_thickness"] + 0.5
+
     with BuildPart() as pcb_builder:
         with Locations((0, 0, board_z)):
             Box(
@@ -282,6 +292,37 @@ def build_board_proxy(parameters):
                 parameters["pcb_thickness"] + 0.4,
                 align=(Align.CENTER, Align.CENTER, Align.MIN),
                 mode=Mode.SUBTRACT,
+            )
+
+        # Side keep-outs (±Y) aligned with the oversized prototype windows.
+        for y_sign in (-1.0, 1.0):
+            with Locations(
+                (
+                    0.0,
+                    y_sign * (half_width + protrusion / 2),
+                    parameters["side_window_z"],
+                )
+            ):
+                Box(
+                    parameters["side_window_width"],
+                    protrusion,
+                    parameters["side_window_height"],
+                    align=(Align.CENTER, Align.CENTER, Align.MIN),
+                )
+
+        # End keep-out (−X) aligned with the power/video window.
+        with Locations(
+            (
+                -(half_length + protrusion / 2),
+                0.0,
+                parameters["end_window_z"],
+            )
+        ):
+            Box(
+                protrusion,
+                parameters["end_window_width"],
+                parameters["end_window_height"],
+                align=(Align.CENTER, Align.CENTER, Align.MIN),
             )
 
     return pcb_builder.part
