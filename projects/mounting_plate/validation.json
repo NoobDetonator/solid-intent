@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "mounting_plate",
-  "accepted_revision": 2,
+  "accepted_revision": 4,
   "validated_at": "2026-07-21",
   "executor": "build123d (local rebuild_project)",
   "runtime": {
@@ -51,7 +51,18 @@
   "comparison_with_previous": {
     "geometry_deltas": {
       "plate": {
-        "status": "no_previous"
+        "volume_mm3": -2276.9956,
+        "bbox_mm": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "topology_delta": {
+          "faces": 0,
+          "edges": 0,
+          "vertices": 0
+        },
+        "validate": "PASS"
       }
     },
     "failed_bodies": [],

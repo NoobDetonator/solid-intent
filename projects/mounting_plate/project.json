@@ -6,7 +6,7 @@
   "description": "Small parametric fixture plate used to validate the project contract outside enclosure cases.",
   "units": "mm",
   "status": "prototype",
-  "revision": 2,
+  "revision": 4,
   "model": {
     "source": "../../scripts/mounting_plate.py",
     "entrypoint": "build_model",
