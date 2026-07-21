@@ -472,6 +472,75 @@ function ReferencesView({ project }: { project: ProjectData }) {
   );
 }
 
+function WorkingChangesSection({ project }: { project: ProjectData }) {
+  const meta = new Map(project.parameterCatalog.map((item) => [item.name, item]));
+  const parameterDiffs = Object.entries(project.parameters)
+    .filter(([name, value]) => project.acceptedParameters[name] !== value)
+    .map(([name, value]) => ({
+      name,
+      label: meta.get(name)?.label ?? name,
+      unit: meta.get(name)?.unit ?? "",
+      accepted: project.acceptedParameters[name],
+      current: value,
+    }));
+  const changedSources = project.status.changedSources;
+
+  if (!project.status.dirty) {
+    return (
+      <section className="evidence-section working-changes">
+        <div className="evidence-summary evidence-summary--pass">
+          <CheckCircle2 aria-hidden="true" />
+          <div>
+            <strong>Matches accepted revision {project.manifest.revision}</strong>
+            <span>The working sources are identical to the accepted geometry.</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="evidence-section working-changes">
+      <div className="evidence-section-heading">
+        <h2>Changes since revision {project.manifest.revision}</h2>
+        <span className="mini-status mini-status--warning">
+          <AlertTriangle aria-hidden="true" /> Rebuild
+        </span>
+      </div>
+      <dl className="metric-list">
+        <div>
+          <dt>Changed sources</dt>
+          <dd>{changedSources.map((source) => source.replaceAll("_", " ")).join(", ")}</dd>
+        </div>
+      </dl>
+      {parameterDiffs.length ? (
+        <table className="diff-table">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Accepted</th>
+              <th>Current</th>
+            </tr>
+          </thead>
+          <tbody>
+            {parameterDiffs.map((diff) => (
+              <tr key={diff.name}>
+                <td>{diff.label}</td>
+                <td>{diff.accepted?.toFixed(2)} {diff.unit}</td>
+                <td className="diff-current">{diff.current.toFixed(2)} {diff.unit}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p className="diff-note">
+          No parameter values differ; only the model source or schema changed.
+        </p>
+      )}
+    </section>
+  );
+}
+
 function RevisionsView({ project }: { project: ProjectData }) {
   return (
     <>
@@ -480,6 +549,7 @@ function RevisionsView({ project }: { project: ProjectData }) {
         description="Accepted project states retain parameters, source hashes, and validation evidence."
       />
       <div className="evidence-content">
+        <WorkingChangesSection project={project} />
         {project.revisions
           .slice()
           .sort((a, b) => b.revision - a.revision)
