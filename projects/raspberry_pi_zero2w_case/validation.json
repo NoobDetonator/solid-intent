@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "raspberry_pi_zero2w_case",
-  "accepted_revision": 4,
+  "accepted_revision": 6,
   "validated_at": "2026-07-21",
   "executor": "build123d-mcp",
   "runtime": {
@@ -11,7 +11,7 @@
   },
   "source_hashes_sha256": {
     "model": "AE720E159DB76B2F70FC44DF67C2BC9B9E5090EAED8F2A2ADFADD0D4452D4DFC",
-    "parameters": "FED99D5446E65B66E5B67C12662C170416DE4C52727760D95E83054EB578E015",
+    "parameters": "4AC199C7EB52C87F4C406DD1C88906B4EA7E3B78AC8E1A3D9B858F1E12090175",
     "parameter_schema": "17F6FED534840D4DF60E56959B61054405F301D0B9F4E9A55D803AFCCA934D31"
   },
   "parameter_contract": {
@@ -25,23 +25,23 @@
       "single_solid": true,
       "watertight_manifold": true,
       "brep_valid": true,
-      "volume_mm3": 7997.2141,
+      "volume_mm3": 8776.1379,
       "bbox_mm": [
         72.0,
         37.0,
-        11.5
+        10.0
       ],
       "topology": {
-        "faces": 91,
-        "edges": 276,
-        "vertices": 184
+        "faces": 94,
+        "edges": 304,
+        "vertices": 202
       },
       "mcp_validate": {
         "status": "PASS",
         "detail": {
           "passes_gate": true,
           "n_solids": 1,
-          "volume": 7997.2141,
+          "volume": 8776.1379,
           "watertight_manifold": true,
           "open_edges": 0,
           "nonmanifold_edges": 0,
@@ -114,9 +114,9 @@
   "printability": {
     "base": {
       "status": "PASS_WITH_WARNINGS",
-      "findings_count": 9,
-      "residual_warning": "Flat 390.5 mm2 ceiling at 0.0 deg, 35.6 mm span needs support",
-      "informational_bridges": 5
+      "findings_count": 10,
+      "residual_warning": "Flat 0.2 mm2 ceiling at 0.0 deg, 0.0 mm span needs support",
+      "informational_bridges": 4
     },
     "lid_print": {
       "status": "PASS_WITH_WARNINGS",
@@ -128,29 +128,31 @@
   "residual_risks": [
     "Snap-fit ridge/bead clearances must be calibrated for the target printer and filament.",
     "Connector openings are drawing-derived; verify against physical plugs.",
+    "Canonical validate/printability gates were confirmed through build123d-mcp on exported STEP solids.",
+    "Canonical validate/printability gates were confirmed through build123d-mcp on exported STEP solids.",
     "Canonical validate/printability gates were confirmed through build123d-mcp on exported STEP solids."
   ],
   "comparison_with_previous": {
     "geometry_deltas": {
       "base": {
-        "volume_mm3": -4016.8966,
+        "volume_mm3": -586.7482,
         "bbox_mm": [
-          -2.4,
-          -2.4,
-          -2.5
+          0.0,
+          0.0,
+          -1.5
         ],
         "topology_delta": {
-          "faces": 0,
-          "edges": 0,
-          "vertices": 0
+          "faces": 3,
+          "edges": 28,
+          "vertices": 18
         },
         "validate": "PASS"
       },
       "lid": {
-        "volume_mm3": -688.4915,
+        "volume_mm3": 0.0,
         "bbox_mm": [
-          -2.6,
-          -2.6,
+          0.0,
+          0.0,
           0.0
         ],
         "topology_delta": {
