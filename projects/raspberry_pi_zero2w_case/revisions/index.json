@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "raspberry_pi_zero2w_case",
-  "current_revision": 6,
+  "current_revision": 7,
   "revisions": [
     {
       "revision": 1,
@@ -31,6 +31,11 @@
     {
       "revision": 6,
       "record": "0006_rebuild_accept.json",
+      "status": "accepted"
+    },
+    {
+      "revision": 7,
+      "record": "0007_rebuild_accept.json",
       "status": "accepted"
     }
   ]

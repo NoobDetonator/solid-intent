@@ -3,8 +3,9 @@
 ## Intent
 
 Compact two-piece FDM enclosure for the Raspberry Pi Zero 2 W with a
-ridge-and-bead snap fit, locating pins into the four PCB mounting holes,
-connector openings, GPIO lid access, and SoC ventilation.
+flush ridge-groove snap fit (external undercut in the base, close-fitting
+lid skirt with inward beads), locating pins into the four PCB mounting
+holes, connector openings, GPIO lid access, and SoC ventilation.
 
 ## References
 

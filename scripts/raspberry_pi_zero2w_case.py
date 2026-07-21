@@ -11,10 +11,12 @@ Coordinate system (board mid-plane origin):
   +Z up, top copper facing +Z
 
 Snap architecture (clearance fit when fully seated):
-  - Base: outward ridge near the rim
-  - Lid: overhanging skirt that clears the ridge OD, with inward beads that
-    sit under the ridge (Z-separated in the assembled pose so BREP fit checks
-    stay non-interfering; the skirt flexes over the ridge during insertion)
+  - Base: external undercut groove near the rim (walls stay flush — no
+    protruding ridge that forces an oversized lid)
+  - Lid: close-fitting overhanging skirt (base OD + fit only), with inward
+    beads that seat in the groove. Beads are Z-clear of the groove floor in
+    the assembled pose so BREP fit checks stay non-interfering; the skirt
+    flexes during insertion
   - Locating pins engage the four PCB mounting holes
 """
 
@@ -191,12 +193,12 @@ def _south_ports(parameters):
 
 
 def build_base(parameters):
-    """Build the snap-ridge base with locating pins and port openings."""
+    """Build the snap-groove base with locating pins and port openings."""
     outer_length, outer_width = _outer_size(parameters)
     inner_length, inner_width = _inner_size(parameters)
-    ridge_depth = parameters["snap_ridge_depth"]
-    ridge_height = parameters["snap_ridge_height"]
-    ridge_z = _ridge_z(parameters)
+    groove_depth = parameters["snap_ridge_depth"]
+    groove_height = parameters["snap_ridge_height"]
+    groove_z = _ridge_z(parameters)
 
     with BuildPart() as shell_builder:
         Box(
@@ -218,26 +220,28 @@ def build_base(parameters):
                 mode=Mode.SUBTRACT,
             )
 
-    with BuildPart() as ridge_builder:
+    with BuildPart() as groove_builder:
         add(shell_builder.part)
-        with Locations((0, 0, ridge_z)):
-            Box(
-                outer_length + 2 * ridge_depth,
-                outer_width + 2 * ridge_depth,
-                ridge_height,
-                align=(Align.CENTER, Align.CENTER, Align.MIN),
-            )
-        with Locations((0, 0, ridge_z - 0.1)):
-            Box(
-                outer_length - 0.05,
-                outer_width - 0.05,
-                ridge_height + 0.2,
-                align=(Align.CENTER, Align.CENTER, Align.MIN),
-                mode=Mode.SUBTRACT,
-            )
+        # External undercut ring: cut only the outer skin of the wall band.
+        with BuildPart() as groove_cutter:
+            with Locations((0, 0, groove_z)):
+                Box(
+                    outer_length + 2.0,
+                    outer_width + 2.0,
+                    groove_height,
+                    align=(Align.CENTER, Align.CENTER, Align.MIN),
+                )
+                Box(
+                    outer_length - 2.0 * groove_depth,
+                    outer_width - 2.0 * groove_depth,
+                    groove_height + 0.2,
+                    align=(Align.CENTER, Align.CENTER, Align.MIN),
+                    mode=Mode.SUBTRACT,
+                )
+        add(groove_cutter.part, mode=Mode.SUBTRACT)
 
     with BuildPart() as mount_builder:
-        add(ridge_builder.part)
+        add(groove_builder.part)
         with Locations(
             *(
                 (x, y, parameters["floor_thickness"] - 0.2)
@@ -307,22 +311,22 @@ def build_lid(parameters):
     ``lid.moved((0, 0, base_height))`` telescopes over the base rim.
     """
     outer_length, outer_width = _outer_size(parameters)
-    ridge_depth = parameters["snap_ridge_depth"]
     fit = parameters["lid_fit_clearance"]
-    # Skirt clears the ridge OD; beads catch under the ridge when seated.
-    skirt_inner_length = outer_length + 2 * (ridge_depth + fit)
-    skirt_inner_width = outer_width + 2 * (ridge_depth + fit)
+    # Close fit over the flush base OD (same pattern as the Pi 4/5 lids).
+    skirt_inner_length = outer_length + 2 * fit
+    skirt_inner_width = outer_width + 2 * fit
     skirt_outer_length = skirt_inner_length + 2 * parameters["lid_skirt_thickness"]
     skirt_outer_width = skirt_inner_width + 2 * parameters["lid_skirt_thickness"]
     skirt_depth = parameters["lid_skirt_depth"]
     top_th = parameters["lid_top_thickness"]
     bead_depth = parameters["snap_bead_depth"]
-    bead_height = parameters["snap_ridge_height"]
+    # Beads are slightly shorter than the groove so they seat with Z clearance.
+    bead_height = max(0.4, parameters["snap_ridge_height"] - 2.0 * _SNAP_Z_CLEARANCE)
 
-    # Beads sit just under the ridge (world), expressed in lid-local Z.
-    ridge_z = _ridge_z(parameters)
-    bead_top_local = ridge_z - parameters["base_height"] - _SNAP_Z_CLEARANCE
-    bead_z = bead_top_local - bead_height
+    # Centre beads in the base groove (world), expressed in lid-local Z.
+    groove_z = _ridge_z(parameters)
+    groove_mid = groove_z + parameters["snap_ridge_height"] / 2.0
+    bead_z = groove_mid - parameters["base_height"] - bead_height / 2.0
 
     with BuildPart() as lid_builder:
         Box(
@@ -333,7 +337,7 @@ def build_lid(parameters):
         )
         fillet(
             lid_builder.edges().filter_by(Axis.Z),
-            radius=min(parameters["outer_corner_radius"] + 0.6, 5.0),
+            radius=min(parameters["outer_corner_radius"] + fit, 5.0),
         )
         with Locations((0, 0, -skirt_depth)):
             Box(
@@ -355,7 +359,7 @@ def build_lid(parameters):
         add(lid_builder.part)
         span_x = skirt_inner_length * 0.40
         span_y = skirt_inner_width * 0.40
-        # +/- X walls
+        # +/- X walls — beads reach into the base undercut groove
         for sx in (+1.0, -1.0):
             with Locations(
                 (
