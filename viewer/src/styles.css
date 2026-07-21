@@ -1597,6 +1597,33 @@ input:disabled {
     font-weight: 610;
   }
 
+  .rail-segmented {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem;
+    margin: 0 0.35rem 0.35rem;
+    padding: 0.2rem;
+    border: 1px solid var(--border);
+    border-radius: 0.55rem;
+    background: var(--graphite-850);
+  }
+
+  .rail-segmented button {
+    min-height: 2rem;
+    border: 0;
+    border-radius: 0.4rem;
+    background: transparent;
+    color: var(--ink-secondary);
+    font-size: 0.75rem;
+    font-weight: 590;
+    cursor: pointer;
+  }
+
+  .rail-segmented button.is-selected {
+    background: var(--graphite-800);
+    color: var(--ink-primary);
+  }
+
   .rail-project-row {
     min-height: 2.75rem;
     display: grid;

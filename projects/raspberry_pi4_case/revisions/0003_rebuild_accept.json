@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "project_id": "raspberry_pi4_case",
+  "revision": 3,
+  "status": "accepted",
+  "created_at": "2026-07-21",
+  "authoring_agent": "rebuild_project",
+  "summary": "Local rebuild measured solids, compared with previous validation, and accepted.",
+  "changes": [
+    "Rebuilt named bodies through build_model(parameters).",
+    "Recorded exact volume, bbox, and topology metrics.",
+    "Checked base/PCB and base/lid intersection volumes.",
+    "Updated source hashes to the current model/parameters/schema."
+  ],
+  "source_hashes_sha256": {
+    "model": "9486254540C21761F6B6FD46AFC516D82716DD6E5EE49743189D2885A94D3FE6",
+    "parameters": "A168C96A05B23FC2293EBDB89691E88CEC92DA2B6F54B990C5BD3CA17B2A10C3",
+    "parameter_schema": "1E6DDB2EC1235E19EA1BFF4A26DC73AE66E3513EC463937B712987F415450DDF"
+  },
+  "validation": "../validation.json",
+  "parameters_snapshot": {
+    "pcb_length": 85.0,
+    "pcb_width": 56.0,
+    "pcb_thickness": 1.6,
+    "pcb_corner_radius": 3.0,
+    "mount_pitch_x": 58.0,
+    "mount_pitch_y": 49.0,
+    "mount_edge_offset": 3.5,
+    "mount_hole_diameter": 2.7,
+    "pcb_clearance": 1.2,
+    "wall_thickness": 2.4,
+    "floor_thickness": 2.4,
+    "base_height": 24.0,
+    "outer_corner_radius": 4.0,
+    "standoff_diameter": 6.4,
+    "standoff_height": 4.0,
+    "screw_clearance_diameter": 2.9,
+    "lid_top_thickness": 2.4,
+    "lid_skirt_depth": 3.2,
+    "lid_skirt_thickness": 1.8,
+    "lid_fit_clearance": 0.15,
+    "usb_c_center_x": -32.5,
+    "usb_c_opening_width": 13.0,
+    "micro_hdmi_0_center_x": -13.4,
+    "micro_hdmi_1_center_x": 0.1,
+    "micro_hdmi_opening_width": 10.0,
+    "audio_center_x": 19.5,
+    "audio_opening_width": 10.0,
+    "usb_2_center_y": -18.0,
+    "usb_3_center_y": 0.0,
+    "usb_opening_width": 16.5,
+    "ethernet_center_y": 18.0,
+    "ethernet_opening_width": 17.0,
+    "microsd_center_y": -15.5,
+    "microsd_opening_width": 17.0,
+    "gpio_slot_center_x": -10.5,
+    "gpio_slot_center_y": 23.7,
+    "gpio_slot_length": 54.0,
+    "gpio_slot_width": 8.5,
+    "fan_center_x": -5.0,
+    "fan_center_y": 0.0,
+    "fan_hole_pitch": 24.0,
+    "fan_screw_diameter": 3.2
+  },
+  "geometry_deltas": {
+    "base": {
+      "volume_mm3": -17.68,
+      "bbox_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "topology_delta": {
+        "faces": -1,
+        "edges": 0,
+        "vertices": 0
+      },
+      "validate": "PASS"
+    },
+    "lid": {
+      "volume_mm3": 0.0,
+      "bbox_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "topology_delta": {
+        "faces": 0,
+        "edges": 0,
+        "vertices": 0
+      },
+      "validate": "PASS"
+    }
+  }
+}

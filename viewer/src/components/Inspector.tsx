@@ -524,6 +524,29 @@ function ValidationView({ project }: { project: ProjectData }) {
           </dl>
         </section>
 
+        {Object.keys(validation.printability ?? {}).length ? (
+          <section className="evidence-section">
+            <div className="evidence-section-heading">
+              <h2>FDM printability</h2>
+            </div>
+            <dl className="metric-list">
+              {Object.entries(validation.printability).map(([name, row]) => (
+                <div key={name}>
+                  <dt>{name.replaceAll("_", " ")}</dt>
+                  <dd>
+                    {String(row.status ?? "UNKNOWN")}
+                    {row.residual_warning ? ` · ${row.residual_warning}` : ""}
+                    {row.note ? ` · ${row.note}` : ""}
+                    {typeof row.informational_bridges === "number"
+                      ? ` · ${row.informational_bridges} bridges`
+                      : ""}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        ) : null}
+
         <section className="evidence-section evidence-section--risks">
           <div className="evidence-section-heading">
             <h2>Physical verification</h2>

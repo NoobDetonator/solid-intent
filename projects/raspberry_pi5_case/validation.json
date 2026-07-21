@@ -1,21 +1,22 @@
 {
   "schema_version": 1,
   "project_id": "raspberry_pi5_case",
-  "accepted_revision": 3,
+  "accepted_revision": 4,
   "validated_at": "2026-07-21",
-  "executor": "build123d (local rebuild_project)",
+  "executor": "build123d-mcp",
   "runtime": {
     "build123d": "0.11.1",
-    "python": "3.12"
+    "python": "3.12",
+    "mcp_validator": "scripts/mcp_validate_project.py"
   },
   "source_hashes_sha256": {
-    "model": "1EB8FFB0A24357CF3057344CE85D2498F6DCF4F143C27A5AC1600C8F4E83E484",
-    "parameters": "77983F481191E361943099AE2C77894C5681CF93EBE76F38234EA67D41CA4DC8",
-    "parameter_schema": "2084B796DB9D967ACD74857FFA3287E98463C848BF2777E380C62F14983306A7"
+    "model": "457EF1ACD6F99F90382F7F958D93CDFDDF49EDE198DAADED294C5EA05EF2A146",
+    "parameters": "AAE062615B513645DFA0318EA9F7D73E0B01020E1EE4FB2F579A2FC8D807C27C",
+    "parameter_schema": "A6ED45996FA27B8D73B4E58681351CBCE1B3B222233A889F6E9FBA7822BF0957"
   },
   "parameter_contract": {
     "json_schema": "PASS",
-    "required_parameter_count": 28,
+    "required_parameter_count": 48,
     "model_contract": "PASS"
   },
   "geometry": {
@@ -24,16 +25,38 @@
       "single_solid": true,
       "watertight_manifold": true,
       "brep_valid": true,
-      "volume_mm3": 22825.2653,
+      "volume_mm3": 24304.1637,
       "bbox_mm": [
         92.2,
         63.2,
         22.0
       ],
       "topology": {
-        "faces": 63,
-        "edges": 168,
-        "vertices": 112
+        "faces": 78,
+        "edges": 216,
+        "vertices": 144
+      },
+      "mcp_validate": {
+        "status": "PASS",
+        "detail": {
+          "passes_gate": true,
+          "n_solids": 1,
+          "volume": 24304.1637,
+          "watertight_manifold": true,
+          "open_edges": 0,
+          "nonmanifold_edges": 0,
+          "mesh_nonmanifold_edges": 0,
+          "mesh_nonmanifold_vertices": 0,
+          "mesh_open_edges": 0,
+          "mesh_vertex_deflection_defects": 0,
+          "untriangulated_faces": 0,
+          "refined_untriangulated_faces": 0,
+          "refined_untriangulated_faces_verified": true,
+          "mesh_check": "exact",
+          "brep_valid": true,
+          "warnings": [],
+          "reasons": []
+        }
       }
     },
     "lid": {
@@ -41,16 +64,38 @@
       "single_solid": true,
       "watertight_manifold": true,
       "brep_valid": true,
-      "volume_mm3": 12881.5544,
+      "volume_mm3": 11756.8844,
       "bbox_mm": [
         92.2,
         63.2,
         5.4
       ],
       "topology": {
-        "faces": 48,
-        "edges": 132,
-        "vertices": 88
+        "faces": 53,
+        "edges": 150,
+        "vertices": 100
+      },
+      "mcp_validate": {
+        "status": "PASS",
+        "detail": {
+          "passes_gate": true,
+          "n_solids": 1,
+          "volume": 11756.8844,
+          "watertight_manifold": true,
+          "open_edges": 0,
+          "nonmanifold_edges": 0,
+          "mesh_nonmanifold_edges": 0,
+          "mesh_nonmanifold_vertices": 0,
+          "mesh_open_edges": 0,
+          "mesh_vertex_deflection_defects": 0,
+          "untriangulated_faces": 0,
+          "refined_untriangulated_faces": 0,
+          "refined_untriangulated_faces_verified": true,
+          "mesh_check": "exact",
+          "brep_valid": true,
+          "warnings": [],
+          "reasons": []
+        }
       }
     }
   },
@@ -68,49 +113,51 @@
   },
   "printability": {
     "base": {
-      "status": "PASS",
-      "note": "Local rebuild does not run MCP printability analysis."
+      "status": "PASS_WITH_WARNINGS",
+      "findings_count": 6,
+      "residual_warning": "Smallest vertical feature 0.2 mm caps the layer height (use <= 0.2 mm)",
+      "informational_bridges": 5
     },
-    "lid": {
+    "lid_print": {
       "status": "PASS",
-      "note": "Local rebuild does not run MCP printability analysis."
+      "findings_count": 1,
+      "informational_bridges": 1
     }
   },
   "residual_risks": [
-    "Connector windows are oversized prototype openings; verify against a physical Raspberry Pi 5.",
-    "PCB proxy connector keep-outs are window-derived envelopes, not official manufacturer connector solids.",
+    "Connector opening centres/heights come from the official approximate Raspberry Pi 5 mechanical drawing; verify against a physical board before production.",
+    "PCB proxy connector keep-outs are drawing-derived boxes, not manufacturer STEP solids.",
     "Active Cooler and fan clearance are not modelled.",
-    "Metrics were measured locally with build123d, not through the full build123d-mcp acceptance gate.",
     "The 0.30 mm lid clearance must be calibrated for the target printer and material.",
-    "Metrics were measured locally with build123d via rebuild_project; re-run build123d-mcp for the canonical acceptance gate when available."
+    "Canonical validate/printability gates were confirmed through build123d-mcp on exported STEP solids."
   ],
   "comparison_with_previous": {
     "geometry_deltas": {
       "base": {
-        "volume_mm3": 0.0,
+        "volume_mm3": 1478.8984,
         "bbox_mm": [
           0.0,
           0.0,
           0.0
         ],
         "topology_delta": {
-          "faces": 0,
-          "edges": 0,
-          "vertices": 0
+          "faces": 15,
+          "edges": 48,
+          "vertices": 32
         },
         "validate": "PASS"
       },
       "lid": {
-        "volume_mm3": 0.0,
+        "volume_mm3": -1124.67,
         "bbox_mm": [
           0.0,
           0.0,
           0.0
         ],
         "topology_delta": {
-          "faces": 0,
-          "edges": 0,
-          "vertices": 0
+          "faces": 5,
+          "edges": 18,
+          "vertices": 12
         },
         "validate": "PASS"
       }

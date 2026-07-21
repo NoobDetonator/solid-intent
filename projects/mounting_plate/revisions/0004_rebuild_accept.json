@@ -31,11 +31,11 @@
   },
   "geometry_deltas": {
     "plate": {
-      "volume_mm3": -2276.9956,
+      "volume_mm3": 0.0,
       "bbox_mm": [
         0.0,
         0.0,
-        -1.0
+        0.0
       ],
       "topology_delta": {
         "faces": 0,

@@ -10,11 +10,13 @@ exports/*
 renders/*
 !renders/.gitkeep
 !renders/*.svg
+!renders/*.png
 smoke-output/*
 !smoke-output/.gitkeep
 
 # Local rebuild candidate reports (derived)
 projects/*/rebuild_report.json
+projects/*/mcp_validation_report.json
 
 # Local/editor state
 .DS_Store

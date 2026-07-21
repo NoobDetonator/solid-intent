@@ -4,12 +4,21 @@ The geometry is driven by an explicit parameter mapping. The canonical values
 live in ``projects/raspberry_pi5_case/parameters.json``; this module contains
 no independent dimensional defaults. All dimensions are millimetres.
 
-The PCB envelope and mounting pattern come from the official Raspberry Pi 5
-mechanical drawing. Connector windows are deliberately oversized for prototype
-access; the PCB proxy keep-outs mirror those window parameters for fit checks
-and are not manufacturer connector solids. Verify against a physical board
-before production use.
+PCB outline and mounting pattern come from the official Raspberry Pi 5
+mechanical drawing. Connector opening centres/heights are taken from that
+same approximate reference drawing (not a manufacturer STEP keep-out solid).
+Active Cooler / fan clearance is not modelled — verify against physical
+hardware before production use.
 """
+
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+_SCRIPTS = Path(__file__).resolve().parent
+if str(_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS))
 
 from build123d import (
     Align,
@@ -17,13 +26,21 @@ from build123d import (
     Box,
     BuildPart,
     Cylinder,
-    Location,
     Locations,
     Mode,
-    Plane,
     add,
     fillet,
-    mirror,
+)
+
+from enclosure_common import (
+    board_z,
+    inner_envelope,
+    lid_print_orientation,
+    mount_locations,
+    outer_envelope,
+    require_numeric,
+    require_positive,
+    validate_mount_pitches,
 )
 
 
@@ -51,12 +68,32 @@ REQUIRED_PARAMETERS = (
     "lid_skirt_depth",
     "lid_skirt_thickness",
     "lid_fit_clearance",
-    "side_window_width",
-    "side_window_height",
-    "side_window_z",
-    "end_window_width",
-    "end_window_height",
-    "end_window_z",
+    "usb_c_center_x",
+    "usb_c_opening_width",
+    "usb_c_z",
+    "usb_c_height",
+    "micro_hdmi_0_center_x",
+    "micro_hdmi_1_center_x",
+    "micro_hdmi_opening_width",
+    "micro_hdmi_z",
+    "micro_hdmi_height",
+    "usb_2_center_y",
+    "usb_3_center_y",
+    "usb_opening_width",
+    "usb_z",
+    "usb_height",
+    "ethernet_center_y",
+    "ethernet_opening_width",
+    "ethernet_z",
+    "ethernet_height",
+    "microsd_center_y",
+    "microsd_opening_width",
+    "microsd_z",
+    "microsd_height",
+    "gpio_slot_center_x",
+    "gpio_slot_center_y",
+    "gpio_slot_length",
+    "gpio_slot_width",
     "base_vent_length",
     "base_vent_width",
     "lid_vent_length",
@@ -66,69 +103,98 @@ REQUIRED_PARAMETERS = (
 
 def validate_parameter_contract(parameters):
     """Reject incomplete or non-numeric project parameter mappings."""
-    missing = [name for name in REQUIRED_PARAMETERS if name not in parameters]
-    if missing:
-        raise ValueError(f"Missing project parameters: {', '.join(missing)}")
-
-    for name in REQUIRED_PARAMETERS:
-        value = parameters[name]
-        if isinstance(value, bool) or not isinstance(value, (int, float)):
-            raise TypeError(f"Parameter '{name}' must be numeric, got {type(value).__name__}")
-
-    positive = (
-        "pcb_length",
-        "pcb_width",
-        "pcb_thickness",
-        "mount_pitch_x",
-        "mount_pitch_y",
-        "mount_hole_diameter",
-        "wall_thickness",
-        "floor_thickness",
-        "base_height",
-        "standoff_diameter",
-        "standoff_height",
-        "lid_top_thickness",
-        "lid_skirt_depth",
-        "lid_skirt_thickness",
-        "side_window_width",
-        "side_window_height",
-        "end_window_width",
-        "end_window_height",
-        "base_vent_length",
-        "base_vent_width",
-        "lid_vent_length",
-        "lid_vent_width",
+    require_numeric(parameters, REQUIRED_PARAMETERS)
+    require_positive(
+        parameters,
+        (
+            "pcb_length",
+            "pcb_width",
+            "pcb_thickness",
+            "mount_pitch_x",
+            "mount_pitch_y",
+            "mount_hole_diameter",
+            "wall_thickness",
+            "floor_thickness",
+            "base_height",
+            "standoff_diameter",
+            "standoff_height",
+            "lid_top_thickness",
+            "lid_skirt_depth",
+            "lid_skirt_thickness",
+            "usb_c_opening_width",
+            "usb_c_height",
+            "micro_hdmi_opening_width",
+            "micro_hdmi_height",
+            "usb_opening_width",
+            "usb_height",
+            "ethernet_opening_width",
+            "ethernet_height",
+            "microsd_opening_width",
+            "microsd_height",
+            "gpio_slot_length",
+            "gpio_slot_width",
+            "base_vent_length",
+            "base_vent_width",
+            "lid_vent_length",
+            "lid_vent_width",
+        ),
     )
-    invalid = [name for name in positive if parameters[name] <= 0]
-    if invalid:
-        raise ValueError(f"Parameters must be greater than zero: {', '.join(invalid)}")
-
-    if parameters["mount_pitch_x"] >= parameters["pcb_length"]:
-        raise ValueError("mount_pitch_x must be smaller than pcb_length")
-    if parameters["mount_pitch_y"] >= parameters["pcb_width"]:
-        raise ValueError("mount_pitch_y must be smaller than pcb_width")
+    validate_mount_pitches(parameters)
     if parameters["lid_fit_clearance"] < 0:
         raise ValueError("lid_fit_clearance cannot be negative")
 
 
-def _mount_locations(parameters):
-    left = -parameters["pcb_length"] / 2 + parameters["mount_edge_offset"]
-    right = left + parameters["mount_pitch_x"]
-    bottom = -parameters["pcb_width"] / 2 + parameters["mount_edge_offset"]
-    top = bottom + parameters["mount_pitch_y"]
-    return ((left, bottom), (right, bottom), (left, top), (right, top))
+def _south_ports(parameters):
+    """Power / video edge (−Y). Pi 5 has no 3.5 mm audio jack."""
+    return (
+        (
+            parameters["usb_c_center_x"],
+            parameters["usb_c_opening_width"],
+            parameters["usb_c_z"],
+            parameters["usb_c_height"],
+        ),
+        (
+            parameters["micro_hdmi_0_center_x"],
+            parameters["micro_hdmi_opening_width"],
+            parameters["micro_hdmi_z"],
+            parameters["micro_hdmi_height"],
+        ),
+        (
+            parameters["micro_hdmi_1_center_x"],
+            parameters["micro_hdmi_opening_width"],
+            parameters["micro_hdmi_z"],
+            parameters["micro_hdmi_height"],
+        ),
+    )
+
+
+def _east_ports(parameters):
+    return (
+        (
+            parameters["usb_2_center_y"],
+            parameters["usb_opening_width"],
+            parameters["usb_z"],
+            parameters["usb_height"],
+        ),
+        (
+            parameters["usb_3_center_y"],
+            parameters["usb_opening_width"],
+            parameters["usb_z"],
+            parameters["usb_height"],
+        ),
+        (
+            parameters["ethernet_center_y"],
+            parameters["ethernet_opening_width"],
+            parameters["ethernet_z"],
+            parameters["ethernet_height"],
+        ),
+    )
 
 
 def build_base(parameters):
-    """Build the ventilated base with PCB standoffs and prototype windows."""
-    outer_length = parameters["pcb_length"] + 2 * (
-        parameters["pcb_clearance"] + parameters["wall_thickness"]
-    )
-    outer_width = parameters["pcb_width"] + 2 * (
-        parameters["pcb_clearance"] + parameters["wall_thickness"]
-    )
-    inner_length = parameters["pcb_length"] + 2 * parameters["pcb_clearance"]
-    inner_width = parameters["pcb_width"] + 2 * parameters["pcb_clearance"]
+    """Build the ventilated base with PCB standoffs and connector openings."""
+    outer_length, outer_width = outer_envelope(parameters)
+    inner_length, inner_width = inner_envelope(parameters)
 
     with BuildPart() as shell_builder:
         Box(
@@ -153,7 +219,7 @@ def build_base(parameters):
     with BuildPart() as standoff_builder:
         add(shell_builder.part)
         with Locations(
-            *((x, y, parameters["floor_thickness"] - 0.2) for x, y in _mount_locations(parameters))
+            *((x, y, parameters["floor_thickness"] - 0.2) for x, y in mount_locations(parameters))
         ):
             Cylinder(
                 parameters["standoff_diameter"] / 2,
@@ -163,7 +229,7 @@ def build_base(parameters):
 
     with BuildPart() as mounting_builder:
         add(standoff_builder.part)
-        with Locations(*((x, y, -1.0) for x, y in _mount_locations(parameters))):
+        with Locations(*((x, y, -1.0) for x, y in mount_locations(parameters))):
             Cylinder(
                 parameters["mount_hole_diameter"] / 2,
                 parameters["floor_thickness"] + parameters["standoff_height"] + 2.0,
@@ -171,28 +237,43 @@ def build_base(parameters):
                 mode=Mode.SUBTRACT,
             )
 
-    with BuildPart() as window_builder:
+    with BuildPart() as south_cut_builder:
         add(mounting_builder.part)
-        for y in (-outer_width / 2, outer_width / 2):
-            with Locations((0, y, parameters["side_window_z"])):
+        for x_center, width, z_bottom, height in _south_ports(parameters):
+            with Locations((x_center, -outer_width / 2, z_bottom)):
                 Box(
-                    parameters["side_window_width"],
-                    parameters["wall_thickness"] + 3.0,
-                    parameters["side_window_height"],
+                    width,
+                    parameters["wall_thickness"] + 4.0,
+                    height,
                     align=(Align.CENTER, Align.CENTER, Align.MIN),
                     mode=Mode.SUBTRACT,
                 )
-        with Locations((-outer_length / 2, 0, parameters["end_window_z"])):
+
+    with BuildPart() as east_cut_builder:
+        add(south_cut_builder.part)
+        for y_center, width, z_bottom, height in _east_ports(parameters):
+            with Locations((outer_length / 2, y_center, z_bottom)):
+                Box(
+                    parameters["wall_thickness"] + 4.0,
+                    width,
+                    height,
+                    align=(Align.CENTER, Align.CENTER, Align.MIN),
+                    mode=Mode.SUBTRACT,
+                )
+
+    with BuildPart() as microsd_cut_builder:
+        add(east_cut_builder.part)
+        with Locations((-outer_length / 2, parameters["microsd_center_y"], parameters["microsd_z"])):
             Box(
-                parameters["wall_thickness"] + 3.0,
-                parameters["end_window_width"],
-                parameters["end_window_height"],
+                parameters["wall_thickness"] + 4.0,
+                parameters["microsd_opening_width"],
+                parameters["microsd_height"],
                 align=(Align.CENTER, Align.CENTER, Align.MIN),
                 mode=Mode.SUBTRACT,
             )
 
     with BuildPart() as base_builder:
-        add(window_builder.part)
+        add(microsd_cut_builder.part)
         with Locations(*((BASE_VENT_X, y, -1.0) for y in BASE_VENT_Y_POSITIONS)):
             Box(
                 parameters["base_vent_length"],
@@ -206,15 +287,9 @@ def build_base(parameters):
 
 
 def build_lid(parameters):
-    """Build a friction-fit lid with an internal skirt and top ventilation."""
-    outer_length = parameters["pcb_length"] + 2 * (
-        parameters["pcb_clearance"] + parameters["wall_thickness"]
-    )
-    outer_width = parameters["pcb_width"] + 2 * (
-        parameters["pcb_clearance"] + parameters["wall_thickness"]
-    )
-    inner_length = parameters["pcb_length"] + 2 * parameters["pcb_clearance"]
-    inner_width = parameters["pcb_width"] + 2 * parameters["pcb_clearance"]
+    """Build a friction-fit lid with GPIO access and top ventilation."""
+    outer_length, outer_width = outer_envelope(parameters)
+    inner_length, inner_width = inner_envelope(parameters)
 
     skirt_outer_length = inner_length - 2 * parameters["lid_fit_clearance"]
     skirt_outer_width = inner_width - 2 * parameters["lid_fit_clearance"]
@@ -247,8 +322,25 @@ def build_lid(parameters):
             mode=Mode.SUBTRACT,
         )
 
-    with BuildPart() as lid_vent_builder:
+    with BuildPart() as gpio_builder:
         add(lid_builder.part)
+        with Locations(
+            (
+                parameters["gpio_slot_center_x"],
+                parameters["gpio_slot_center_y"],
+                parameters["lid_skirt_depth"] - 0.5,
+            )
+        ):
+            Box(
+                parameters["gpio_slot_length"],
+                parameters["gpio_slot_width"],
+                parameters["lid_top_thickness"] + 1.0,
+                align=(Align.CENTER, Align.CENTER, Align.MIN),
+                mode=Mode.SUBTRACT,
+            )
+
+    with BuildPart() as lid_vent_builder:
+        add(gpio_builder.part)
         with Locations(
             *((0.0, y, parameters["lid_skirt_depth"] - 0.5) for y in LID_VENT_Y_POSITIONS)
         ):
@@ -264,29 +356,21 @@ def build_lid(parameters):
 
 
 def build_board_proxy(parameters):
-    """Build the lightweight PCB fit-check interface body.
-
-    ``mount_hole_diameter`` is the nominal PCB hole and is only consumed here,
-    by the fit-check proxy.
-
-    Connector keep-outs are window-derived envelopes (not manufacturer STEP
-    solids). They protrude through the clearance/wall so
-    ``base ∩ pcb_proxy`` fails when a prototype window is too small.
-    """
-    board_z = parameters["floor_thickness"] + parameters["standoff_height"]
+    """PCB + official-drawing connector keep-out envelopes for fit checks."""
+    z0 = board_z(parameters)
     half_length = parameters["pcb_length"] / 2
     half_width = parameters["pcb_width"] / 2
     protrusion = parameters["pcb_clearance"] + parameters["wall_thickness"] + 0.5
 
     with BuildPart() as pcb_builder:
-        with Locations((0, 0, board_z)):
+        with Locations((0, 0, z0)):
             Box(
                 parameters["pcb_length"],
                 parameters["pcb_width"],
                 parameters["pcb_thickness"],
                 align=(Align.CENTER, Align.CENTER, Align.MIN),
             )
-        with Locations(*((x, y, board_z - 0.2) for x, y in _mount_locations(parameters))):
+        with Locations(*((x, y, z0 - 0.2) for x, y in mount_locations(parameters))):
             Cylinder(
                 parameters["mount_hole_diameter"] / 2,
                 parameters["pcb_thickness"] + 0.4,
@@ -294,34 +378,35 @@ def build_board_proxy(parameters):
                 mode=Mode.SUBTRACT,
             )
 
-        # Side keep-outs (±Y) aligned with the oversized prototype windows.
-        for y_sign in (-1.0, 1.0):
-            with Locations(
-                (
-                    0.0,
-                    y_sign * (half_width + protrusion / 2),
-                    parameters["side_window_z"],
-                )
-            ):
+        for x_center, width, z_bottom, height in _south_ports(parameters):
+            with Locations((x_center, -(half_width + protrusion / 2), z_bottom)):
                 Box(
-                    parameters["side_window_width"],
+                    width,
                     protrusion,
-                    parameters["side_window_height"],
+                    height,
                     align=(Align.CENTER, Align.CENTER, Align.MIN),
                 )
 
-        # End keep-out (−X) aligned with the power/video window.
+        for y_center, width, z_bottom, height in _east_ports(parameters):
+            with Locations((half_length + protrusion / 2, y_center, z_bottom)):
+                Box(
+                    protrusion,
+                    width,
+                    height,
+                    align=(Align.CENTER, Align.CENTER, Align.MIN),
+                )
+
         with Locations(
             (
                 -(half_length + protrusion / 2),
-                0.0,
-                parameters["end_window_z"],
+                parameters["microsd_center_y"],
+                parameters["microsd_z"],
             )
         ):
             Box(
                 protrusion,
-                parameters["end_window_width"],
-                parameters["end_window_height"],
+                parameters["microsd_opening_width"],
+                parameters["microsd_height"],
                 align=(Align.CENTER, Align.CENTER, Align.MIN),
             )
 
@@ -334,11 +419,7 @@ def build_model(parameters):
     base = build_base(parameters)
     lid = build_lid(parameters)
     pcb_proxy = build_board_proxy(parameters)
-
-    lid_print = mirror(lid, about=Plane.XY)
-    lid_print.move(
-        Location((0, 0, parameters["lid_skirt_depth"] + parameters["lid_top_thickness"]))
-    )
+    lid_print = lid_print_orientation(lid, parameters)
 
     return {
         "bodies": {

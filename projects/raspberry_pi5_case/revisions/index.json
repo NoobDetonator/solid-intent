@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "raspberry_pi5_case",
-  "current_revision": 3,
+  "current_revision": 4,
   "revisions": [
     {
       "revision": 1,
@@ -15,6 +15,11 @@
     {
       "revision": 3,
       "record": "0003_rebuild_accept.json",
+      "status": "accepted"
+    },
+    {
+      "revision": 4,
+      "record": "0004_rebuild_accept.json",
       "status": "accepted"
     }
   ]

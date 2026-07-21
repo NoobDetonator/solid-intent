@@ -12,11 +12,12 @@
       "redistributed": false,
       "use": [
         "PCB outline envelope",
-        "Mounting hole pattern and pitch"
+        "Mounting hole pattern and pitch",
+        "Approximate connector opening centres and heights for keep-out envelopes"
       ],
       "limitations": [
-        "Connector cutout geometry not transferred from manufacturer STEP",
-        "PCB proxy keep-outs are window-derived envelopes, not official connector solids",
+        "Drawing states dimensions are approximate and not for production data",
+        "Connector envelopes are derived boxes, not manufacturer STEP solids",
         "Active Cooler and fan clearance not modelled"
       ]
     }

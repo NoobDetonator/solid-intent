@@ -136,12 +136,17 @@ export function runRebuildProject(
     "jsonschema",
     "--with",
     "build123d-drafting-helpers",
+    "--with",
+    "resvg-py",
+    "--with",
+    "mcp",
     "python",
     "scripts/rebuild_project.py",
     `projects/${projectId}`,
   ];
   if (options.exportArtifacts) args.push("--export");
   if (options.accept) args.push("--accept");
+  args.push("--mcp");
 
   return new Promise((resolve, reject) => {
     const child = spawn("uv", args, {
@@ -153,8 +158,8 @@ export function runRebuildProject(
     let stderr = "";
     const timer = setTimeout(() => {
       child.kill("SIGTERM");
-      reject(new HttpError(504, "Rebuild timed out after 180 seconds."));
-    }, 180_000);
+      reject(new HttpError(504, "Rebuild timed out after 300 seconds."));
+    }, 300_000);
     child.stdout.on("data", (chunk) => {
       stdout += String(chunk);
     });

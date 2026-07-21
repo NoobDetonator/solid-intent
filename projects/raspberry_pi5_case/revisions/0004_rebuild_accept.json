@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "project_id": "raspberry_pi5_case",
+  "revision": 4,
+  "status": "accepted",
+  "created_at": "2026-07-21",
+  "authoring_agent": "rebuild_project",
+  "summary": "Replaced prototype windows with drawing-derived connector openings/keep-outs; MCP validate+printability accepted.",
+  "changes": [
+    "Replaced oversized windows with official-drawing connector openings and PCB keep-out envelopes.",
+    "Shared enclosure helpers with Pi 4 (mount pattern + print orientation).",
+    "Exported lid_print meshes and PNG rasters of SVG previews/drawings.",
+    "Confirmed validate/printability through build123d-mcp on exported STEP solids.",
+    "Updated source hashes to the current model/parameters/schema."
+  ],
+  "source_hashes_sha256": {
+    "model": "457EF1ACD6F99F90382F7F958D93CDFDDF49EDE198DAADED294C5EA05EF2A146",
+    "parameters": "AAE062615B513645DFA0318EA9F7D73E0B01020E1EE4FB2F579A2FC8D807C27C",
+    "parameter_schema": "A6ED45996FA27B8D73B4E58681351CBCE1B3B222233A889F6E9FBA7822BF0957"
+  },
+  "validation": "../validation.json",
+  "parameters_snapshot": {
+    "pcb_length": 85.0,
+    "pcb_width": 56.0,
+    "pcb_thickness": 1.6,
+    "mount_pitch_x": 58.0,
+    "mount_pitch_y": 49.0,
+    "mount_edge_offset": 3.5,
+    "mount_hole_diameter": 2.7,
+    "pcb_clearance": 1.2,
+    "wall_thickness": 2.4,
+    "floor_thickness": 2.4,
+    "base_height": 22.0,
+    "outer_corner_radius": 3.0,
+    "standoff_diameter": 6.4,
+    "standoff_height": 4.0,
+    "lid_top_thickness": 2.4,
+    "lid_skirt_depth": 3.0,
+    "lid_skirt_thickness": 2.0,
+    "lid_fit_clearance": 0.3,
+    "usb_c_center_x": -21.5,
+    "usb_c_opening_width": 13.3,
+    "usb_c_z": 6.0,
+    "usb_c_height": 8.0,
+    "micro_hdmi_0_center_x": -5.5,
+    "micro_hdmi_1_center_x": 8.5,
+    "micro_hdmi_opening_width": 10.2,
+    "micro_hdmi_z": 6.0,
+    "micro_hdmi_height": 6.5,
+    "usb_2_center_y": -18.0,
+    "usb_3_center_y": 0.0,
+    "usb_opening_width": 16.5,
+    "usb_z": 6.0,
+    "usb_height": 16.0,
+    "ethernet_center_y": 18.0,
+    "ethernet_opening_width": 17.0,
+    "ethernet_z": 6.0,
+    "ethernet_height": 15.0,
+    "microsd_center_y": -15.5,
+    "microsd_opening_width": 17.0,
+    "microsd_z": 2.6,
+    "microsd_height": 5.2,
+    "gpio_slot_center_x": -10.5,
+    "gpio_slot_center_y": 23.7,
+    "gpio_slot_length": 54.0,
+    "gpio_slot_width": 8.5,
+    "base_vent_length": 32.0,
+    "base_vent_width": 3.0,
+    "lid_vent_length": 55.0,
+    "lid_vent_width": 3.0
+  },
+  "geometry_deltas": {
+    "base": {
+      "volume_mm3": 1478.8984,
+      "bbox_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "topology_delta": {
+        "faces": 15,
+        "edges": 48,
+        "vertices": 32
+      },
+      "validate": "PASS"
+    },
+    "lid": {
+      "volume_mm3": -1124.67,
+      "bbox_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "topology_delta": {
+        "faces": 5,
+        "edges": 18,
+        "vertices": 12
+      },
+      "validate": "PASS"
+    }
+  }
+}

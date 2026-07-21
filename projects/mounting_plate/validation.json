@@ -3,10 +3,11 @@
   "project_id": "mounting_plate",
   "accepted_revision": 4,
   "validated_at": "2026-07-21",
-  "executor": "build123d (local rebuild_project)",
+  "executor": "build123d-mcp",
   "runtime": {
     "build123d": "0.11.1",
-    "python": "3.12"
+    "python": "3.12",
+    "mcp_validator": "scripts/mcp_validate_project.py"
   },
   "source_hashes_sha256": {
     "model": "D4AD2F603B006BA8D848E6956CF7685D6D0C38239B52A7648AA6D856BAFBE9C3",
@@ -34,6 +35,28 @@
         "faces": 18,
         "edges": 48,
         "vertices": 32
+      },
+      "mcp_validate": {
+        "status": "PASS",
+        "detail": {
+          "passes_gate": true,
+          "n_solids": 1,
+          "volume": 13661.9734,
+          "watertight_manifold": true,
+          "open_edges": 0,
+          "nonmanifold_edges": 0,
+          "mesh_nonmanifold_edges": 0,
+          "mesh_nonmanifold_vertices": 0,
+          "mesh_open_edges": 0,
+          "mesh_vertex_deflection_defects": 0,
+          "untriangulated_faces": 0,
+          "refined_untriangulated_faces": 0,
+          "refined_untriangulated_faces_verified": true,
+          "mesh_check": "exact",
+          "brep_valid": true,
+          "warnings": [],
+          "reasons": []
+        }
       }
     }
   },
@@ -45,17 +68,17 @@
     }
   },
   "residual_risks": [
-    "Initial scaffold; run rebuild_project --accept.",
-    "Metrics were measured locally with build123d via rebuild_project; re-run build123d-mcp for the canonical acceptance gate when available."
+    "Canonical validate/printability gates were confirmed through build123d-mcp on exported STEP solids.",
+    "Canonical validate/printability gates were confirmed through build123d-mcp on exported STEP solids."
   ],
   "comparison_with_previous": {
     "geometry_deltas": {
       "plate": {
-        "volume_mm3": -2276.9956,
+        "volume_mm3": 0.0,
         "bbox_mm": [
           0.0,
           0.0,
-          -1.0
+          0.0
         ],
         "topology_delta": {
           "faces": 0,

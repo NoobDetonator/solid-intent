@@ -5,19 +5,33 @@ live in `projects/raspberry_pi4_case/parameters.json`; this module contains no
 independent dimensional defaults. All dimensions are millimetres.
 """
 
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+_SCRIPTS = Path(__file__).resolve().parent
+if str(_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS))
+
 from build123d import (
     Align,
     Axis,
     Box,
     BuildPart,
     Cylinder,
-    Location,
     Locations,
     Mode,
-    Plane,
     add,
     fillet,
-    mirror,
+)
+
+from enclosure_common import (
+    lid_print_orientation,
+    mount_locations,
+    require_numeric,
+    require_positive,
+    validate_mount_pitches,
 )
 
 
@@ -74,60 +88,40 @@ REQUIRED_PARAMETERS = (
 
 def validate_parameter_contract(parameters):
     """Reject incomplete or non-numeric project parameter mappings."""
-    missing = [name for name in REQUIRED_PARAMETERS if name not in parameters]
-    if missing:
-        raise ValueError(f"Missing project parameters: {', '.join(missing)}")
-
-    for name in REQUIRED_PARAMETERS:
-        value = parameters[name]
-        if isinstance(value, bool) or not isinstance(value, (int, float)):
-            raise TypeError(f"Parameter '{name}' must be numeric, got {type(value).__name__}")
-
-    positive = (
-        "pcb_length",
-        "pcb_width",
-        "pcb_thickness",
-        "mount_pitch_x",
-        "mount_pitch_y",
-        "mount_hole_diameter",
-        "wall_thickness",
-        "floor_thickness",
-        "base_height",
-        "standoff_diameter",
-        "standoff_height",
-        "screw_clearance_diameter",
-        "lid_top_thickness",
-        "lid_skirt_depth",
-        "lid_skirt_thickness",
-        "usb_c_opening_width",
-        "micro_hdmi_opening_width",
-        "audio_opening_width",
-        "usb_opening_width",
-        "ethernet_opening_width",
-        "microsd_opening_width",
-        "gpio_slot_length",
-        "gpio_slot_width",
-        "fan_hole_pitch",
-        "fan_screw_diameter",
+    require_numeric(parameters, REQUIRED_PARAMETERS)
+    require_positive(
+        parameters,
+        (
+            "pcb_length",
+            "pcb_width",
+            "pcb_thickness",
+            "mount_pitch_x",
+            "mount_pitch_y",
+            "mount_hole_diameter",
+            "wall_thickness",
+            "floor_thickness",
+            "base_height",
+            "standoff_diameter",
+            "standoff_height",
+            "screw_clearance_diameter",
+            "lid_top_thickness",
+            "lid_skirt_depth",
+            "lid_skirt_thickness",
+            "usb_c_opening_width",
+            "micro_hdmi_opening_width",
+            "audio_opening_width",
+            "usb_opening_width",
+            "ethernet_opening_width",
+            "microsd_opening_width",
+            "gpio_slot_length",
+            "gpio_slot_width",
+            "fan_hole_pitch",
+            "fan_screw_diameter",
+        ),
     )
-    invalid = [name for name in positive if parameters[name] <= 0]
-    if invalid:
-        raise ValueError(f"Parameters must be greater than zero: {', '.join(invalid)}")
-
-    if parameters["mount_pitch_x"] >= parameters["pcb_length"]:
-        raise ValueError("mount_pitch_x must be smaller than pcb_length")
-    if parameters["mount_pitch_y"] >= parameters["pcb_width"]:
-        raise ValueError("mount_pitch_y must be smaller than pcb_width")
+    validate_mount_pitches(parameters)
     if parameters["lid_fit_clearance"] < 0:
         raise ValueError("lid_fit_clearance cannot be negative")
-
-
-def _mount_locations(parameters):
-    left = -parameters["pcb_length"] / 2 + parameters["mount_edge_offset"]
-    right = left + parameters["mount_pitch_x"]
-    bottom = -parameters["pcb_width"] / 2 + parameters["mount_edge_offset"]
-    top = bottom + parameters["mount_pitch_y"]
-    return ((left, bottom), (right, bottom), (left, top), (right, top))
 
 
 def _south_ports(parameters):
@@ -225,7 +219,7 @@ def build_base(parameters):
         with Locations(
             *(
                 (x, y, parameters["floor_thickness"] - 0.2)
-                for x, y in _mount_locations(parameters)
+                for x, y in mount_locations(parameters)
             )
         ):
             Cylinder(
@@ -237,7 +231,7 @@ def build_base(parameters):
     with BuildPart() as mounting_builder:
         add(standoff_builder.part)
         with Locations(
-            *((x, y, -0.5) for x, y in _mount_locations(parameters))
+            *((x, y, -0.5) for x, y in mount_locations(parameters))
         ):
             Cylinder(
                 parameters["screw_clearance_diameter"] / 2,
@@ -254,7 +248,7 @@ def build_base(parameters):
             with Locations((x_center, -outer_width / 2, z_bottom)):
                 Box(
                     width,
-                    parameters["wall_thickness"] + 2.0,
+                    parameters["wall_thickness"] + 4.0,
                     height,
                     align=(Align.CENTER, Align.CENTER, Align.MIN),
                     mode=Mode.SUBTRACT,
@@ -265,7 +259,7 @@ def build_base(parameters):
         for _, y_center, width, z_bottom, height in _east_ports(parameters):
             with Locations((outer_length / 2, y_center, z_bottom)):
                 Box(
-                    parameters["wall_thickness"] + 2.0,
+                    parameters["wall_thickness"] + 4.0,
                     width,
                     height,
                     align=(Align.CENTER, Align.CENTER, Align.MIN),
@@ -282,7 +276,7 @@ def build_base(parameters):
             )
         ):
             Box(
-                parameters["wall_thickness"] + 2.0,
+                parameters["wall_thickness"] + 4.0,
                 parameters["microsd_opening_width"],
                 5.2,
                 align=(Align.CENTER, Align.CENTER, Align.MIN),
@@ -431,7 +425,7 @@ def build_board_proxy(parameters):
         with Locations(
             *(
                 (x, y, board_z - 0.2)
-                for x, y in _mount_locations(parameters)
+                for x, y in mount_locations(parameters)
             )
         ):
             Cylinder(
@@ -451,16 +445,7 @@ def build_model(parameters):
     lid = build_lid(parameters)
     pcb_proxy = build_board_proxy(parameters)
 
-    lid_print = mirror(lid, about=Plane.XY)
-    lid_print.move(
-        Location(
-            (
-                0,
-                0,
-                parameters["lid_skirt_depth"] + parameters["lid_top_thickness"],
-            )
-        )
-    )
+    lid_print = lid_print_orientation(lid, parameters)
 
     return {
         "bodies": {

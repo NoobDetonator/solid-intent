@@ -306,6 +306,11 @@ def main() -> None:
         action="store_true",
         help="Write validation.json + revision when gates pass",
     )
+    parser.add_argument(
+        "--mcp",
+        action="store_true",
+        help="After export (or existing STEPs), run build123d-mcp validate/printability gates",
+    )
     args = parser.parse_args()
 
     project = data_layer.load_project(args.project)
@@ -339,6 +344,37 @@ def main() -> None:
 
         written = export_project(project.manifest["project_id"], sync_docs=True)
         print(f"Exported {len(written)} artifact(s)")
+
+    if args.mcp:
+        from mcp_validate_project import validate_project_mcp
+        import asyncio
+
+        mcp_report = asyncio.run(validate_project_mcp(project.root))
+        print(f"MCP gates ok={mcp_report['ok']} failed={mcp_report['failed_bodies'] or '-'}")
+        if not mcp_report["ok"]:
+            sys.exit(2)
+        # Promote executor + printability when MCP gates pass.
+        candidate["executor"] = "build123d-mcp"
+        candidate["runtime"] = {
+            **candidate.get("runtime", {}),
+            "mcp_validator": "scripts/mcp_validate_project.py",
+        }
+        if mcp_report.get("printability"):
+            candidate["printability"] = mcp_report["printability"]
+        for name, gate in mcp_report.get("geometry_gates", {}).items():
+            if name in candidate["geometry"] and gate.get("status") == "PASS":
+                candidate["geometry"][name]["validate"] = "PASS"
+                candidate["geometry"][name]["mcp_validate"] = gate
+        # Drop local-only caveat when MCP confirmed the solids.
+        candidate["residual_risks"] = [
+            risk
+            for risk in candidate["residual_risks"]
+            if "rebuild_project" not in risk and "build123d-mcp for the canonical" not in risk
+        ]
+        candidate["residual_risks"].append(
+            "Canonical validate/printability gates were confirmed through build123d-mcp on exported STEP solids."
+        )
+        _write_rebuild_report(project, candidate)
 
     if args.accept:
         result = accept_candidate(project, candidate)
