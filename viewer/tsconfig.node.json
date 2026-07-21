@@ -12,5 +12,6 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["server", "vite.config.ts"]
+  "include": ["server", "vite.config.ts", "vitest.config.ts"],
+  "exclude": ["server/**/*.test.ts"]
 }
