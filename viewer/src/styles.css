@@ -397,6 +397,21 @@ input:disabled {
   font-family: "Geist Mono Variable", monospace;
 }
 
+.dim-label {
+  padding: 0.1875rem 0.4375rem;
+  color: var(--ink-primary);
+  background: oklch(0.16 0.008 160 / 0.86);
+  font-family: "Geist Mono Variable", monospace;
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  border: 1px solid oklch(0.42 0.13 250);
+  border-radius: 0.25rem;
+  transform: translateY(-0.5rem);
+  pointer-events: none;
+  user-select: none;
+}
+
 .canvas-controls {
   position: absolute;
   left: 50%;

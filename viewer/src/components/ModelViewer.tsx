@@ -1,8 +1,8 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useLoader, useThree } from "@react-three/fiber";
 import { ContactShadows, Edges, GizmoHelper, GizmoViewport, Html, OrbitControls } from "@react-three/drei";
-import { Box, Focus, Layers3, ScanLine } from "lucide-react";
-import { Vector3, type BufferGeometry } from "three";
+import { Box, Focus, Layers3, Ruler, ScanLine } from "lucide-react";
+import { BoxGeometry, Vector3, type BufferGeometry } from "three";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 
@@ -22,6 +22,7 @@ interface PlacedBody {
   name: string;
   geometry: BufferGeometry;
   positionY: number;
+  size: Vector3;
 }
 
 interface BodiesGroupProps {
@@ -30,9 +31,17 @@ interface BodiesGroupProps {
   bodyVisibility: BodyVisibility;
   exploded: boolean;
   transparent: boolean;
+  showDimensions: boolean;
 }
 
-function BodiesGroup({ urls, names, bodyVisibility, exploded, transparent }: BodiesGroupProps) {
+function BodiesGroup({
+  urls,
+  names,
+  bodyVisibility,
+  exploded,
+  transparent,
+  showDimensions,
+}: BodiesGroupProps) {
   const geometries = useLoader(STLLoader, urls);
 
   const placed = useMemo<PlacedBody[]>(() => {
@@ -45,7 +54,7 @@ function BodiesGroup({ urls, names, bodyVisibility, exploded, transparent }: Bod
       geometry.boundingBox?.getSize(size);
       // The model is rotated -90° about X, so the model Z extent is the world
       // vertical height of the body.
-      return { name, geometry, height: size.z };
+      return { name, geometry, height: size.z, size };
     });
 
     const totalHeight =
@@ -57,34 +66,57 @@ function BodiesGroup({ urls, names, bodyVisibility, exploded, transparent }: Bod
       const gap = exploded ? EXPLODED_GAP_MM * index : 0;
       const centerY = bottom + gap + item.height / 2;
       bottom += item.height;
-      return { name: item.name, geometry: item.geometry, positionY: centerY - totalHeight / 2 };
+      return {
+        name: item.name,
+        geometry: item.geometry,
+        size: item.size,
+        positionY: centerY - totalHeight / 2,
+      };
     });
   }, [geometries, names, exploded]);
 
   return (
     <>
-      {placed.map((body, index) => (
-        <mesh
-          key={body.name}
-          geometry={body.geometry}
-          rotation={[-Math.PI / 2, 0, 0]}
-          position={[0, body.positionY, 0]}
-          visible={bodyVisibility[body.name] !== false}
-          castShadow
-          receiveShadow
-        >
-          <meshStandardMaterial
-            key={transparent ? "transparent" : "opaque"}
-            color={bodyColor(index)}
-            roughness={0.64}
-            metalness={0.08}
-            transparent={transparent}
-            opacity={transparent ? 0.42 : 1}
-            depthWrite={!transparent}
-          />
-          <Edges threshold={24} color="#adb8b3" />
-        </mesh>
-      ))}
+      {placed.map((body, index) => {
+        const visible = bodyVisibility[body.name] !== false;
+        return (
+          <group key={body.name} visible={visible}>
+            <mesh
+              geometry={body.geometry}
+              rotation={[-Math.PI / 2, 0, 0]}
+              position={[0, body.positionY, 0]}
+              castShadow
+              receiveShadow
+            >
+              <meshStandardMaterial
+                key={transparent ? "transparent" : "opaque"}
+                color={bodyColor(index)}
+                roughness={0.64}
+                metalness={0.08}
+                transparent={transparent}
+                opacity={transparent ? 0.42 : 1}
+                depthWrite={!transparent}
+              />
+              <Edges threshold={24} color="#adb8b3" />
+            </mesh>
+            {showDimensions ? (
+              <>
+                <lineSegments rotation={[-Math.PI / 2, 0, 0]} position={[0, body.positionY, 0]}>
+                  <edgesGeometry
+                    args={[new BoxGeometry(body.size.x, body.size.y, body.size.z)]}
+                  />
+                  <lineBasicMaterial color="#2f77ff" />
+                </lineSegments>
+                <Html position={[0, body.positionY + body.size.z / 2 + 5, 0]} center>
+                  <div className="dim-label">
+                    {body.size.x.toFixed(1)} × {body.size.y.toFixed(1)} × {body.size.z.toFixed(1)} mm
+                  </div>
+                </Html>
+              </>
+            ) : null}
+          </group>
+        );
+      })}
       <ContactShadows position={[0, -26, 0]} opacity={0.45} scale={190} blur={2.2} far={90} />
     </>
   );
@@ -129,6 +161,7 @@ function CameraRig({ fitNonce }: { fitNonce: number }) {
 export function ModelViewer({ project, bodyVisibility }: ModelViewerProps) {
   const [exploded, setExploded] = useLocalStorage("solidintent.view.exploded", true);
   const [transparent, setTransparent] = useLocalStorage("solidintent.view.transparent", false);
+  const [showDimensions, setShowDimensions] = useLocalStorage("solidintent.view.dimensions", false);
   const [fitNonce, setFitNonce] = useState(0);
 
   const bodyNames = useMemo(() => renderableBodies(project), [project]);
@@ -178,6 +211,7 @@ export function ModelViewer({ project, bodyVisibility }: ModelViewerProps) {
               bodyVisibility={bodyVisibility}
               exploded={exploded}
               transparent={transparent}
+              showDimensions={showDimensions}
             />
           </Suspense>
           <CameraRig fitNonce={fitNonce} />
@@ -221,6 +255,15 @@ export function ModelViewer({ project, bodyVisibility }: ModelViewerProps) {
         >
           <ScanLine aria-hidden="true" />
           Transparency
+        </button>
+        <button
+          className={showDimensions ? "is-active" : ""}
+          type="button"
+          aria-pressed={showDimensions}
+          onClick={() => setShowDimensions((value) => !value)}
+        >
+          <Ruler aria-hidden="true" />
+          Dimensions
         </button>
       </div>
     </section>
