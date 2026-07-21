@@ -13,9 +13,9 @@ Required files:
 - `revisions/` - immutable revision records and parameter snapshots.
 
 The model entry point must accept the complete parameter mapping and return a
-dictionary containing stable `bodies` and `interfaces` names. STEP/STL/SVG are
-derived artifacts; the project files and model source are the editable source
-of truth.
+dictionary containing stable `bodies` and `interfaces` names. STEP/STL live in
+`exports/`; SVG technical previews live in `renders/`; dimensioned sheets live
+in `drawings/`. Regenerate locally with `scripts/export_artifacts.py`.
 
 User parameter edits update `parameters.json`. Semantic changes update the
 model source and, when necessary, the schema. Every rebuild must pass the same
