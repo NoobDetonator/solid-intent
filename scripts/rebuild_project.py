@@ -98,6 +98,23 @@ def measure_interfaces(parameters: dict[str, Any], shapes: dict[str, Any]) -> di
             "clearance_mm": clearance,
             "intersection_volume_mm3": lid_overlap,
         }
+
+    cooler = shapes.get("active_cooler_keepout")
+    if cooler is not None and lid is not None:
+        lid_assembled = lid.moved(Location((0, 0, parameters["base_height"])))
+        cooler_lid = intersection_volume_mm3(cooler, lid_assembled)
+        results["active_cooler_to_assembled_lid"] = {
+            "status": "interfering" if cooler_lid > 1e-3 else "clearance_fit",
+            "clearance_mm": float(parameters.get("cooler_fan_clearance", 0.0)),
+            "intersection_volume_mm3": cooler_lid,
+        }
+    if cooler is not None and base is not None:
+        cooler_base = intersection_volume_mm3(cooler, base)
+        results["active_cooler_to_base"] = {
+            "status": "interfering" if cooler_base > 1e-3 else "clearance_fit",
+            "clearance_mm": 0.0,
+            "intersection_volume_mm3": cooler_base,
+        }
     return results
 
 

@@ -7,8 +7,9 @@ no independent dimensional defaults. All dimensions are millimetres.
 PCB outline and mounting pattern come from the official Raspberry Pi 5
 mechanical drawing. Connector opening centres/heights are taken from that
 same approximate reference drawing (not a manufacturer STEP keep-out solid).
-Active Cooler / fan clearance is not modelled — verify against physical
-hardware before production use.
+The Active Cooler keep-out uses the official Active Cooler mechanical drawing
+(63.50 × 42.50 × 13.70 mm) plus vertical fan clearance. Verify against
+physical hardware before production use.
 """
 
 from __future__ import annotations
@@ -94,6 +95,12 @@ REQUIRED_PARAMETERS = (
     "gpio_slot_center_y",
     "gpio_slot_length",
     "gpio_slot_width",
+    "cooler_length",
+    "cooler_width",
+    "cooler_height",
+    "cooler_center_x",
+    "cooler_center_y",
+    "cooler_fan_clearance",
     "base_vent_length",
     "base_vent_width",
     "lid_vent_length",
@@ -133,6 +140,10 @@ def validate_parameter_contract(parameters):
             "microsd_height",
             "gpio_slot_length",
             "gpio_slot_width",
+            "cooler_length",
+            "cooler_width",
+            "cooler_height",
+            "cooler_fan_clearance",
             "base_vent_length",
             "base_vent_width",
             "lid_vent_length",
@@ -413,12 +424,40 @@ def build_board_proxy(parameters):
     return pcb_builder.part
 
 
+def build_active_cooler_keepout(parameters):
+    """Official Active Cooler envelope + vertical fan clearance above the PCB.
+
+    Dimensions come from the Raspberry Pi Active Cooler mechanical drawing
+    (63.50 × 42.50 × 13.70 mm). The keep-out sits on the PCB top face and
+    includes ``cooler_fan_clearance`` so the lid cavity is checked for airflow
+    headroom, not only the aluminium body.
+    """
+    z0 = board_z(parameters) + parameters["pcb_thickness"]
+    height = parameters["cooler_height"] + parameters["cooler_fan_clearance"]
+    with BuildPart() as cooler_builder:
+        with Locations(
+            (
+                parameters["cooler_center_x"],
+                parameters["cooler_center_y"],
+                z0,
+            )
+        ):
+            Box(
+                parameters["cooler_length"],
+                parameters["cooler_width"],
+                height,
+                align=(Align.CENTER, Align.CENTER, Align.MIN),
+            )
+    return cooler_builder.part
+
+
 def build_model(parameters):
     """Build named project bodies from the persisted parameter mapping."""
     validate_parameter_contract(parameters)
     base = build_base(parameters)
     lid = build_lid(parameters)
     pcb_proxy = build_board_proxy(parameters)
+    active_cooler_keepout = build_active_cooler_keepout(parameters)
     lid_print = lid_print_orientation(lid, parameters)
 
     return {
@@ -429,5 +468,6 @@ def build_model(parameters):
         },
         "interfaces": {
             "pcb_proxy": pcb_proxy,
+            "active_cooler_keepout": active_cooler_keepout,
         },
     }

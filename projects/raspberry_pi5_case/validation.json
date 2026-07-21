@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project_id": "raspberry_pi5_case",
-  "accepted_revision": 4,
+  "accepted_revision": 5,
   "validated_at": "2026-07-21",
   "executor": "build123d-mcp",
   "runtime": {
@@ -10,13 +10,13 @@
     "mcp_validator": "scripts/mcp_validate_project.py"
   },
   "source_hashes_sha256": {
-    "model": "457EF1ACD6F99F90382F7F958D93CDFDDF49EDE198DAADED294C5EA05EF2A146",
-    "parameters": "AAE062615B513645DFA0318EA9F7D73E0B01020E1EE4FB2F579A2FC8D807C27C",
-    "parameter_schema": "A6ED45996FA27B8D73B4E58681351CBCE1B3B222233A889F6E9FBA7822BF0957"
+    "model": "DC88C398CBD2E9CD1896E5AD3769FCBC8B9B08FE3F5251C5F35C9E62E98094F8",
+    "parameters": "7C0E5671C327626AF3CC673C2D731F2BA5918C17D57FE54446B9E55AA044804A",
+    "parameter_schema": "6F21D3690D752AF6F46335A7097421A8CBA27BEE6409388AC9C12CD56C0E0180"
   },
   "parameter_contract": {
     "json_schema": "PASS",
-    "required_parameter_count": 48,
+    "required_parameter_count": 54,
     "model_contract": "PASS"
   },
   "geometry": {
@@ -109,6 +109,16 @@
       "status": "clearance_fit",
       "clearance_mm": 0.3,
       "intersection_volume_mm3": 0.0
+    },
+    "active_cooler_to_assembled_lid": {
+      "status": "clearance_fit",
+      "clearance_mm": 2.0,
+      "intersection_volume_mm3": 0.0
+    },
+    "active_cooler_to_base": {
+      "status": "clearance_fit",
+      "clearance_mm": 0.0,
+      "intersection_volume_mm3": 0.0
     }
   },
   "printability": {
@@ -125,39 +135,39 @@
     }
   },
   "residual_risks": [
-    "Connector opening centres/heights come from the official approximate Raspberry Pi 5 mechanical drawing; verify against a physical board before production.",
-    "PCB proxy connector keep-outs are drawing-derived boxes, not manufacturer STEP solids.",
-    "Active Cooler and fan clearance are not modelled.",
+    "Connector opening centres/heights come from the official approximate Raspberry Pi 5 mechanical drawing; no manufacturer STEP keep-out is published \u2014 verify plugs on a physical board.",
+    "Active Cooler keep-out uses the official 63.50\u00d742.50\u00d713.70 mm drawing envelope plus cooler_fan_clearance; blower exhaust plume is not a separate solid.",
     "The 0.30 mm lid clearance must be calibrated for the target printer and material.",
+    "If printability reports a ~0.2 mm microfeature, print at layer height \u2264 0.2 mm and inspect opening/fillet edges.",
     "Canonical validate/printability gates were confirmed through build123d-mcp on exported STEP solids."
   ],
   "comparison_with_previous": {
     "geometry_deltas": {
       "base": {
-        "volume_mm3": 1478.8984,
+        "volume_mm3": 0.0,
         "bbox_mm": [
           0.0,
           0.0,
           0.0
         ],
         "topology_delta": {
-          "faces": 15,
-          "edges": 48,
-          "vertices": 32
+          "faces": 0,
+          "edges": 0,
+          "vertices": 0
         },
         "validate": "PASS"
       },
       "lid": {
-        "volume_mm3": -1124.67,
+        "volume_mm3": 0.0,
         "bbox_mm": [
           0.0,
           0.0,
           0.0
         ],
         "topology_delta": {
-          "faces": 5,
-          "edges": 18,
-          "vertices": 12
+          "faces": 0,
+          "edges": 0,
+          "vertices": 0
         },
         "validate": "PASS"
       }

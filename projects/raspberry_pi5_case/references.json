@@ -17,8 +17,26 @@
       ],
       "limitations": [
         "Drawing states dimensions are approximate and not for production data",
-        "Connector envelopes are derived boxes, not manufacturer STEP solids",
-        "Active Cooler and fan clearance not modelled"
+        "No official redistributable board STEP is published for keep-out solids",
+        "Connector envelopes are derived boxes pending physical verification"
+      ]
+    },
+    {
+      "id": "rpi5_active_cooler_mechanical_drawing",
+      "kind": "official_reference_drawing",
+      "trust_class": "official_manufacturer_drawing",
+      "author": "Raspberry Pi Ltd",
+      "source_url": "https://pip-assets.raspberrypi.com/categories/993-raspberry-pi-active-cooler/documents/RP-008187-DS-1-raspberry-pi-active-cooler-mechanical-drawing.pdf",
+      "license_status": "reference_only",
+      "redistributed": false,
+      "use": [
+        "Active Cooler footprint 63.50 × 42.50 mm",
+        "Active Cooler height 13.70 mm for lid clearance keep-out"
+      ],
+      "limitations": [
+        "Drawing states dimensions are approximate and not for production data",
+        "Blower exhaust plume is not modelled as a separate solid",
+        "Keep-out is an axis-aligned envelope, not the finned aluminium STEP"
       ]
     }
   ]

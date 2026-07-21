@@ -218,10 +218,27 @@ def export_project(project_id: str, *, sync_docs: bool = True) -> list[Path]:
     written.extend(_export_svg_previews(project_id, project_dir, manifest, shapes))
     written.extend(_export_dimensioned_drawing(project_id, project_dir, manifest))
     written.extend(_export_png_previews(written))
+    written.extend(_export_vtk_png(project_id, project_dir, manifest))
 
     if sync_docs:
         _sync_showcase(written)
     return written
+
+
+def _export_vtk_png(project_id: str, project_dir: Path, manifest: dict[str, Any]) -> list[Path]:
+    """Optional MCP VTK raster of the assembled solids."""
+    if "assembled_vtk_png" not in manifest.get("artifacts", {}):
+        return []
+    try:
+        from mcp_render_vtk import render_assembled_vtk
+        import asyncio
+
+        path = asyncio.run(render_assembled_vtk(project_dir))
+        print(f"  wrote {path.relative_to(REPO_ROOT)} ({path.stat().st_size} bytes)")
+        return [path]
+    except BaseException as exc:  # noqa: BLE001 - keep export resilient (incl. SystemExit)
+        print(f"  skip VTK PNG: {exc}", file=sys.stderr)
+        return []
 
 
 def _export_png_previews(svg_paths: list[Path]) -> list[Path]:
