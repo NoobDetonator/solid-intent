@@ -82,6 +82,7 @@ export interface ProjectData {
     revision: number;
     units: string;
     named_geometry: { bodies: string[]; interfaces: string[] };
+    artifacts: Record<string, string>;
   };
   parameters: Record<string, number>;
   acceptedParameters: Record<string, number>;

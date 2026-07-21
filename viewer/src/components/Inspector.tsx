@@ -5,6 +5,7 @@ import {
   CheckCircle2,
   ChevronDown,
   Copy,
+  Download,
   ExternalLink,
   FileWarning,
   LockKeyhole,
@@ -395,8 +396,45 @@ function ValidationView({ project }: { project: ProjectData }) {
             {validation.residual_risks.map((risk) => <li key={risk}>{risk}</li>)}
           </ul>
         </section>
+
+        <ExportsSection project={project} />
       </div>
     </>
+  );
+}
+
+function ExportsSection({ project }: { project: ProjectData }) {
+  const downloads = Object.entries(project.manifest.artifacts ?? {})
+    .filter(([key]) => project.artifactAvailability[key])
+    .map(([key, relativePath]) => ({
+      key,
+      label: key.replaceAll("_", " "),
+      extension: (relativePath.split(".").pop() ?? "").toUpperCase(),
+      href: `/api/projects/${project.manifest.project_id}/artifacts/${key}`,
+    }));
+
+  return (
+    <section className="evidence-section evidence-section--exports">
+      <div className="evidence-section-heading"><h2>Exports</h2></div>
+      {downloads.length ? (
+        <ul className="download-list">
+          {downloads.map((download) => (
+            <li key={download.key}>
+              <a href={download.href} download>
+                <Download aria-hidden="true" />
+                <span className="download-label">{download.label}</span>
+                <span className="download-ext">{download.extension}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="exports-empty">
+          No neutral CAD artifacts are available locally. Regenerate them with
+          build123d-mcp or <code>scripts/export_artifacts.py</code>.
+        </p>
+      )}
+    </section>
   );
 }
 
