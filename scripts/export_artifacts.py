@@ -217,9 +217,69 @@ def export_project(project_id: str, *, sync_docs: bool = True) -> list[Path]:
 
     written.extend(_export_svg_previews(project_id, project_dir, manifest, shapes))
     written.extend(_export_dimensioned_drawing(project_id, project_dir, manifest))
+    written.extend(_export_png_previews(written))
+    written.extend(_export_vtk_png(project_id, project_dir, manifest))
 
     if sync_docs:
         _sync_showcase(written)
+    return written
+
+
+def _export_vtk_png(project_id: str, project_dir: Path, manifest: dict[str, Any]) -> list[Path]:
+    """Optional MCP VTK raster of the assembled solids."""
+    if "assembled_vtk_png" not in manifest.get("artifacts", {}):
+        return []
+    try:
+        from mcp_render_vtk import render_assembled_vtk
+        import asyncio
+
+        path = asyncio.run(render_assembled_vtk(project_dir))
+        print(f"  wrote {path.relative_to(REPO_ROOT)} ({path.stat().st_size} bytes)")
+        return [path]
+    except BaseException as exc:  # noqa: BLE001 - keep export resilient (incl. SystemExit)
+        print(f"  skip VTK PNG: {exc}", file=sys.stderr)
+        return []
+
+
+def _export_png_previews(svg_paths: list[Path]) -> list[Path]:
+    """Rasterise SVG technical views to PNG via resvg (MCP render_drawing path)."""
+    import re
+
+    try:
+        import resvg_py
+    except ImportError:
+        print("  skip PNG: resvg-py not installed", file=sys.stderr)
+        return []
+
+    written: list[Path] = []
+    for svg_path in svg_paths:
+        if svg_path.suffix.lower() != ".svg":
+            continue
+        if svg_path.parent.name not in {"renders", "drawings"}:
+            continue
+        png_path = svg_path.with_suffix(".png")
+        svg_text = svg_path.read_text(encoding="utf-8")
+        # build123d ExportSVG uses mm width/height; resvg wants unitless/px sizes.
+        svg_text = re.sub(
+            r'width="([0-9.]+)mm"',
+            lambda match: f'width="{max(1, int(float(match.group(1)) * 3.7795275591))}"',
+            svg_text,
+            count=1,
+        )
+        svg_text = re.sub(
+            r'height="([0-9.]+)mm"',
+            lambda match: f'height="{max(1, int(float(match.group(1)) * 3.7795275591))}"',
+            svg_text,
+            count=1,
+        )
+        try:
+            png_bytes = resvg_py.svg_to_bytes(svg_text, zoom=2.0, background="white")
+        except Exception as exc:  # noqa: BLE001 - keep export resilient
+            print(f"  skip PNG for {svg_path.name}: {exc}", file=sys.stderr)
+            continue
+        png_path.write_bytes(png_bytes)
+        written.append(png_path)
+        print(f"  wrote {png_path.relative_to(REPO_ROOT)} ({png_path.stat().st_size} bytes)")
     return written
 
 

@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 import type { EvidenceView, ProjectData } from "../types";
-import { bodyLabel, renderableBodies, unavailableBodies } from "../bodies";
+import { bodyLabel, renderableBodies, unavailableBodies, type SceneMode } from "../bodies";
 
 export type BodyVisibility = Record<string, boolean>;
 
@@ -21,8 +21,10 @@ interface ContextRailProps {
   project: ProjectData;
   selectedView: EvidenceView;
   bodyVisibility: BodyVisibility;
+  sceneMode: SceneMode;
   onSelectView: (view: EvidenceView) => void;
   onToggleBody: (body: string) => void;
+  onSceneModeChange: (mode: SceneMode) => void;
 }
 
 const evidenceItems: Array<{
@@ -41,11 +43,14 @@ export function ContextRail({
   project,
   selectedView,
   bodyVisibility,
+  sceneMode,
   onSelectView,
   onToggleBody,
+  onSceneModeChange,
 }: ContextRailProps) {
-  const bodies = renderableBodies(project);
-  const missingBodies = unavailableBodies(project);
+  const bodies = renderableBodies(project, sceneMode);
+  const missingBodies = unavailableBodies(project, sceneMode);
+  const supportsPrintMode = project.manifest.named_geometry.bodies.includes("lid_print");
 
   return (
     <nav className="context-rail" aria-label="Project workspace">
@@ -57,6 +62,30 @@ export function ContextRail({
           <ChevronRight aria-hidden="true" />
         </div>
       </div>
+
+      {supportsPrintMode ? (
+        <div className="rail-section">
+          <span className="rail-heading">Orientation</span>
+          <div className="rail-segmented" role="group" aria-label="Scene orientation">
+            <button
+              type="button"
+              className={sceneMode === "assembled" ? "is-selected" : ""}
+              aria-pressed={sceneMode === "assembled"}
+              onClick={() => onSceneModeChange("assembled")}
+            >
+              Assembled
+            </button>
+            <button
+              type="button"
+              className={sceneMode === "print" ? "is-selected" : ""}
+              aria-pressed={sceneMode === "print"}
+              onClick={() => onSceneModeChange("print")}
+            >
+              FDM print
+            </button>
+          </div>
+        </div>
+      ) : null}
 
       <div className="rail-section">
         <span className="rail-heading">Bodies</span>

@@ -33,3 +33,23 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements-dev.txt
       - run: pytest
+
+  geometry-gates:
+    name: Geometry gates (rebuild_project)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - name: Rebuild every project (measure + compare, no accept)
+        run: |
+          set -euo pipefail
+          for project in projects/*/project.json; do
+            id="$(basename "$(dirname "$project")")"
+            echo "::group::rebuild $id"
+            uv run --python 3.12 --with build123d --with build123d-drafting-helpers --with jsonschema --with resvg-py \
+              python scripts/rebuild_project.py "projects/$id" --export
+            echo "::endgroup::"
+          done

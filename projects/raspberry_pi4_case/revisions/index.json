@@ -1,11 +1,21 @@
 {
   "schema_version": 1,
   "project_id": "raspberry_pi4_case",
-  "current_revision": 1,
+  "current_revision": 3,
   "revisions": [
     {
       "revision": 1,
       "record": "0001_initial_parameterized_project.json",
+      "status": "accepted"
+    },
+    {
+      "revision": 2,
+      "record": "0002_rebuild_accept.json",
+      "status": "accepted"
+    },
+    {
+      "revision": 3,
+      "record": "0003_rebuild_accept.json",
       "status": "accepted"
     }
   ]

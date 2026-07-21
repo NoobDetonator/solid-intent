@@ -6,7 +6,7 @@
   "description": "AI-generated two-piece FDM enclosure with a persistent parameter contract.",
   "units": "mm",
   "status": "prototype",
-  "revision": 1,
+  "revision": 3,
   "model": {
     "source": "../../scripts/raspberry_pi4_case.py",
     "entrypoint": "build_model",
@@ -32,10 +32,15 @@
     "base_stl": "../../exports/raspberry_pi4_case_base.stl",
     "lid_step": "../../exports/raspberry_pi4_case_lid.step",
     "lid_stl": "../../exports/raspberry_pi4_case_lid.stl",
+    "lid_print_step": "../../exports/raspberry_pi4_case_lid_print.step",
+    "lid_print_stl": "../../exports/raspberry_pi4_case_lid_print.stl",
     "assembled_preview": "../../renders/raspberry_pi4_case_assembled.svg",
     "exploded_preview": "../../renders/raspberry_pi4_case_exploded.svg",
+    "assembled_preview_png": "../../renders/raspberry_pi4_case_assembled.png",
+    "exploded_preview_png": "../../renders/raspberry_pi4_case_exploded.png",
     "dimensioned_drawing": "../../drawings/raspberry_pi4_case_dimensioned.svg",
-    "dimensioned_drawing_dxf": "../../drawings/raspberry_pi4_case_dimensioned.dxf"
+    "dimensioned_drawing_dxf": "../../drawings/raspberry_pi4_case_dimensioned.dxf",
+    "dimensioned_drawing_png": "../../drawings/raspberry_pi4_case_dimensioned.png"
   },
   "rebuild_policy": {
     "geometry_executor": "build123d-mcp",

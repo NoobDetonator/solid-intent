@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { spawn } from "node:child_process";
 
 import express, { type NextFunction, type Request, type Response } from "express";
 
@@ -117,6 +118,63 @@ export function serializeParameters(parameters: Record<string, number>): string 
     ([name, value]) => `  ${JSON.stringify(name)}: ${formatParameterValue(value)}`,
   );
   return `{\n${lines.join(",\n")}\n}\n`;
+}
+
+/** Run the local rebuild_project gate. Bound to 127.0.0.1 viewer use only. */
+export function runRebuildProject(
+  repositoryRoot: string,
+  projectId: string,
+  options: { exportArtifacts: boolean; accept: boolean },
+): Promise<{ code: number; stdout: string; stderr: string }> {
+  const args = [
+    "run",
+    "--python",
+    "3.12",
+    "--with",
+    "build123d",
+    "--with",
+    "jsonschema",
+    "--with",
+    "build123d-drafting-helpers",
+    "--with",
+    "resvg-py",
+    "--with",
+    "mcp",
+    "python",
+    "scripts/rebuild_project.py",
+    `projects/${projectId}`,
+  ];
+  if (options.exportArtifacts) args.push("--export");
+  if (options.accept) args.push("--accept");
+  args.push("--mcp");
+
+  return new Promise((resolve, reject) => {
+    const child = spawn("uv", args, {
+      cwd: repositoryRoot,
+      env: process.env,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    let stdout = "";
+    let stderr = "";
+    const timer = setTimeout(() => {
+      child.kill("SIGTERM");
+      reject(new HttpError(504, "Rebuild timed out after 300 seconds."));
+    }, 300_000);
+    child.stdout.on("data", (chunk) => {
+      stdout += String(chunk);
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += String(chunk);
+    });
+    child.on("error", (error) => {
+      clearTimeout(timer);
+      reject(error);
+    });
+    child.on("close", (code) => {
+      clearTimeout(timer);
+      resolve({ code: code ?? 1, stdout, stderr });
+    });
+  });
 }
 
 function createLoaders({ repositoryRoot, projectsRoot }: ServerPaths) {
@@ -268,13 +326,29 @@ export const errorHandler = (
   response.status(500).json({ error: "Unexpected server error." });
 };
 
+export type RebuildRunner = (
+  repositoryRoot: string,
+  projectId: string,
+  options: { exportArtifacts: boolean; accept: boolean },
+) => Promise<{ code: number; stdout: string; stderr: string }>;
+
+export interface ApiRouteOptions {
+  /** Override for tests; defaults to spawning ``scripts/rebuild_project.py``. */
+  rebuildRunner?: RebuildRunner;
+}
+
 /**
  * Register the JSON `/api/...` routes on an existing Express app. The error
  * handler is intentionally not attached here so callers can mount additional
  * middleware (Vite dev server, static hosting) before it.
  */
-export function registerApiRoutes(app: express.Express, paths: ServerPaths): void {
+export function registerApiRoutes(
+  app: express.Express,
+  paths: ServerPaths,
+  options: ApiRouteOptions = {},
+): void {
   const { loadProject, updateParameters, resolveWorkspaceReference } = createLoaders(paths);
+  const rebuildRunner = options.rebuildRunner ?? runRebuildProject;
 
   app.get("/api/projects", async (_request, response, next) => {
     try {
@@ -292,6 +366,15 @@ export function registerApiRoutes(app: express.Express, paths: ServerPaths): voi
           revision: Number(manifest.revision),
         });
       }
+      const preferred = ["raspberry_pi4_case", "raspberry_pi5_case", "mounting_plate"];
+      projects.sort((a, b) => {
+        const ai = preferred.indexOf(a.id);
+        const bi = preferred.indexOf(b.id);
+        const aRank = ai === -1 ? preferred.length : ai;
+        const bRank = bi === -1 ? preferred.length : bi;
+        if (aRank !== bRank) return aRank - bRank;
+        return a.title.localeCompare(b.title);
+      });
       response.json({ projects });
     } catch (error) {
       next(error);
@@ -314,6 +397,43 @@ export function registerApiRoutes(app: express.Express, paths: ServerPaths): voi
         return;
       }
       response.json(await updateParameters(request.params.projectId, changes));
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/projects/:projectId/rebuild", async (request, response, next) => {
+    try {
+      assertProjectId(request.params.projectId);
+      const accept = request.body?.accept === true;
+      const exportArtifacts = request.body?.export !== false;
+      const before = await loadProject(request.params.projectId);
+      if (!before.status.dirty && !accept) {
+        response.status(409).json({
+          error: "Project is clean; nothing to rebuild. Pass accept=true to refresh validation.",
+        });
+        return;
+      }
+      const result = await rebuildRunner(paths.repositoryRoot, request.params.projectId, {
+        exportArtifacts,
+        accept,
+      });
+      if (result.code !== 0) {
+        response.status(422).json({
+          error: "Rebuild gates failed.",
+          stdout: result.stdout.slice(-4000),
+          stderr: result.stderr.slice(-4000),
+        });
+        return;
+      }
+      const project = await loadProject(request.params.projectId);
+      response.json({
+        ok: true,
+        accept,
+        export: exportArtifacts,
+        log: result.stdout.slice(-4000),
+        project,
+      });
     } catch (error) {
       next(error);
     }
@@ -346,11 +466,11 @@ export function registerApiRoutes(app: express.Express, paths: ServerPaths): voi
  * Build an API-only Express app (no Vite/static hosting). Used by the test
  * suite and as the base for the production server.
  */
-export function createApiApp(paths: ServerPaths): express.Express {
+export function createApiApp(paths: ServerPaths, options: ApiRouteOptions = {}): express.Express {
   const app = express();
   app.disable("x-powered-by");
   app.use(express.json({ limit: "32kb" }));
-  registerApiRoutes(app, paths);
+  registerApiRoutes(app, paths, options);
   app.use(errorHandler);
   return app;
 }

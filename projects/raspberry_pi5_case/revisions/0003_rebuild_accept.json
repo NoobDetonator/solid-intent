@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "project_id": "raspberry_pi5_case",
+  "revision": 3,
+  "status": "accepted",
+  "created_at": "2026-07-21",
+  "authoring_agent": "rebuild_project",
+  "summary": "Local rebuild measured solids, compared with previous validation, and accepted.",
+  "changes": [
+    "Rebuilt named bodies through build_model(parameters).",
+    "Strengthened pcb_proxy with window-derived connector keep-out envelopes.",
+    "Recorded exact volume, bbox, and topology metrics.",
+    "Checked base/PCB and base/lid intersection volumes (keep-outs clear windows).",
+    "Updated source hashes to the current model/parameters/schema."
+  ],
+  "source_hashes_sha256": {
+    "model": "1EB8FFB0A24357CF3057344CE85D2498F6DCF4F143C27A5AC1600C8F4E83E484",
+    "parameters": "77983F481191E361943099AE2C77894C5681CF93EBE76F38234EA67D41CA4DC8",
+    "parameter_schema": "2084B796DB9D967ACD74857FFA3287E98463C848BF2777E380C62F14983306A7"
+  },
+  "validation": "../validation.json",
+  "parameters_snapshot": {
+    "pcb_length": 85.0,
+    "pcb_width": 56.0,
+    "pcb_thickness": 1.6,
+    "mount_pitch_x": 58.0,
+    "mount_pitch_y": 49.0,
+    "mount_edge_offset": 3.5,
+    "mount_hole_diameter": 2.8,
+    "pcb_clearance": 1.2,
+    "wall_thickness": 2.4,
+    "floor_thickness": 2.4,
+    "base_height": 22.0,
+    "outer_corner_radius": 3.0,
+    "standoff_diameter": 6.4,
+    "standoff_height": 4.0,
+    "lid_top_thickness": 2.4,
+    "lid_skirt_depth": 3.0,
+    "lid_skirt_thickness": 2.0,
+    "lid_fit_clearance": 0.3,
+    "side_window_width": 70.0,
+    "side_window_height": 11.0,
+    "side_window_z": 7.0,
+    "end_window_width": 26.0,
+    "end_window_height": 7.0,
+    "end_window_z": 3.0,
+    "base_vent_length": 32.0,
+    "base_vent_width": 3.0,
+    "lid_vent_length": 55.0,
+    "lid_vent_width": 3.0
+  },
+  "geometry_deltas": {
+    "base": {
+      "volume_mm3": 0.0,
+      "bbox_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "topology_delta": {
+        "faces": 0,
+        "edges": 0,
+        "vertices": 0
+      },
+      "validate": "PASS"
+    },
+    "lid": {
+      "volume_mm3": 0.0,
+      "bbox_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "topology_delta": {
+        "faces": 0,
+        "edges": 0,
+        "vertices": 0
+      },
+      "validate": "PASS"
+    }
+  }
+}

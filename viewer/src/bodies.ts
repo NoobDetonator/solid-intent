@@ -2,19 +2,26 @@ import type { ProjectData } from "./types";
 
 const BODY_COLORS = ["#3d4541", "#555e5a", "#6c7772", "#828d88"];
 
+export type SceneMode = "assembled" | "print";
+
+function bodiesForMode(project: ProjectData, mode: SceneMode): string[] {
+  return project.manifest.named_geometry.bodies.filter((body) =>
+    mode === "print" ? body !== "lid" : body !== "lid_print",
+  );
+}
+
 /**
  * Bodies declared by the manifest that also have a locally generated STL mesh.
- * Print-orientation duplicates and interface proxies without a mesh artifact
- * are intentionally excluded from the interactive scene.
+ * Print-orientation mode swaps assembled ``lid`` for ``lid_print`` when present.
  */
-export function renderableBodies(project: ProjectData): string[] {
-  return project.manifest.named_geometry.bodies.filter(
+export function renderableBodies(project: ProjectData, mode: SceneMode = "assembled"): string[] {
+  return bodiesForMode(project, mode).filter(
     (body) => project.artifactAvailability[`${body}_stl`] === true,
   );
 }
 
-export function unavailableBodies(project: ProjectData): string[] {
-  return project.manifest.named_geometry.bodies.filter(
+export function unavailableBodies(project: ProjectData, mode: SceneMode = "assembled"): string[] {
+  return bodiesForMode(project, mode).filter(
     (body) => project.artifactAvailability[`${body}_stl`] !== true,
   );
 }

@@ -1,11 +1,21 @@
 {
   "schema_version": 1,
   "project_id": "mounting_plate",
-  "current_revision": 2,
+  "current_revision": 4,
   "revisions": [
     {
       "revision": 2,
       "record": "0002_rebuild_accept.json",
+      "status": "accepted"
+    },
+    {
+      "revision": 3,
+      "record": "0003_rebuild_accept.json",
+      "status": "accepted"
+    },
+    {
+      "revision": 4,
+      "record": "0004_rebuild_accept.json",
       "status": "accepted"
     }
   ]

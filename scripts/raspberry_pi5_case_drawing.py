@@ -251,31 +251,37 @@ def generate_drawing(parameters=None):
     )
     add_annotation(
         Dimension(
-            base_front_point(-parameters["side_window_width"] / 2, parameters["side_window_z"]),
-            base_front_point(parameters["side_window_width"] / 2, parameters["side_window_z"]),
+            base_front_point(
+                parameters["usb_c_center_x"] - parameters["usb_c_opening_width"] / 2,
+                parameters["usb_c_z"],
+            ),
+            base_front_point(
+                parameters["usb_c_center_x"] + parameters["usb_c_opening_width"] / 2,
+                parameters["usb_c_z"],
+            ),
             "below",
             12.0,
             draft,
-            label=dimension_label(parameters["side_window_width"]),
+            label=dimension_label(parameters["usb_c_opening_width"]),
         ),
-        "base_side_window_width",
+        "base_usb_c_opening_width",
     )
     add_annotation(
         Dimension(
             base_front_point(
                 -base_outer_length / 2,
-                parameters["side_window_z"],
+                parameters["usb_c_z"],
             ),
             base_front_point(
                 -base_outer_length / 2,
-                parameters["side_window_z"] + parameters["side_window_height"],
+                parameters["usb_c_z"] + parameters["usb_c_height"],
             ),
             "left",
             18.0,
             draft,
-            label=dimension_label(parameters["side_window_height"]),
+            label=dimension_label(parameters["usb_c_height"]),
         ),
-        "base_side_window_height",
+        "base_usb_c_opening_height",
     )
     add_annotation(
         Leader(
@@ -301,12 +307,12 @@ def generate_drawing(parameters=None):
     )
     add_annotation(
         Leader(
-            base_front_point(0.0, parameters["side_window_z"] + parameters["side_window_height"] / 2),
+            base_front_point(parameters["usb_c_center_x"], parameters["usb_c_z"] + parameters["usb_c_height"] / 2),
             (130.0, 118.0, 0),
-            "SIDE WINDOWS (PROTOTYPE)",
+            "USB-C / micro-HDMI OPENINGS",
             draft,
         ),
-        "base_side_window_callout",
+        "base_connector_callout",
     )
 
     add_annotation(

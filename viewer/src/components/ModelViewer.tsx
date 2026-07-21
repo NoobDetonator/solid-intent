@@ -7,13 +7,14 @@ import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 
 import type { ProjectData } from "../types";
-import { bodyColor, bodyLabel, renderableBodies, validatedSolidCount } from "../bodies";
+import { bodyColor, bodyLabel, renderableBodies, validatedSolidCount, type SceneMode } from "../bodies";
 import { useLocalStorage } from "../useLocalStorage";
 import type { BodyVisibility } from "./ContextRail";
 
 interface ModelViewerProps {
   project: ProjectData;
   bodyVisibility: BodyVisibility;
+  sceneMode: SceneMode;
 }
 
 const EXPLODED_GAP_MM = 20;
@@ -129,12 +130,12 @@ function CameraRig({ fitNonce }: { fitNonce: number }) {
   );
 }
 
-export function ModelViewer({ project, bodyVisibility }: ModelViewerProps) {
+export function ModelViewer({ project, bodyVisibility, sceneMode }: ModelViewerProps) {
   const [exploded, setExploded] = useLocalStorage("solidintent.view.exploded", true);
   const [transparent, setTransparent] = useLocalStorage("solidintent.view.transparent", false);
   const [fitNonce, setFitNonce] = useState(0);
 
-  const bodyNames = useMemo(() => renderableBodies(project), [project]);
+  const bodyNames = useMemo(() => renderableBodies(project, sceneMode), [project, sceneMode]);
   const urls = useMemo(
     () =>
       bodyNames.map(
@@ -144,6 +145,7 @@ export function ModelViewer({ project, bodyVisibility }: ModelViewerProps) {
   );
   const available = bodyNames.length > 0;
   const allHidden = available && bodyNames.every((name) => bodyVisibility[name] === false);
+  const useExploded = sceneMode === "assembled" ? exploded : false;
 
   const solidCount = validatedSolidCount(project);
   const bodyLabels = bodyNames.map(bodyLabel).join(" + ") || "No local bodies";
@@ -152,6 +154,8 @@ export function ModelViewer({ project, bodyVisibility }: ModelViewerProps) {
     <section className="model-stage" aria-label="Generated model viewer">
       <div className="stage-meta">
         <span>{bodyLabels}</span>
+        <span aria-hidden="true">·</span>
+        <span>{sceneMode === "print" ? "FDM print orientation" : "Assembled orientation"}</span>
         <span aria-hidden="true">·</span>
         <span>
           {solidCount} validated {solidCount === 1 ? "solid" : "solids"}
@@ -162,7 +166,7 @@ export function ModelViewer({ project, bodyVisibility }: ModelViewerProps) {
 
       {available ? (
         <Canvas
-          key={project.manifest.project_id}
+          key={`${project.manifest.project_id}-${sceneMode}`}
           className="model-canvas"
           camera={{ position: [126, 94, 126], fov: 34, near: 0.1, far: 1000 }}
           dpr={[1, 1.75]}
@@ -178,7 +182,7 @@ export function ModelViewer({ project, bodyVisibility }: ModelViewerProps) {
               urls={urls}
               names={bodyNames}
               bodyVisibility={bodyVisibility}
-              exploded={exploded}
+              exploded={useExploded}
               transparent={transparent}
             />
           </Suspense>
@@ -207,9 +211,10 @@ export function ModelViewer({ project, bodyVisibility }: ModelViewerProps) {
           Fit view
         </button>
         <button
-          className={exploded ? "is-active" : ""}
+          className={useExploded ? "is-active" : ""}
           type="button"
-          aria-pressed={exploded}
+          aria-pressed={useExploded}
+          disabled={sceneMode === "print"}
           onClick={() => setExploded((value) => !value)}
         >
           <Layers3 aria-hidden="true" />

@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "project_id": "raspberry_pi5_case",
+  "revision": 5,
+  "status": "accepted",
+  "created_at": "2026-07-21",
+  "authoring_agent": "rebuild_project",
+  "summary": "Added Active Cooler keep-out + fan clearance; MCP validate/printability; VTK assembled PNG.",
+  "changes": [
+    "Added active_cooler_keepout interface from the official Active Cooler mechanical drawing.",
+    "Fit-checked cooler against base and assembled lid (including fan clearance).",
+    "Exported assembled VTK PNG via build123d-mcp render_view.",
+    "Recorded physical-verification checklist for drawing-derived connector/cooler envelopes.",
+    "Updated source hashes to the current model/parameters/schema."
+  ],
+  "source_hashes_sha256": {
+    "model": "DC88C398CBD2E9CD1896E5AD3769FCBC8B9B08FE3F5251C5F35C9E62E98094F8",
+    "parameters": "7C0E5671C327626AF3CC673C2D731F2BA5918C17D57FE54446B9E55AA044804A",
+    "parameter_schema": "6F21D3690D752AF6F46335A7097421A8CBA27BEE6409388AC9C12CD56C0E0180"
+  },
+  "validation": "../validation.json",
+  "parameters_snapshot": {
+    "pcb_length": 85.0,
+    "pcb_width": 56.0,
+    "pcb_thickness": 1.6,
+    "mount_pitch_x": 58.0,
+    "mount_pitch_y": 49.0,
+    "mount_edge_offset": 3.5,
+    "mount_hole_diameter": 2.7,
+    "pcb_clearance": 1.2,
+    "wall_thickness": 2.4,
+    "floor_thickness": 2.4,
+    "base_height": 22.0,
+    "outer_corner_radius": 3.0,
+    "standoff_diameter": 6.4,
+    "standoff_height": 4.0,
+    "lid_top_thickness": 2.4,
+    "lid_skirt_depth": 3.0,
+    "lid_skirt_thickness": 2.0,
+    "lid_fit_clearance": 0.3,
+    "usb_c_center_x": -21.5,
+    "usb_c_opening_width": 13.3,
+    "usb_c_z": 6.0,
+    "usb_c_height": 8.0,
+    "micro_hdmi_0_center_x": -5.5,
+    "micro_hdmi_1_center_x": 8.5,
+    "micro_hdmi_opening_width": 10.2,
+    "micro_hdmi_z": 6.0,
+    "micro_hdmi_height": 6.5,
+    "usb_2_center_y": -18.0,
+    "usb_3_center_y": 0.0,
+    "usb_opening_width": 16.5,
+    "usb_z": 6.0,
+    "usb_height": 16.0,
+    "ethernet_center_y": 18.0,
+    "ethernet_opening_width": 17.0,
+    "ethernet_z": 6.0,
+    "ethernet_height": 15.0,
+    "microsd_center_y": -15.5,
+    "microsd_opening_width": 17.0,
+    "microsd_z": 2.6,
+    "microsd_height": 5.2,
+    "gpio_slot_center_x": -10.5,
+    "gpio_slot_center_y": 23.7,
+    "gpio_slot_length": 54.0,
+    "gpio_slot_width": 8.5,
+    "cooler_length": 63.5,
+    "cooler_width": 42.5,
+    "cooler_height": 13.7,
+    "cooler_center_x": 0.0,
+    "cooler_center_y": 0.0,
+    "cooler_fan_clearance": 2.0,
+    "base_vent_length": 32.0,
+    "base_vent_width": 3.0,
+    "lid_vent_length": 55.0,
+    "lid_vent_width": 3.0
+  },
+  "geometry_deltas": {
+    "base": {
+      "volume_mm3": 0.0,
+      "bbox_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "topology_delta": {
+        "faces": 0,
+        "edges": 0,
+        "vertices": 0
+      },
+      "validate": "PASS"
+    },
+    "lid": {
+      "volume_mm3": 0.0,
+      "bbox_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "topology_delta": {
+        "faces": 0,
+        "edges": 0,
+        "vertices": 0
+      },
+      "validate": "PASS"
+    }
+  }
+}

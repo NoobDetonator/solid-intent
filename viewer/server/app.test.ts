@@ -211,3 +211,93 @@ describe("artifacts", () => {
     expect(response.status).toBe(404);
   });
 });
+
+describe("rebuild route", () => {
+  it("returns 400 for an invalid project id", async () => {
+    const response = await request(
+      createApiApp(paths, {
+        rebuildRunner: async () => ({ code: 0, stdout: "ok", stderr: "" }),
+      }),
+    )
+      .post("/api/projects/Bad-Id/rebuild")
+      .send({ accept: true });
+    expect(response.status).toBe(400);
+  });
+
+  it("returns 404 for an unknown project", async () => {
+    const response = await request(
+      createApiApp(paths, {
+        rebuildRunner: async () => ({ code: 0, stdout: "ok", stderr: "" }),
+      }),
+    )
+      .post("/api/projects/missing_case/rebuild")
+      .send({ accept: true });
+    expect(response.status).toBe(404);
+  });
+
+  it("returns 409 when the project is clean and accept is omitted", async () => {
+    const { createHash } = await import("node:crypto");
+    const projectDir = path.join(paths.projectsRoot, "sample_case");
+    const hashFile = async (filename: string) => {
+      const content = await fs.readFile(filename);
+      return createHash("sha256").update(content).digest("hex").toUpperCase();
+    };
+    await writeJson(path.join(projectDir, "validation.json"), {
+      accepted_revision: 1,
+      geometry: { base: {} },
+      source_hashes_sha256: {
+        model: await hashFile(path.join(projectDir, "model.py")),
+        parameters: await hashFile(path.join(projectDir, "parameters.json")),
+        parameter_schema: await hashFile(path.join(projectDir, "parameter_schema.json")),
+      },
+    });
+
+    let called = false;
+    const response = await request(
+      createApiApp(paths, {
+        rebuildRunner: async () => {
+          called = true;
+          return { code: 0, stdout: "ok", stderr: "" };
+        },
+      }),
+    )
+      .post("/api/projects/sample_case/rebuild")
+      .send({});
+    expect(response.status).toBe(409);
+    expect(called).toBe(false);
+  });
+
+  it("returns 422 when the rebuild runner fails", async () => {
+    const response = await request(
+      createApiApp(paths, {
+        rebuildRunner: async () => ({
+          code: 2,
+          stdout: "gate failed",
+          stderr: "volume delta",
+        }),
+      }),
+    )
+      .post("/api/projects/sample_case/rebuild")
+      .send({ accept: true });
+    expect(response.status).toBe(422);
+    expect(response.body.error).toMatch(/gates failed/i);
+  });
+
+  it("returns the project payload when rebuild succeeds", async () => {
+    const response = await request(
+      createApiApp(paths, {
+        rebuildRunner: async (_root, projectId, options) => {
+          expect(projectId).toBe("sample_case");
+          expect(options.accept).toBe(true);
+          expect(options.exportArtifacts).toBe(true);
+          return { code: 0, stdout: "accepted revision 2", stderr: "" };
+        },
+      }),
+    )
+      .post("/api/projects/sample_case/rebuild")
+      .send({ accept: true });
+    expect(response.status).toBe(200);
+    expect(response.body.ok).toBe(true);
+    expect(response.body.project.manifest.project_id).toBe("sample_case");
+  });
+});

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, Box, RefreshCw } from "lucide-react";
 
-import { listProjects, loadProject, saveParameters } from "./api";
-import { renderableBodies } from "./bodies";
+import { listProjects, loadProject, rebuildProject, saveParameters } from "./api";
+import { renderableBodies, type SceneMode } from "./bodies";
 import { ContextRail, type BodyVisibility } from "./components/ContextRail";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Inspector } from "./components/Inspector";
@@ -48,10 +48,12 @@ export default function App() {
     "solidintent.view.evidence",
     "parameters",
   );
+  const [sceneMode, setSceneMode] = useLocalStorage<SceneMode>("solidintent.view.sceneMode", "assembled");
   const [bodyVisibility, setBodyVisibility] = useState<BodyVisibility>({});
   const [draftValues, setDraftValues] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [rebuilding, setRebuilding] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastState>(null);
 
@@ -93,11 +95,11 @@ export default function App() {
   const activeProjectId = project?.manifest.project_id;
   useEffect(() => {
     if (!project) return;
-    const bodies = renderableBodies(project);
+    const bodies = renderableBodies(project, sceneMode);
     setBodyVisibility(Object.fromEntries(bodies.map((body) => [body, true])));
-    // Reset body visibility only when the active project changes, not on every save.
+    // Reset body visibility when the active project or orientation mode changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeProjectId]);
+  }, [activeProjectId, sceneMode]);
 
   useEffect(() => {
     if (!toast) return;
@@ -142,8 +144,8 @@ export default function App() {
     const projectPath = `projects/${project.manifest.project_id}`;
     return [
       `Project '${project.manifest.project_id}' is dirty (${changed} ≠ accepted revision ${project.manifest.revision}).`,
-      `Run: uv run --python 3.12 --with build123d --with jsonschema python scripts/rebuild_project.py ${projectPath} --export --accept`,
-      "Prefer build123d-mcp when available for printability and canonical gates; local rebuild_project covers measure/compare/accept.",
+      `Run: uv run --python 3.12 --with build123d --with build123d-drafting-helpers --with jsonschema --with mcp --with resvg-py python scripts/rebuild_project.py ${projectPath} --export --mcp --accept`,
+      "Prefer --mcp so validate/printability run through build123d-mcp on exported STEP solids.",
     ].join(" ");
   }, [project]);
 
@@ -153,6 +155,31 @@ export default function App() {
       setToast({ kind: "success", message: "AI rebuild prompt copied to the clipboard." });
     } catch {
       setToast({ kind: "error", message: "The browser could not access the clipboard." });
+    }
+  }
+
+  async function runRebuildAccept() {
+    if (!project || unsavedCount > 0 || rebuilding) return;
+    setRebuilding(true);
+    try {
+      const result = await rebuildProject(project.manifest.project_id, {
+        accept: true,
+        export: true,
+      });
+      setProject(result.project);
+      setToast({
+        kind: "success",
+        message: result.project.status.dirty
+          ? "Rebuild finished, but the project is still dirty."
+          : `Rebuild accepted at revision ${result.project.manifest.revision}.`,
+      });
+    } catch (caught) {
+      setToast({
+        kind: "error",
+        message: caught instanceof Error ? caught.message : "Rebuild failed.",
+      });
+    } finally {
+      setRebuilding(false);
     }
   }
 
@@ -166,15 +193,19 @@ export default function App() {
         project={project}
         projects={projects}
         unsavedCount={unsavedCount}
+        rebuilding={rebuilding}
         onSelectProject={(id) => void selectProject(id)}
         onCopyRebuildPrompt={() => void copyRebuildPrompt()}
+        onRebuild={() => void runRebuildAccept()}
       />
       <main className="workspace" id="main-content">
         <ContextRail
           project={project}
           selectedView={selectedView}
           bodyVisibility={bodyVisibility}
+          sceneMode={sceneMode}
           onSelectView={setSelectedView}
+          onSceneModeChange={setSceneMode}
           onToggleBody={(body) =>
             setBodyVisibility((current) => ({ ...current, [body]: current[body] === false }))
           }
@@ -193,17 +224,19 @@ export default function App() {
             </section>
           }
         >
-          <ModelViewer project={project} bodyVisibility={bodyVisibility} />
+          <ModelViewer project={project} bodyVisibility={bodyVisibility} sceneMode={sceneMode} />
         </ErrorBoundary>
         <Inspector
           project={project}
           selectedView={selectedView}
           draftValues={draftValues}
           saving={saving}
+          rebuilding={rebuilding}
           onDraftChange={updateDraft}
           onDiscard={() => setDraftValues({})}
           onSave={() => void persistDraft()}
           onCopyRebuildPrompt={() => void copyRebuildPrompt()}
+          onRebuild={() => void runRebuildAccept()}
         />
       </main>
       {toast ? (
