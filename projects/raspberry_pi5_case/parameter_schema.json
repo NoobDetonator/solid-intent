@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.ai-cad/schemas/raspberry_pi5_case.parameters.schema.json",
+  "title": "Raspberry Pi 5 enclosure parameters",
+  "description": "Validation and parameter-editor metadata for the AI CAD project.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pcb_length",
+    "pcb_width",
+    "pcb_thickness",
+    "mount_pitch_x",
+    "mount_pitch_y",
+    "mount_edge_offset",
+    "mount_hole_diameter",
+    "pcb_clearance",
+    "wall_thickness",
+    "floor_thickness",
+    "base_height",
+    "outer_corner_radius",
+    "standoff_diameter",
+    "standoff_height",
+    "lid_top_thickness",
+    "lid_skirt_depth",
+    "lid_skirt_thickness",
+    "lid_fit_clearance",
+    "side_window_width",
+    "side_window_height",
+    "side_window_z",
+    "end_window_width",
+    "end_window_height",
+    "end_window_z",
+    "base_vent_length",
+    "base_vent_width",
+    "lid_vent_length",
+    "lid_vent_width"
+  ],
+  "properties": {
+    "pcb_length": {"$ref": "#/$defs/locked_dimension", "title": "PCB length", "minimum": 84.5, "maximum": 85.5, "x-ui": {"group": "Reference PCB", "order": 10}},
+    "pcb_width": {"$ref": "#/$defs/locked_dimension", "title": "PCB width", "minimum": 55.5, "maximum": 56.5, "x-ui": {"group": "Reference PCB", "order": 20}},
+    "pcb_thickness": {"$ref": "#/$defs/locked_dimension", "title": "Nominal PCB thickness", "minimum": 1.4, "maximum": 2.0, "x-ui": {"group": "Reference PCB", "order": 30}},
+    "mount_pitch_x": {"$ref": "#/$defs/locked_dimension", "title": "Mounting pitch X", "minimum": 57.5, "maximum": 58.5, "x-ui": {"group": "Reference PCB", "order": 40}},
+    "mount_pitch_y": {"$ref": "#/$defs/locked_dimension", "title": "Mounting pitch Y", "minimum": 48.5, "maximum": 49.5, "x-ui": {"group": "Reference PCB", "order": 50}},
+    "mount_edge_offset": {"$ref": "#/$defs/locked_dimension", "title": "Mounting edge offset", "minimum": 3.0, "maximum": 4.0, "x-ui": {"group": "Reference PCB", "order": 60}},
+    "mount_hole_diameter": {"$ref": "#/$defs/locked_dimension", "title": "PCB mounting hole diameter", "minimum": 2.5, "maximum": 3.2, "x-ui": {"group": "Reference PCB", "order": 70}},
+
+    "pcb_clearance": {"$ref": "#/$defs/editable_dimension", "title": "PCB edge clearance", "minimum": 0.5, "maximum": 4.0, "x-step": 0.05, "x-ui": {"group": "Base", "order": 100, "control": "number"}},
+    "wall_thickness": {"$ref": "#/$defs/editable_dimension", "title": "Wall thickness", "minimum": 1.2, "maximum": 5.0, "x-step": 0.1, "x-ui": {"group": "Base", "order": 110, "control": "slider"}},
+    "floor_thickness": {"$ref": "#/$defs/editable_dimension", "title": "Floor thickness", "minimum": 1.2, "maximum": 5.0, "x-step": 0.1, "x-ui": {"group": "Base", "order": 120, "control": "slider"}},
+    "base_height": {"$ref": "#/$defs/editable_dimension", "title": "Base height", "minimum": 16.0, "maximum": 45.0, "x-step": 0.1, "x-ui": {"group": "Base", "order": 130, "control": "slider"}},
+    "outer_corner_radius": {"$ref": "#/$defs/editable_dimension", "title": "Outer corner radius", "minimum": 1.0, "maximum": 8.0, "x-step": 0.1, "x-ui": {"group": "Base", "order": 140, "control": "slider"}},
+    "standoff_diameter": {"$ref": "#/$defs/editable_dimension", "title": "Standoff diameter", "minimum": 4.5, "maximum": 10.0, "x-step": 0.1, "x-ui": {"group": "Mounting", "order": 150, "control": "number"}},
+    "standoff_height": {"$ref": "#/$defs/editable_dimension", "title": "Standoff height", "minimum": 2.0, "maximum": 10.0, "x-step": 0.1, "x-ui": {"group": "Mounting", "order": 160, "control": "number"}},
+
+    "lid_top_thickness": {"$ref": "#/$defs/editable_dimension", "title": "Lid top thickness", "minimum": 1.2, "maximum": 5.0, "x-step": 0.1, "x-ui": {"group": "Lid", "order": 200, "control": "slider"}},
+    "lid_skirt_depth": {"$ref": "#/$defs/editable_dimension", "title": "Lid skirt depth", "minimum": 1.5, "maximum": 8.0, "x-step": 0.1, "x-ui": {"group": "Lid", "order": 210, "control": "slider"}},
+    "lid_skirt_thickness": {"$ref": "#/$defs/editable_dimension", "title": "Lid skirt thickness", "minimum": 1.2, "maximum": 4.0, "x-step": 0.1, "x-ui": {"group": "Lid", "order": 220, "control": "slider"}},
+    "lid_fit_clearance": {"$ref": "#/$defs/editable_dimension", "title": "Lid clearance per side", "minimum": 0.05, "maximum": 0.6, "x-step": 0.05, "x-ui": {"group": "Lid", "order": 230, "control": "slider", "warning": "Calibrate for printer and material"}},
+
+    "side_window_width": {"$ref": "#/$defs/advanced_dimension", "title": "Side window width", "minimum": 30.0, "maximum": 80.0, "x-ui": {"group": "Connector windows", "order": 300}},
+    "side_window_height": {"$ref": "#/$defs/advanced_dimension", "title": "Side window height", "minimum": 6.0, "maximum": 16.0, "x-ui": {"group": "Connector windows", "order": 310}},
+    "side_window_z": {"$ref": "#/$defs/advanced_dimension", "title": "Side window base height", "minimum": 2.0, "maximum": 14.0, "x-ui": {"group": "Connector windows", "order": 320}},
+    "end_window_width": {"$ref": "#/$defs/advanced_dimension", "title": "End window width", "minimum": 12.0, "maximum": 40.0, "x-ui": {"group": "Connector windows", "order": 330}},
+    "end_window_height": {"$ref": "#/$defs/advanced_dimension", "title": "End window height", "minimum": 4.0, "maximum": 14.0, "x-ui": {"group": "Connector windows", "order": 340}},
+    "end_window_z": {"$ref": "#/$defs/advanced_dimension", "title": "End window base height", "minimum": 1.0, "maximum": 12.0, "x-ui": {"group": "Connector windows", "order": 350}},
+
+    "base_vent_length": {"$ref": "#/$defs/advanced_dimension", "title": "Base vent slot length", "minimum": 10.0, "maximum": 45.0, "x-ui": {"group": "Ventilation", "order": 400}},
+    "base_vent_width": {"$ref": "#/$defs/advanced_dimension", "title": "Base vent slot width", "minimum": 1.5, "maximum": 6.0, "x-ui": {"group": "Ventilation", "order": 410}},
+    "lid_vent_length": {"$ref": "#/$defs/advanced_dimension", "title": "Lid vent slot length", "minimum": 10.0, "maximum": 70.0, "x-ui": {"group": "Ventilation", "order": 420}},
+    "lid_vent_width": {"$ref": "#/$defs/advanced_dimension", "title": "Lid vent slot width", "minimum": 1.5, "maximum": 6.0, "x-ui": {"group": "Ventilation", "order": 430}}
+  },
+  "$defs": {
+    "editable_dimension": {
+      "type": "number",
+      "x-unit": "mm",
+      "x-user-editable": true,
+      "x-semantic-change": false
+    },
+    "advanced_dimension": {
+      "type": "number",
+      "x-unit": "mm",
+      "x-user-editable": true,
+      "x-semantic-change": false,
+      "x-ui": {"advanced": true}
+    },
+    "locked_dimension": {
+      "type": "number",
+      "x-unit": "mm",
+      "x-user-editable": false,
+      "x-semantic-change": true,
+      "x-lock-reason": "Controlled by reference hardware"
+    }
+  }
+}

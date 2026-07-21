@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "project_id": "raspberry_pi5_case",
+  "references": [
+    {
+      "id": "rpi5_mechanical_drawing",
+      "kind": "official_reference_drawing",
+      "trust_class": "official_manufacturer_drawing",
+      "author": "Raspberry Pi Ltd",
+      "source_url": "https://datasheets.raspberrypi.com/rpi5/raspberry-pi-5-mechanical-drawing.pdf",
+      "license_status": "reference_only",
+      "redistributed": false,
+      "use": [
+        "PCB outline envelope",
+        "Mounting hole pattern and pitch"
+      ],
+      "limitations": [
+        "Connector cutout geometry not transferred",
+        "Active Cooler and fan clearance not modelled"
+      ]
+    }
+  ]
+}

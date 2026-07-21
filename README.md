@@ -104,18 +104,17 @@ still require verification on the exact physical board, printer, and material.
       access, external cap lid, GPIO access, and a 30 mm fan pattern.
     </td>
     <td valign="top">
-      <strong>Raspberry Pi 5 enclosure study</strong><br>
-      A standalone parametric two-piece FDM script (<code>scripts/raspberry_pi5_case.py</code>)
-      with a machine-readable design spec. It predates the persistent project
-      contract and has not yet been migrated into <code>projects/</code>, so it has
-      no manifest, schema-validated parameters, or accepted validation revision.
+      <strong>Raspberry Pi 5 enclosure</strong><br>
+      A persistent two-piece FDM project with a 28-parameter contract, schema-
+      validated editable/advanced/locked dimensions, oversized prototype
+      connector windows, a PCB fit-check proxy, and locally-measured validation
+      evidence.
     </td>
   </tr>
 </table>
 
-The Pi 4 case is the first project on the persistent contract; the Pi 5 case is
-an earlier parametric study. Both are prototypes: production use requires current
-official hardware evidence and physical fit verification.
+Both cases are prototypes on the persistent project contract. Production use
+requires current official hardware evidence and physical fit verification.
 
 ## How it works
 
