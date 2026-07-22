@@ -17,8 +17,8 @@ Curated engineering and product docs for SolidIntent.
 
 | Path | Description |
 | --- | --- |
-| [brand/solidintent_logo.png](brand/solidintent_logo.png) | Wordmark, white on transparent (dark UI) |
-| [brand/solidintent_logo_readme.png](brand/solidintent_logo_readme.png) | Wordmark, dark on transparent (light UI / README) |
+| [brand/solidintent_logo.png](brand/solidintent_logo.png) | Wordmark, white on transparent |
+| [brand/solidintent_logo_readme.png](brand/solidintent_logo_readme.png) | White wordmark on graphite banner (README) |
 | [brand/solidintent_logo.svg](brand/solidintent_logo.svg) | Lightweight geometric mark (no background fill) |
 | [screenshots/](screenshots/) | README hero frames |
 | [showcase/](showcase/) | Synced assembled, exploded, and dimensioned previews |

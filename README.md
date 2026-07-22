@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/brand/solidintent_logo_readme.png" alt="SolidIntent" width="360">
+  <img src="docs/brand/solidintent_logo_readme.png" alt="SolidIntent" width="420">
 </p>
 
 <h1 align="center">SolidIntent</h1>
