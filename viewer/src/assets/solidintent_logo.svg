@@ -1,12 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 40" role="img" aria-label="SolidIntent">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SolidIntent mark">
   <title>SolidIntent</title>
-  <g>
-    <!-- Isometric parametric solid: a base and a cap, echoing the two-piece enclosure -->
-    <polygon points="18,3 33,11.5 18,20 3,11.5" fill="#6f9bff"/>
-    <polygon points="3,11.5 18,20 18,33 3,24.5" fill="#3f6ae0"/>
-    <polygon points="18,20 33,11.5 33,24.5 18,33" fill="#2f4fb0"/>
+  <g fill="none" stroke="#e8eeec" stroke-width="2.5" stroke-linejoin="round">
+    <path d="M28 12h18a6 6 0 0 1 6 6v28a6 6 0 0 1-6 6H28"/>
+    <path d="M28 12c-8 4-14 12-14 22s6 18 14 22" stroke-dasharray="3 3"/>
   </g>
-  <text x="46" y="28.5" font-family="'Geist Variable','Segoe UI',system-ui,-apple-system,Arial,sans-serif" font-size="23" letter-spacing="-0.6">
-    <tspan font-weight="650" fill="#f2f5f4">Solid</tspan><tspan font-weight="450" fill="#96a19b">Intent</tspan>
-  </text>
 </svg>

@@ -10,54 +10,47 @@ web
 
 ## Users
 
-The primary user is a maker, engineer, or product builder who describes a part
-to an AI agent, reviews the generated geometry, and adjusts a controlled set of
-dimensions without operating a traditional CAD interface. The AI agent is the
-CAD operator; the human remains responsible for intent, review, and approval.
+Makers, engineers, and product builders who describe a part to an AI agent,
+review the geometry, and adjust a controlled set of dimensions — without
+running a traditional CAD workstation. The AI operates the CAD tools; the
+human owns intent, review, and approval.
 
-## Product Purpose
+## Purpose
 
-SolidIntent turns natural-language design intent into persistent, editable,
-parametric CAD projects. The web viewer makes the current model, parameters,
-reference status, validation evidence, and revision state understandable
-without exposing the complexity of a full CAD workstation.
+SolidIntent turns natural-language design intent into **persistent, editable,
+parametric CAD projects**. The web viewer makes the model, parameters,
+reference status, validation evidence, and revision state understandable.
 
-Success means a user can ask the AI for a part, inspect the result, safely tune
-allowed dimensions, understand what must be rebuilt or physically verified,
-and ask the AI to continue editing the same project later.
+Success means a user can ask for a part, inspect the result, safely tune
+allowed dimensions, see what still needs rebuild or physical verification, and
+continue the same project later.
 
 ## Positioning
 
-SolidIntent is an AI-operated CAD environment where design intent is the
-interface and a validated parametric project is the durable source of truth.
+AI-operated CAD where **design intent is the interface** and a validated
+parametric project is the durable source of truth.
 
-## Brand Personality
+## Brand personality
 
-Precise, restrained, and confident. The product should feel like a modern
-technical instrument: minimal, highly legible, and calm under dense engineering
-information. It uses no emoji and avoids decorative visual noise.
+Precise, restrained, confident. A modern technical instrument: minimal, highly
+legible, calm under dense engineering information. No emoji; no decorative
+noise.
 
 ## Anti-references
 
-SolidIntent must not resemble a traditional CAD workstation filled with dense
-toolbars, an ornamental science-fiction cockpit, or a generic SaaS dashboard
-made from interchangeable cards. Controls should appear only when they support
-the current task.
+Not a toolbar-heavy CAD suite, not a sci-fi cockpit, not a generic SaaS card
+dashboard. Controls appear only when they support the current task.
 
-## Design Principles
+## Design principles
 
-1. Make the AI the operator and the human the informed decision-maker.
-2. Reveal engineering complexity progressively, with evidence available on
-   demand rather than permanently occupying the screen.
-3. Separate editable intent from locked reference-controlled dimensions.
-4. Show rebuild, validation, and revision state honestly; never imply that a
-   visual preview is engineering proof.
-5. Preserve continuity so every project can be reopened, understood, and
-   refined by either the user or an AI agent.
+1. AI operates; human decides with evidence.
+2. Reveal complexity progressively — evidence on demand, not permanently on screen.
+3. Separate editable intent from locked reference dimensions.
+4. Show rebuild / validation / revision state honestly; a preview is not proof.
+5. Preserve continuity so projects reopen cleanly for humans and agents.
 
-## Accessibility & Inclusion
+## Accessibility
 
-Target WCAG 2.2 level AA. Maintain readable contrast, complete keyboard paths,
-visible focus states, descriptive labels, touch-friendly targets, and reduced-
-motion behavior. Do not rely on color alone to communicate locked, dirty,
+Target WCAG 2.2 AA: contrast, keyboard paths, focus states, labels, touch
+targets, and reduced motion. Never rely on colour alone for locked, dirty,
 validated, warning, or error states.

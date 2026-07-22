@@ -1,8 +1,8 @@
-# AI CAD Workbench Architecture
+# Architecture
 
 ## Product position
 
-This workspace is an AI-operated mechanical prototyping workbench. It is not a
+SolidIntent is an AI-operated mechanical prototyping workbench. It is not a
 general replacement for a mature interactive CAD system. Its strongest use
 cases are enclosures, brackets, adapters, fixtures, flanges, turned parts,
 small assemblies, and repeatable parametric edits.

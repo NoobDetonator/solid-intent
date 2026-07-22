@@ -1,22 +1,32 @@
-# AI CAD projects
+# Persistent projects
 
-Each directory is a persistent AI-editable CAD project. A project is a
-transparent collection of text files rather than an opaque CAD document.
+AI-editable CAD projects live here. Each directory is a complete contract:
 
-Required files:
+```text
+projects/<id>/
+  project.json           # manifest, artifacts, rebuild policy
+  parameters.json        # current values (mm)
+  parameter_schema.json  # editable / locked / advanced metadata
+  references.json        # provenance
+  validation.json        # last accepted evidence
+  revisions/             # immutable accept records
+```
 
-- `project.json` - identity, entry point, named bodies, outputs, and workflow.
-- `parameters.json` - current numeric and option values.
-- `parameter_schema.json` - validation rules and parameter-editor metadata.
-- `references.json` - reference provenance and trust classification.
-- `validation.json` - results from the last accepted MCP validation run.
-- `revisions/` - immutable revision records and parameter snapshots.
+## Current pilots
 
-The model entry point must accept the complete parameter mapping and return a
-dictionary containing stable `bodies` and `interfaces` names. STEP/STL live in
-`exports/`; SVG technical previews live in `renders/`; dimensioned sheets live
-in `drawings/`. Regenerate locally with `scripts/export_artifacts.py`.
+| ID | Title |
+| --- | --- |
+| `raspberry_pi4_case` | Raspberry Pi 4 Model B enclosure |
+| `raspberry_pi5_case` | Raspberry Pi 5 enclosure |
+| `mounting_plate` | Slotted mounting plate |
 
-User parameter edits update `parameters.json`. Semantic changes update the
-model source and, when necessary, the schema. Every rebuild must pass the same
-MCP validation gates before becoming the accepted project revision.
+Regenerate geometry and showcase copies from the repo root:
+
+```bash
+uv run --python 3.12 --with build123d --with build123d-drafting-helpers \
+  --with jsonschema --with resvg-py \
+  python scripts/export_artifacts.py --all
+```
+
+See [`docs/ai_cad_project_format.md`](../docs/ai_cad_project_format.md) for the
+full lifecycle.

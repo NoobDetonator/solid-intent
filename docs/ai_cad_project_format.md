@@ -1,4 +1,4 @@
-# AI CAD project format
+# Project format
 
 ## Purpose
 
