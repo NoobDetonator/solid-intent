@@ -37,7 +37,11 @@
     "assembled_preview": "../../renders/raspberry_pi_zero2w_case_assembled.svg",
     "exploded_preview": "../../renders/raspberry_pi_zero2w_case_exploded.svg",
     "assembled_preview_png": "../../renders/raspberry_pi_zero2w_case_assembled.png",
-    "exploded_preview_png": "../../renders/raspberry_pi_zero2w_case_exploded.png"
+    "exploded_preview_png": "../../renders/raspberry_pi_zero2w_case_exploded.png",
+    "assembled_preview_hires_png": "../../renders/raspberry_pi_zero2w_case_assembled_hires.png",
+    "exploded_preview_hires_png": "../../renders/raspberry_pi_zero2w_case_exploded_hires.png",
+    "assembled_vtk_png": "../../renders/raspberry_pi_zero2w_case_assembled_vtk.png",
+    "exploded_vtk_png": "../../renders/raspberry_pi_zero2w_case_exploded_vtk.png"
   },
   "rebuild_policy": {
     "geometry_executor": "build123d-mcp",
