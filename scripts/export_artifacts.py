@@ -148,6 +148,7 @@ def _export_dimensioned_drawing(project_id: str, project_dir: Path, manifest: di
     drawing_modules = {
         "raspberry_pi4_case": "raspberry_pi4_case_drawing",
         "raspberry_pi5_case": "raspberry_pi5_case_drawing",
+        "raspberry_pi_zero2w_case": "raspberry_pi_zero2w_case_drawing",
     }
     module_name = drawing_modules.get(project_id)
     if module_name is None:
