@@ -1,241 +1,178 @@
 <p align="center">
-  <img src="docs/brand/solidintent_logo.png" alt="SolidIntent" width="420">
+  <img src="docs/brand/solidintent_logo_readme.png" alt="SolidIntent" width="360">
 </p>
 
-# SolidIntent
-
-**From intent to validated parametric solids.**
+<h1 align="center">SolidIntent</h1>
 
 <p align="center">
-  <img src="docs/screenshots/solidintent_overview.png" alt="SolidIntent viewer showing the assembled Raspberry Pi 4 enclosure and its editable parameter inspector" width="100%">
+  <strong>From intent to validated parametric solids.</strong><br>
+  An AI-first CAD workspace where design intent stays editable, measurable, and rebuildable.
 </p>
 
 <p align="center">
-  <strong>An AI-first, headless CAD workspace built around persistent design intent.</strong><br>
-  Ask the AI for a part, inspect the generated model, adjust approved dimensions,
-  and preserve the evidence required to rebuild and validate it.
+  <img src="docs/screenshots/solidintent_overview.png" alt="SolidIntent viewer with an assembled enclosure and parameter inspector" width="100%">
 </p>
 
 <p align="center">
   <a href="#product-tour">Product tour</a> ·
-  <a href="#engineering-documentation">Engineering documentation</a> ·
-  <a href="#how-it-works">How it works</a> ·
-  <a href="#quick-start">Quick start</a>
+  <a href="#projects">Projects</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#documentation">Docs</a>
 </p>
 
-## What SolidIntent provides
+---
 
-| Layer | Responsibility |
+## Why SolidIntent
+
+Most AI CAD demos stop at a mesh preview. SolidIntent keeps a **persistent project**: named parameters, locked reference dimensions, validation evidence, and revision history — so you can reopen the same part later and trust what changed.
+
+| Layer | Role |
 | --- | --- |
-| AI agent | Creates and refines parametric models from natural-language intent. |
-| Persistent project | Stores parameters, schema, references, validation evidence, and revision history. |
-| `build123d-mcp` | Executes geometry, measures solids, renders views, validates topology, and exports files. |
-| Web viewer | Displays generated STL bodies and lets users edit only schema-approved parameters. |
+| AI agent | Turns natural-language intent into parametric edits |
+| Persistent project | Parameters, schema, references, validation, revisions |
+| `build123d-mcp` | Geometry, measure, fit checks, validate, export |
+| Web viewer | Inspect bodies and edit only schema-approved dimensions |
 
-The browser is deliberately not a CAD kernel. It edits design intent and shows
-accepted evidence; all engineering authority remains with `build123d-mcp` and
-the project acceptance workflow.
+The browser is not a CAD kernel. It edits intent and shows evidence; engineering authority stays with `build123d-mcp` and the accept loop.
 
 ## Product tour
 
 <table>
   <tr>
     <td width="50%">
-      <img src="docs/screenshots/solidintent_exploded.png" alt="Exploded Raspberry Pi enclosure with schema-driven parameter controls">
+      <img src="docs/screenshots/solidintent_exploded.png" alt="Exploded enclosure with parameter controls">
     </td>
     <td width="50%">
-      <img src="docs/screenshots/solidintent_validation.png" alt="Assembled Raspberry Pi enclosure with exact geometry validation evidence">
+      <img src="docs/screenshots/solidintent_validation.png" alt="Dimensioned drawing used as validation evidence">
     </td>
   </tr>
   <tr>
-    <td align="center"><sub>Exploded body inspection and schema-driven parameters</sub></td>
-    <td align="center"><sub>Accepted geometric evidence from build123d-mcp</sub></td>
+    <td align="center"><sub>Exploded inspection and schema-driven parameters</sub></td>
+    <td align="center"><sub>Dimensioned evidence from the rebuild pipeline</sub></td>
   </tr>
 </table>
 
-The current viewer discovers persistent projects, loads their real STL
-artifacts, separates editable dimensions from reference-controlled values, and
-derives clean or dirty state from accepted SHA-256 source hashes.
+## Projects
 
-## Engineering documentation
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="docs/showcase/raspberry_pi4_case_assembled.svg">
+        <img src="docs/showcase/raspberry_pi4_case_assembled.png" alt="Raspberry Pi 4 enclosure">
+      </a><br>
+      <strong>Raspberry Pi 4 Model B enclosure</strong><br>
+      <sub>Two-piece FDM case with connector openings, GPIO access, and a 30&nbsp;mm fan pattern.</sub>
+    </td>
+    <td width="50%" valign="top">
+      <a href="docs/showcase/raspberry_pi5_case_exploded.svg">
+        <img src="docs/showcase/raspberry_pi5_case_exploded.png" alt="Raspberry Pi 5 enclosure">
+      </a><br>
+      <strong>Raspberry Pi 5 enclosure</strong><br>
+      <sub>Persistent contract with Active Cooler keep-out, validation gates, and FDM print orientation.</sub>
+    </td>
+  </tr>
+</table>
 
 <p align="center">
   <a href="docs/showcase/raspberry_pi4_case_dimensioned.svg">
-    <img src="docs/showcase/raspberry_pi4_case_dimensioned.png" alt="A3 dimensioned drawing of the Raspberry Pi 4 enclosure base and lid" width="100%">
-  </a>
+    <img src="docs/showcase/raspberry_pi4_case_dimensioned.png" alt="A3 dimensioned drawing of the Pi 4 enclosure" width="100%">
+  </a><br>
+  <sub>A3 dimensioned drawing — plan, front, side, isometric. Click for SVG.</sub>
 </p>
 
-<p align="center"><sub>Combined A3 drawing with plan, front, side, and isometric views; dimensions in millimetres and an ISO 7200-style title block. Select the image for the full-resolution SVG.</sub></p>
-
-<table>
-  <tr>
-    <td width="50%">
-      <img src="docs/showcase/raspberry_pi4_case_assembled.svg" alt="Assembled Raspberry Pi 4 enclosure technical render">
-    </td>
-    <td width="50%">
-      <img src="docs/showcase/raspberry_pi4_case_exploded.svg" alt="Exploded Raspberry Pi 4 enclosure technical render">
-    </td>
-  </tr>
-  <tr>
-    <td align="center"><sub>Assembled enclosure</sub></td>
-    <td align="center"><sub>Exploded base and lid</sub></td>
-  </tr>
-</table>
-
-The Pi 4 drawing is backed by SVG and DXF output plus an MCP annotation sidecar
-for later machine inspection. Connector openings and the 0.15 mm lid clearance
-still require verification on the exact physical board, printer, and material.
-
-## Current projects
-
-<table>
-  <tr>
-    <td width="50%">
-      <img src="docs/showcase/raspberry_pi4_case_assembled.svg" alt="Raspberry Pi 4 Model B enclosure">
-    </td>
-    <td width="50%">
-      <img src="docs/showcase/raspberry_pi5_case_exploded.svg" alt="Raspberry Pi 5 prototype enclosure">
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <strong>Raspberry Pi 4 Model B enclosure</strong><br>
-      Persistent 42-parameter pilot with separate connector openings, microSD
-      access, external cap lid, GPIO access, and a 30 mm fan pattern.
-    </td>
-    <td valign="top">
-      <strong>Raspberry Pi 5 enclosure</strong><br>
-      A persistent two-piece FDM project with a 28-parameter contract, schema-
-      validated editable/advanced/locked dimensions, oversized prototype
-      connector windows, a PCB fit-check proxy, and locally-measured validation
-      evidence.
-    </td>
-  </tr>
-</table>
-
-Both Pi cases plus a small slotted mounting plate exercise the persistent project
-contract. Production use requires current official hardware evidence and
-physical fit verification.
+Also included: a small slotted **mounting plate** pilot under `projects/mounting_plate/`.
 
 ## How it works
 
 ```mermaid
 flowchart LR
     U["User intent"] --> A["AI agent"]
-    A <--> P["Persistent project files"]
+    A <--> P["Persistent project"]
     A --> M["build123d-mcp"]
     M --> G["OpenCASCADE geometry"]
     G --> O["STEP · STL · SVG · DXF"]
-    M --> V["Metrics · fit checks · validation"]
+    M --> V["Measure · fit · validate"]
     V --> P
     P <--> W["Web viewer"]
     W --> U
 ```
 
-1. The user describes a part or requests a change.
-2. The AI edits named parameters or the canonical `build_model(parameters)`
-   source.
-3. `build123d-mcp` rebuilds, measures, compares, validates, and exports the
-   geometry.
-4. Accepted hashes, evidence, and revision records are written back to the
-   persistent project.
-5. The viewer presents the generated bodies and safe dimensional controls.
+1. Describe a part or a change.
+2. The agent edits parameters or `build_model(parameters)`.
+3. `build123d-mcp` rebuilds, measures, compares, validates, and exports.
+4. Accepted hashes and revision records are written back.
+5. The viewer shows bodies and safe dimensional controls.
 
 ## Quick start
 
 ### CAD server
 
-The upstream-recommended command used by this workspace is:
-
-```text
-uv tool run --python 3.12 build123d-mcp@latest --in-process
+```bash
+uv tool run --python 3.12 build123d-mcp@latest
 ```
-
-Python 3.11–3.14 are supported; this workspace uses Python 3.12 as the
-conservative default. The `--in-process` fallback is used on this Windows Codex
-host after large reference assemblies made isolated worker spawning unstable.
-The host-level Codex sandbox remains the outer isolation boundary.
 
 ### Web viewer
 
-```text
+```bash
 cd viewer
 npm install
 npm run dev
 ```
 
-Open `http://127.0.0.1:4173`. Saving an allowed parameter updates
-`parameters.json` atomically and marks the project as requiring an AI/MCP
-rebuild. The viewer never regenerates, measures, validates, or exports geometry
-itself.
+Open [http://127.0.0.1:4173](http://127.0.0.1:4173). Saving an allowed parameter updates `parameters.json` and marks the project dirty until rebuild/accept.
+
+Local rebuild (CI-like gates without a live MCP session):
+
+```bash
+uv run --python 3.12 --with build123d --with jsonschema \
+  python scripts/rebuild_project.py projects/raspberry_pi4_case --export --accept
+```
 
 ## Project contract
 
-`projects/raspberry_pi4_case/` is the first persistent project-format pilot.
-Its manifest points to a `build_model(parameters)` entry point, schema-validates
-42 parameters, exposes 26 user-editable controls, locks 16
-reference-controlled values, tracks accepted source hashes, and stores
-machine-readable validation and revision records.
+Each project under `projects/<id>/` holds:
 
-A parameter or source edit makes the project dirty. The AI must rebuild it,
-compare it with the accepted revision, run every applicable gate, and record a
-new accepted revision before the project becomes clean again. See
-[`docs/ai_cad_project_format.md`](docs/ai_cad_project_format.md) for the full
-lifecycle.
+- `project.json` — manifest and artifact map  
+- `parameters.json` / `parameter_schema.json` — editable source of truth  
+- `validation.json` + `revisions/` — accepted evidence  
+- `references.json` — provenance  
 
-## Modeling workflow
-
-1. Call `version`, then `workflow_hints`, at the start of a fresh MCP session.
-2. Read `build123d://quickref` before using unfamiliar build123d operations.
-3. Build incrementally and assign stable names with `show()`.
-4. Use `measure` after every important boolean.
-5. Run fit, interference, and FDM orientation checks where applicable.
-6. Run `validate` immediately before every final export.
-7. Export through the MCP tool rather than custom file I/O.
-
-See [`prompts/smoke-test.md`](prompts/smoke-test.md) for the connected-client
-smoke test.
+A parameter or source edit makes the project **dirty**. Rebuild, compare, pass gates, then accept before it is clean again. Details: [`docs/ai_cad_project_format.md`](docs/ai_cad_project_format.md).
 
 ## Repository map
 
 | Path | Contents |
 | --- | --- |
-| `projects/` | Persistent AI-editable projects: parameters, schema, validation. |
-| `scripts/` | Canonical parametric regeneration sources. |
-| `viewer/` | Local React and Three.js project viewer. |
-| `exports/` | Generated STEP and STL (gitignored). |
-| `renders/` | Technical SVG assembled/exploded previews. |
-| `drawings/` | Dimensioned A3 SVG/DXF and annotation sidecar. |
-| `docs/showcase/` | README review copies synced from renders/drawings. |
-| `references/` | Drawings and imported comparison geometry. |
-| `docs/` | Architecture, studies, screenshots, and curated showcase assets. |
-| `notes/` | Test logs and design decisions. |
-| `environment/` | Exact tool versions and environment validation. |
+| `projects/` | Persistent AI-editable projects |
+| `scripts/` | Parametric regeneration sources |
+| `viewer/` | React + Three.js inspector |
+| `exports/` | Generated STEP/STL (gitignored) |
+| `renders/` | Assembled / exploded previews |
+| `drawings/` | Dimensioned SVG/DXF |
+| `docs/` | Architecture, brand, showcase, screenshots |
+| `specs/` | Design-intent notes |
+| `references/` | External evidence packages |
+| `notes/` | Verification checklists |
+
+## Documentation
+
+| Doc | Topic |
+| --- | --- |
+| [`PRODUCT.md`](PRODUCT.md) | Product purpose and positioning |
+| [`DESIGN.md`](DESIGN.md) | Visual system and UI principles |
+| [`docs/ai_cad_architecture.md`](docs/ai_cad_architecture.md) | System architecture |
+| [`docs/ai_cad_project_format.md`](docs/ai_cad_project_format.md) | Project lifecycle contract |
+| [`AGENTS.md`](AGENTS.md) | Agent operating rules |
+| [`docs/README.md`](docs/README.md) | Docs index |
 
 ## Reference policy
 
-Mechanical evidence is used in this order: current official manufacturer CAD,
-measurements from the exact physical revision, official reference drawings,
-trusted third-party CAD, and finally product images. Third-party assemblies are
-evidence, not automatic production truth. See
-[`references/README.md`](references/README.md) and [`AGENTS.md`](AGENTS.md) for
-the complete policy.
+Evidence order: official manufacturer CAD → physical measurements → official drawings → trusted third-party CAD → photos. Never silently copy connector positions between board generations. See [`references/README.md`](references/README.md) and [`AGENTS.md`](AGENTS.md).
 
-## Credits and provenance
+## Credits
 
-SolidIntent builds on the open-source
-[`build123d-mcp`](https://github.com/pzfreo/build123d-mcp) project by
-[`pzfreo`](https://github.com/pzfreo), distributed under the Apache License
-2.0. The MCP server is installed as an external dependency; its source code is
-not vendored in this repository.
+SolidIntent uses [`build123d-mcp`](https://github.com/pzfreo/build123d-mcp) (Apache 2.0) as an external CAD executor — not vendored here.
 
-The Raspberry Pi 4 pilot used Hasanain Shuja's
-[`Raspberry Pi 4 Model B`](https://grabcad.com/library/raspberry-pi-4-model-b-1)
-GrabCAD model as third-party dimensional and collision-reference evidence. The
-downloaded package did not contain a licence file, so its native CAD files and
-images are intentionally excluded from this repository. The enclosure itself
-is a new parametric design and still requires physical connector verification.
+Pi 4 pilot geometry was informed by Hasanain Shuja’s GrabCAD Raspberry Pi 4 Model B package (no redistributable licence in the download; native files are not shipped). Enclosures still require physical fit verification.
 
-See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) and
-[`references/README.md`](references/README.md) for the complete attribution and
-redistribution policy.
+See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).

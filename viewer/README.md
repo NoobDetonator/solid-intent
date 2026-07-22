@@ -1,54 +1,40 @@
 # SolidIntent viewer
 
-The SolidIntent viewer is a local web interface for persistent AI CAD projects.
-It is deliberately not a browser CAD kernel: Three.js displays generated STL
-artifacts, while build123d-mcp remains the authority for geometry creation,
-measurement, validation, printability analysis, and export.
+Local web inspector for persistent AI CAD projects. Three.js shows generated
+STL artifacts; `build123d-mcp` remains the authority for geometry, measure,
+validate, and export.
 
-## Run locally
+## Run
 
-Requirements:
+Requires Node.js 20+, projects under `../projects/`, and STL files at the paths
+in each `project.json` artifacts map.
 
-- Node.js 20 or newer
-- A SolidIntent project under `../projects/`
-- Generated STL artifacts at the paths declared by the project manifest
-
-```text
+```bash
 npm install
 npm run dev
 ```
 
-Open `http://127.0.0.1:4173`.
+Open [http://127.0.0.1:4173](http://127.0.0.1:4173) (binds `127.0.0.1`; set
+`PORT` to change).
 
-Production build and local serving:
-
-```text
+```bash
 npm run build
 npm start
 ```
 
-The server binds to `127.0.0.1` by default. Set `PORT` to change the local
-port.
+## Capabilities
 
-## Current capabilities
-
-- Discover local `project.json` manifests.
-- Load base and lid STL artifacts in an interactive Three.js canvas.
-- Toggle bodies, exploded placement, transparency, and camera fit.
-- Inspect SVG technical previews and the dimensioned drawing sheet.
-- Group and search the schema-defined parameter catalog.
-- Separate editable parameters from reference-controlled values.
-- Enforce locked status and numeric ranges in the local API.
-- Atomically persist approved parameter changes.
-- Derive clean/dirty state from accepted SHA-256 source hashes.
-- Display validation metrics, residual physical risks, references, and revision
-  history.
-- Copy a precise rebuild request for the AI agent after parameters change.
+- Discover `project.json` manifests and load body STLs
+- Toggle bodies, exploded placement, transparency, camera fit
+- Inspect SVG previews and dimensioned drawings
+- Edit schema-approved parameters; lock reference-controlled values
+- Persist parameters atomically; show clean/dirty from SHA-256 hashes
+- Surface validation metrics, residual risks, references, revisions
+- Copy a rebuild prompt or run **Rebuild & accept** via the local API
 
 ## Authority boundary
 
-The viewer may edit declared intent in `parameters.json`. It must not calculate
-engineering measurements, claim geometric validity, or accept a revision.
-After any saved change, an AI agent rebuilds through build123d-mcp, compares the
-candidate with the accepted revision, validates every exported solid, and then
-records a new revision.
+The viewer edits declared intent in `parameters.json`. It does not invent
+engineering measurements or silently accept revisions. After a save, rebuild
+through `build123d-mcp` (or `scripts/rebuild_project.py`), compare with the
+accepted revision, validate exports, then record a new revision.
