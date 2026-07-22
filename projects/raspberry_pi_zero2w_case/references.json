@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "project_id": "raspberry_pi_zero2w_case",
+  "references": [
+    {
+      "id": "rpi_zero2w_product_brief",
+      "kind": "official_product_brief",
+      "trust_class": "official_manufacturer_drawing",
+      "author": "Raspberry Pi Ltd",
+      "source_url": "https://pip-assets.raspberrypi.com/categories/584-raspberry-pi-zero-2-w/documents/RP-008359-DS-1-raspberry-pi-zero-2-w-product-brief.pdf",
+      "license_status": "reference_only",
+      "redistributed": false,
+      "use": [
+        "Board envelope 65 × 30 mm",
+        "Mounting hole offsets 3.5 mm",
+        "Port centreline positions 12.4 / 41.4 / 54.0 mm from left edge"
+      ],
+      "limitations": [
+        "Drawing states dimensions are approximate",
+        "Connector body heights are assumed for enclosure openings",
+        "Antenna keep-out is not modelled as a separate solid"
+      ]
+    },
+    {
+      "id": "rpi_zero_mechanical_drawing_family",
+      "kind": "official_reference_drawing",
+      "trust_class": "official_manufacturer_drawing",
+      "author": "Raspberry Pi Ltd",
+      "source_url": "https://datasheets.raspberrypi.com/rpizero/raspberry-pi-zero-2-w-mechanical-drawing.pdf",
+      "license_status": "reference_only",
+      "redistributed": false,
+      "use": [
+        "Zero-family form-factor confirmation",
+        "Corner radius and hole diameter guidance"
+      ],
+      "limitations": [
+        "Verify exact Zero 2 W revision against physical hardware"
+      ]
+    }
+  ]
+}

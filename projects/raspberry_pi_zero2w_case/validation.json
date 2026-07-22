@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "project_id": "raspberry_pi_zero2w_case",
+  "accepted_revision": 7,
+  "validated_at": "2026-07-21",
+  "executor": "build123d-mcp",
+  "runtime": {
+    "build123d": "0.11.1",
+    "python": "3.12",
+    "mcp_validator": "scripts/mcp_validate_project.py"
+  },
+  "source_hashes_sha256": {
+    "model": "BA35D830571A1AF350779466216161B7F972908B21B8D0C2F7BE6D04E6B18F67",
+    "parameters": "4AC199C7EB52C87F4C406DD1C88906B4EA7E3B78AC8E1A3D9B858F1E12090175",
+    "parameter_schema": "B67D8338D1C1A615FB0F46BB0E63AA89D9D654D89D38340E607360D65A41A061"
+  },
+  "parameter_contract": {
+    "json_schema": "PASS",
+    "required_parameter_count": 46,
+    "model_contract": "PASS"
+  },
+  "geometry": {
+    "base": {
+      "validate": "PASS",
+      "single_solid": true,
+      "watertight_manifold": true,
+      "brep_valid": true,
+      "volume_mm3": 8953.8861,
+      "bbox_mm": [
+        70.6,
+        35.6,
+        10.0
+      ],
+      "topology": {
+        "faces": 85,
+        "edges": 228,
+        "vertices": 152
+      },
+      "mcp_validate": {
+        "status": "PASS",
+        "detail": {
+          "passes_gate": true,
+          "n_solids": 1,
+          "volume": 8953.8861,
+          "watertight_manifold": true,
+          "open_edges": 0,
+          "nonmanifold_edges": 0,
+          "mesh_nonmanifold_edges": 0,
+          "mesh_nonmanifold_vertices": 0,
+          "mesh_open_edges": 0,
+          "mesh_vertex_deflection_defects": 0,
+          "untriangulated_faces": 0,
+          "refined_untriangulated_faces": 0,
+          "refined_untriangulated_faces_verified": true,
+          "mesh_check": "exact",
+          "brep_valid": true,
+          "warnings": [],
+          "reasons": []
+        }
+      }
+    },
+    "lid": {
+      "validate": "PASS",
+      "single_solid": true,
+      "watertight_manifold": true,
+      "brep_valid": true,
+      "volume_mm3": 6889.6794,
+      "bbox_mm": [
+        74.6,
+        39.6,
+        6.5
+      ],
+      "topology": {
+        "faces": 48,
+        "edges": 123,
+        "vertices": 82
+      },
+      "mcp_validate": {
+        "status": "PASS",
+        "detail": {
+          "passes_gate": true,
+          "n_solids": 1,
+          "volume": 6889.6794,
+          "watertight_manifold": true,
+          "open_edges": 0,
+          "nonmanifold_edges": 0,
+          "mesh_nonmanifold_edges": 0,
+          "mesh_nonmanifold_vertices": 0,
+          "mesh_open_edges": 0,
+          "mesh_vertex_deflection_defects": 0,
+          "untriangulated_faces": 0,
+          "refined_untriangulated_faces": 0,
+          "refined_untriangulated_faces_verified": true,
+          "mesh_check": "exact",
+          "brep_valid": true,
+          "warnings": [],
+          "reasons": []
+        }
+      }
+    }
+  },
+  "interfaces": {
+    "base_to_pcb_proxy": {
+      "status": "touching",
+      "clearance_mm": 0.0,
+      "intersection_volume_mm3": 0.0
+    },
+    "base_to_assembled_lid": {
+      "status": "clearance_fit",
+      "clearance_mm": 0.2,
+      "intersection_volume_mm3": 0.0
+    }
+  },
+  "printability": {
+    "base": {
+      "status": "PASS_WITH_WARNINGS",
+      "findings_count": 11,
+      "residual_warning": "Flat 21.5 mm2 ceiling at 0.0 deg, 0.7 mm span needs support",
+      "informational_bridges": 5
+    },
+    "lid_print": {
+      "status": "PASS_WITH_WARNINGS",
+      "findings_count": 10,
+      "residual_warning": "Flat 24.1 mm2 ceiling at 0.0 deg, 0.9 mm span needs support",
+      "informational_bridges": 4
+    }
+  },
+  "residual_risks": [
+    "Snap-fit groove/bead clearances must be calibrated for the target printer and filament.",
+    "Connector openings are drawing-derived; verify against physical plugs.",
+    "Canonical validate/printability gates were confirmed through build123d-mcp on exported STEP solids."
+  ],
+  "comparison_with_previous": {
+    "geometry_deltas": {
+      "base": {
+        "volume_mm3": 177.7482,
+        "bbox_mm": [
+          -1.4,
+          -1.4,
+          0.0
+        ],
+        "topology_delta": {
+          "faces": -9,
+          "edges": -76,
+          "vertices": -50
+        },
+        "validate": "PASS"
+      },
+      "lid": {
+        "volume_mm3": -379.1408,
+        "bbox_mm": [
+          -1.4,
+          -1.4,
+          0.0
+        ],
+        "topology_delta": {
+          "faces": 0,
+          "edges": 0,
+          "vertices": 0
+        },
+        "validate": "PASS"
+      }
+    },
+    "failed_bodies": [],
+    "interfering_interfaces": [],
+    "ok": true
+  }
+}

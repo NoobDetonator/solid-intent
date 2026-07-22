@@ -33,3 +33,20 @@ in this repository. Connector and cooler envelopes in
 
 Same discipline: openings come from the project parameter contract and must be
 checked against the physical board and plugs before production use.
+
+## Raspberry Pi Zero 2 W snap-fit case
+
+Reference drawings:
+
+- [Zero 2 W product brief (includes mechanical sketch)](https://pip-assets.raspberrypi.com/categories/584-raspberry-pi-zero-2-w/documents/RP-008359-DS-1-raspberry-pi-zero-2-w-product-brief.pdf)
+- [Zero 2 W mechanical drawing](https://datasheets.raspberrypi.com/rpizero/raspberry-pi-zero-2-w-mechanical-drawing.pdf)
+
+### Fit checks to perform on hardware
+
+1. Dual micro-USB and mini-HDMI plug clearance through the south-edge openings.
+2. microSD insertion/removal and CSI ribbon exit with the board on the locating pins.
+3. Snap engage/disengage force for the ridge-and-bead lid; tune `lid_fit_clearance`
+   / `snap_bead_depth` for the target filament.
+4. GPIO header access through the lid slot if a 40-pin header is populated.
+5. Print the lid via `lid_print` (skirt-up); inspect the snap beads and ridge
+   overhangs after printing.
