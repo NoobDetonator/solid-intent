@@ -12,10 +12,11 @@ The approved visual references are:
 - `docs/design/solidintent_palette.png`
 - `docs/design/viewer_direction_a.png`
 
-Brand wordmark assets (transparent PNG, no panel fill):
+Brand wordmark assets (white mark):
 
-- `docs/brand/solidintent_logo.png` — white mark for dark UI
-- `docs/brand/solidintent_logo_readme.png` — dark mark for light UI / README
+- `docs/brand/solidintent_logo.png` — white on transparent (canonical)
+- `docs/brand/solidintent_logo_white.png` — compact white on transparent
+- `docs/brand/solidintent_logo_readme.png` — white mark on graphite banner for README
 - `viewer/src/assets/solidintent_logo.png` — header lockup (white, transparent)
 
 ## Color
